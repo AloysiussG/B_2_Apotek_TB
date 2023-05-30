@@ -4,15 +4,21 @@
  */
 package view;
 
+import control.TestControl;
+
 /**
  *
  * @author AG SETO GALIH D
  */
 public class LoginView extends javax.swing.JFrame {
 
+    private TestControl testControl;
+
     /** Creates new form LoginView */
     public LoginView() {
         initComponents();
+        testControl = new TestControl();
+        testControl.testSelectQuery("tenagamedis");
     }
 
     /** This method is called from within the constructor to
@@ -71,6 +77,7 @@ public class LoginView extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new LoginView().setVisible(true);
+
             }
         });
     }
