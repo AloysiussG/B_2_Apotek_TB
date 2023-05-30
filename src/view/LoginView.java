@@ -38,7 +38,6 @@ public class LoginView extends javax.swing.JFrame {
         gp = new swing.GradientPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setUndecorated(true);
 
         containerPanel.setBackground(new java.awt.Color(255, 204, 0));
 

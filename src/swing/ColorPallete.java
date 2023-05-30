@@ -48,4 +48,12 @@ public class ColorPallete {
         }
     }
 
+    public Color getWhite() {
+        return Color.decode("#FFFFFF");
+    }
+
+    public Color getBlack() {
+        return Color.decode("#000000");
+    }
+
 }

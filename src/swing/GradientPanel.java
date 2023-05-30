@@ -9,12 +9,15 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import swing.ColorPallete;
 
 /**
  *
  * @author AG SETO GALIH D
  */
 public class GradientPanel extends javax.swing.JPanel {
+    
+    private static ColorPallete colorPallete = new ColorPallete();
 
     /** Creates new form GradientPanel */
     public GradientPanel() {
@@ -51,13 +54,13 @@ public class GradientPanel extends javax.swing.JPanel {
     protected void paintComponent(Graphics g) {
 
         //mendefine variabel warna gradient
-        Color color1 = Color.decode("#FFFFFF");
-        Color color2 = Color.decode("#000000");
+        Color color1 = colorPallete.getColor(0);
+        Color color2 = colorPallete.getColor(1);
 
         //mendefine variabel width dan height panel
         int width = getWidth();
         int height = getHeight();
-
+        
         Graphics2D g2 = (Graphics2D) g;
 
         //memberi efek antialiasing pada gradient yang akan dibuat
@@ -75,7 +78,7 @@ public class GradientPanel extends javax.swing.JPanel {
         //menghapus border radius sebelah kanan dengan membuat rectangle baru yang menutupi
         //parameter: startX, startY, endX, endY
         g2.fillRect(width - 105, 0, width, height);
-
+        
         super.paintComponent(g);
     }
 
