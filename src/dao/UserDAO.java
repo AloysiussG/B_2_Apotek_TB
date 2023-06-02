@@ -14,37 +14,38 @@ import model.User;
  * @author Gregory Wilson
  */
 public class UserDAO {
+
     private DbConnection dbCon = new DbConnection();
     private Connection con;
-    
-    public void insertPengguna(User u){
+
+    public void insertUser(User u) {
         con = dbCon.makeConnection();
-        
+
         String sql = "INSERT INTO user(idUser, username, password) VALUES ('"
-                + u.getIdUser()+ "','" + u.getUsername() + "', '"
+                + u.getIdUser() + "','" + u.getUsername() + "', '"
                 + u.getPassword() + "')";
-        
+
         System.out.println("Adding User...");
-        
-        try{
+
+        try {
             Statement statement = con.createStatement();
             int result = statement.executeUpdate(sql);
-            System.out.println("Added " +result+ " User");
+            System.out.println("Added " + result + " User");
             statement.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Eror adding User...");
             System.out.println(e);
         }
         dbCon.closeConnection();
     }
-    
+
     public void updateUser(User u) {
         con = dbCon.makeConnection();
-        
+
         String sql = "UPDATE user SET username = '" + u.getUsername()
                 + "', password = '" + u.getPassword()
                 + "' WHERE idUser = '" + u.getIdUser() + "'";
-        
+
         System.out.println("Editing User...");
 
         try {
@@ -58,10 +59,10 @@ public class UserDAO {
         }
         dbCon.closeConnection();
     }
-    
+
     public void deleteUser(int id) {
         con = dbCon.makeConnection();
-        
+
         String sql = "DELETE FROM user WHERE idUser = '" + id + "'";
 
         System.out.println("Deleting User...");
@@ -73,7 +74,7 @@ public class UserDAO {
             statement.close();
         } catch (Exception e) {
             System.out.println("Error deleting User...");
-            System.out.println(e); 
+            System.out.println(e);
         }
         dbCon.closeConnection();
     }

@@ -14,6 +14,7 @@ public class ButtonOutLine extends JButton {
         setContentAreaFilled(false);
         setBorder(new EmptyBorder(5, 0, 5, 0));
         setBackground(Color.WHITE);
+        setForeground(Color.WHITE);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
