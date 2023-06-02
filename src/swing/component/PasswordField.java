@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.FocusAdapter;
@@ -13,16 +12,14 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JTextField;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import swing.ColorPallete;
 
-public class TextField extends JTextField {
+public class PasswordField extends JPasswordField {
 
     public String getHelperText() {
         return helperText;
@@ -49,25 +46,6 @@ public class TextField extends JTextField {
         this.lineColor = lineColor;
     }
 
-    public Icon getPrefixIcon() {
-        return prefixIcon;
-    }
-
-    public void setPrefixIcon(Icon prefixIcon) {
-        this.prefixIcon = prefixIcon;
-    }
-
-    public Icon getSuffixIcon() {
-        return suffixIcon;
-    }
-
-    public void setSuffixIcon(Icon suffixIcon) {
-        this.suffixIcon = suffixIcon;
-    }
-
-    private Icon prefixIcon;
-    private Icon suffixIcon;
-
     private static ColorPallete cp = new ColorPallete();
     private final Animator animator;
     private boolean animateHinText = true;
@@ -79,7 +57,7 @@ public class TextField extends JTextField {
     private int spaceHelperText = 15;
     private Color lineColor = cp.getColor(1);
 
-    public TextField() {
+    public PasswordField() {
         setBorder(new EmptyBorder(20, 3, 23, 3));
         setSelectionColor(new Color(76, 204, 255));
         setForeground(cp.getColor(0));
@@ -87,13 +65,13 @@ public class TextField extends JTextField {
             @Override
             public void mouseEntered(MouseEvent me) {
                 mouseOver = true;
-//                repaint();
+                repaint();
             }
 
             @Override
             public void mouseExited(MouseEvent me) {
                 mouseOver = false;
-//                repaint();
+                repaint();
             }
         });
         addFocusListener(new FocusAdapter() {
@@ -126,20 +104,6 @@ public class TextField extends JTextField {
         animator.setDeceleration(0.5f);
     }
 
-    private void paintIcon(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-        if (prefixIcon != null) {
-            Image prefix = ((ImageIcon) prefixIcon).getImage();
-            int y = (getHeight() - prefixIcon.getIconHeight()) / 2;
-            g2.drawImage(prefix, 10, y, this);
-        }
-        if (suffixIcon != null) {
-            Image suffix = ((ImageIcon) suffixIcon).getImage();
-            int y = (getHeight() - suffixIcon.getIconHeight()) / 2;
-            g2.drawImage(suffix, getWidth() - suffixIcon.getIconWidth() - 10, y, this);
-        }
-    }
-
     private void showing(boolean action) {
         if (animator.isRunning()) {
             animator.stop();
@@ -169,7 +133,6 @@ public class TextField extends JTextField {
         createHintText(g2);
         createLineStyle(g2);
         createHelperText(g2);
-        paintIcon(grphcs);
         g2.dispose();
     }
 
