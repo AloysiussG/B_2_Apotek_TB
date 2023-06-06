@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package tabel;
+package table;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -11,7 +11,7 @@ import model.PengadaanObat;
  *
  * @author willi
  */
-public class PengadaanObatTable extends AbstractTableModel{
+public class PengadaanObatTable extends AbstractTableModel {
     private List<PengadaanObat> list;
 
     public PengadaanObatTable(List<PengadaanObat> list) {

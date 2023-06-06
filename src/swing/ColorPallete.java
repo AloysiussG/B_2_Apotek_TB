@@ -11,9 +11,11 @@ import java.util.List;
 //kelas ini digunakan untuk menyimpan color pallete UI aplikasi kelompok 2
 public class ColorPallete {
 
-    private List<String> colorList = new ArrayList<>();
+    private List<String> colorList;
 
     public ColorPallete() {
+        //create object colorlist
+        colorList = new ArrayList<>();
         //dark spring green
         colorList.add("#2C6E49");
         //sea green
@@ -31,7 +33,7 @@ public class ColorPallete {
     }
 
     public List<Color> getColorListAsColor() {
-        List<Color> colorListAsColor = new ArrayList<Color>();
+        List<Color> colorListAsColor = new ArrayList<>();
         for (String color : colorList) {
             colorListAsColor.add(Color.decode(color));
         }

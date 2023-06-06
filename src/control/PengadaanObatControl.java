@@ -7,7 +7,7 @@ package Control;
 import Dao.PengadaanObatDAO;
 import java.util.List;
 import model.PengadaanObat;
-import tabel.PengadaanObatTable;
+import table.PengadaanObatTable;
 
 /**
  *

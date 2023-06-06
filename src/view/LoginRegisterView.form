@@ -158,7 +158,7 @@
                 <Component class="javax.swing.JLabel" name="belumPunyaAkun">
                   <Properties>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" red="0" type="rgb"/>
+                      <Color blue="66" green="66" red="66" type="rgb"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
                     <Property name="text" type="java.lang.String" value="Belum punya akun?"/>
@@ -244,7 +244,7 @@
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="slogan" alignment="1" min="-2" pref="415" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="illustration" min="-2" pref="421" max="-2" attributes="0"/>
+                                  <Component id="illustrationLogin" min="-2" pref="421" max="-2" attributes="0"/>
                                   <Component id="title" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -262,24 +262,21 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                           <Component id="btnCloseLogin" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="33" max="32767" attributes="0"/>
+                          <EmptySpace pref="23" max="32767" attributes="0"/>
                           <Component id="title" min="-2" pref="50" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="slogan" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
-                          <Component id="illustration" min="-2" pref="471" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                          <Component id="illustrationLogin" min="-2" pref="471" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="illustration">
+                <Component class="javax.swing.JLabel" name="illustrationLogin">
                   <Properties>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/img/illustration/&#x2014;Pngtree&#x2014;medical doctor pharmacy illustration vector_4384152.png"/>
-                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="title">
@@ -428,7 +425,7 @@
                 <Component class="javax.swing.JLabel" name="sudahPunyaAkun">
                   <Properties>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" red="0" type="rgb"/>
+                      <Color blue="66" green="66" red="66" type="rgb"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
                     <Property name="text" type="java.lang.String" value="Sudah punya akun?"/>
@@ -553,7 +550,7 @@
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="slogan1" alignment="1" min="-2" pref="415" max="-2" attributes="0"/>
                               <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="illustration1" alignment="0" min="-2" pref="421" max="-2" attributes="0"/>
+                                  <Component id="illustrationRegister" alignment="0" min="-2" pref="421" max="-2" attributes="0"/>
                                   <Component id="title1" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -576,19 +573,16 @@
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="slogan1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
-                          <Component id="illustration1" min="-2" pref="471" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                          <Component id="illustrationRegister" min="-2" pref="471" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="illustration1">
+                <Component class="javax.swing.JLabel" name="illustrationRegister">
                   <Properties>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/img/illustration/&#x2014;Pngtree&#x2014;medical doctor pharmacy illustration vector_4384152.png"/>
-                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="title1">

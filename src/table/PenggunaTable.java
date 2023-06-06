@@ -13,20 +13,23 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import model.Pengguna;
 
-public class PenggunaTable extends AbstractTableModel{
+public class PenggunaTable extends AbstractTableModel {
     private List<Pengguna> pengguna;
 
     public PenggunaTable(List<Pengguna> pengguna) {
         this.pengguna = pengguna;
     }
     
+    
     public int getRowCount(){
         return pengguna.size();
     }
     
+    
     public int getColumnCount(){
         return 5;
     }
+    
     
     public Object getValueAt(int rowIndex, int columnIndex){
         switch(columnIndex){

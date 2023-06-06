@@ -1,14 +1,14 @@
-package swing.component;
+package swing.component.dashboard;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 import org.jdesktop.animation.timing.Animator;
@@ -16,32 +16,51 @@ import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import swing.ColorPallete;
 
-public class Button extends JButton {
+public class MenuButton extends JButton {
+    //tidak ada default constructor, sehingga harus manual diletakkan menggunakan code
 
-    private ColorPallete cp = new ColorPallete();
+    private static ColorPallete cp = new ColorPallete();
 
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    private int index;
     private Animator animator;
     private int targetSize;
     private float animatSize;
     private Point pressedPoint;
     private float alpha;
-    private Color effectColor = cp.getWhite();
-    private boolean mouseEntered;
+    private Color effectColor = new Color(255, 255, 255, 150);
 
-    public Color getEffectColor() {
-        return effectColor;
+    //constructor menu utama (ada icon + text)
+    public MenuButton(Icon icon, String text) {
+        super(text);
+        setIcon(icon);
+        init();
+        setBorder(new EmptyBorder(1, 20, 1, 1));
     }
 
-    public void setEffectColor(Color effectColor) {
-        this.effectColor = effectColor;
+    //constructor untuk submenu dari menu utama (hanya ada text)
+    public MenuButton(String text) {
+        super(text);
+        init();
+        setBorder(new EmptyBorder(1, 50, 1, 1));
     }
 
-    public Button() {
+    public MenuButton(String text, boolean subMenu) {
+        super(text);
+        init();
+    }
+
+    private void init() {
         setContentAreaFilled(false);
-        setBorder(new EmptyBorder(5, 0, 5, 0));
-        setBackground(Color.WHITE);
-        setForeground(cp.getWhite());
-        setCursor(new Cursor(Cursor.HAND_CURSOR));
+        setForeground(new Color(255, 255, 255));
+        setHorizontalAlignment(JButton.LEFT);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {
@@ -56,15 +75,11 @@ public class Button extends JButton {
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
-                mouseEntered = false;
-                repaint();
+            public void mouseEntered(MouseEvent e) {
             }
 
             @Override
-            public void mouseEntered(MouseEvent e) {
-                mouseEntered = true;
-                repaint();
+            public void mouseExited(MouseEvent e) {
             }
 
         });
@@ -78,35 +93,20 @@ public class Button extends JButton {
                 repaint();
             }
         };
-        animator = new Animator(700, target);
-        animator.setAcceleration(0.5f);
-        animator.setDeceleration(0.5f);
+        animator = new Animator(400, target);
         animator.setResolution(0);
     }
 
     @Override
     protected void paintComponent(Graphics grphcs) {
-        int width = getWidth();
-        int height = getHeight();
-//        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-//        Graphics2D g2 = img.createGraphics();
-        Graphics2D g2 = (Graphics2D) grphcs.create(0, 0, width, height);
+        Graphics2D g2 = (Graphics2D) grphcs;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        if (mouseEntered) {
-            g2.setColor(cp.getColor(0));
-        } else {
-            g2.setColor(cp.getColor(1));
-        }
-
-        g2.fillRoundRect(0, 0, width, height, height, height);
-
         if (pressedPoint != null) {
             g2.setColor(effectColor);
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
             g2.fillOval((int) (pressedPoint.x - animatSize / 2), (int) (pressedPoint.y - animatSize / 2), (int) animatSize, (int) animatSize);
         }
-//        grphcs.drawImage(img, 0, 0, null);
+        g2.setComposite(AlphaComposite.SrcOver);
         super.paintComponent(grphcs);
     }
 }

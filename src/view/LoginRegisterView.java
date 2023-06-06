@@ -5,13 +5,14 @@
 package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.UIManager;
-import swing.ColorPallete;
+import swing.*;
 
 /**
  *
@@ -26,18 +27,26 @@ public class LoginRegisterView extends javax.swing.JFrame {
 
     public LoginRegisterView() {
         initComponents();
+
+        illustrationLogin.setIcon(new FlatSVGIcon("img/illustration/Pharmacist.svg", 0.6f));
+        illustrationRegister.setIcon(new FlatSVGIcon("img/illustration/Pharmacist.svg", 0.6f));
+
         setBackground(new Color(0, 0, 0, 0));
 
+        sudahPunyaAkun.setForeground(new Color(150, 150, 150));
         loginHere.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        belumPunyaAkun.setForeground(new Color(150, 150, 150));
         registerHere.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         showPassLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
                 if (showPassLogin.isSelected()) {
+                    //untuk show password
                     inputPasswordLogin.setEchoChar((char) 0);
                     // do something if check box is selected
                 } else {
+                    //untuk hide password, set dengan character asterisk bulat bulat
                     inputPasswordLogin.setEchoChar((char) 8226);
                     // check box is unselected, do something else
                 }
@@ -80,7 +89,7 @@ public class LoginRegisterView extends javax.swing.JFrame {
         inputPasswordLogin = new swing.component.PasswordField();
         showPassLogin = new javax.swing.JCheckBox();
         rightLoginPanel = new swing.GradientPanelRight();
-        illustration = new javax.swing.JLabel();
+        illustrationLogin = new javax.swing.JLabel();
         title = new javax.swing.JLabel();
         slogan = new javax.swing.JLabel();
         btnCloseLogin = new swing.component.ButtonOutLine();
@@ -98,7 +107,7 @@ public class LoginRegisterView extends javax.swing.JFrame {
         inputAlamatRegister = new swing.component.TextField();
         inputPasswordRegister = new swing.component.PasswordField();
         rightRegisterPanel = new swing.GradientPanelRight();
-        illustration1 = new javax.swing.JLabel();
+        illustrationRegister = new javax.swing.JLabel();
         title1 = new javax.swing.JLabel();
         slogan1 = new javax.swing.JLabel();
         btnCloseRegister = new swing.component.ButtonOutLine();
@@ -127,7 +136,7 @@ public class LoginRegisterView extends javax.swing.JFrame {
             }
         });
 
-        belumPunyaAkun.setForeground(new java.awt.Color(0, 0, 0));
+        belumPunyaAkun.setForeground(new java.awt.Color(102, 102, 102));
         belumPunyaAkun.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         belumPunyaAkun.setText("Belum punya akun?");
 
@@ -191,8 +200,7 @@ public class LoginRegisterView extends javax.swing.JFrame {
                 .addGap(22, 22, 22))
         );
 
-        illustration.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        illustration.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/illustration/—Pngtree—medical doctor pharmacy illustration vector_4384152.png"))); // NOI18N
+        illustrationLogin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         title.setFont(new java.awt.Font("Segoe UI", 1, 29)); // NOI18N
         title.setForeground(new java.awt.Color(255, 255, 255));
@@ -220,7 +228,7 @@ public class LoginRegisterView extends javax.swing.JFrame {
                 .addGroup(rightLoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(slogan, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(rightLoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(illustration, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(illustrationLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(36, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightLoginPanelLayout.createSequentialGroup()
@@ -233,13 +241,13 @@ public class LoginRegisterView extends javax.swing.JFrame {
             .addGroup(rightLoginPanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(btnCloseLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(slogan)
                 .addGap(48, 48, 48)
-                .addComponent(illustration, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(illustrationLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
         );
 
         javax.swing.GroupLayout baseLoginPanelLayout = new javax.swing.GroupLayout(baseLoginPanel);
@@ -278,7 +286,7 @@ public class LoginRegisterView extends javax.swing.JFrame {
             }
         });
 
-        sudahPunyaAkun.setForeground(new java.awt.Color(0, 0, 0));
+        sudahPunyaAkun.setForeground(new java.awt.Color(102, 102, 102));
         sudahPunyaAkun.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         sudahPunyaAkun.setText("Sudah punya akun?");
 
@@ -354,8 +362,7 @@ public class LoginRegisterView extends javax.swing.JFrame {
                 .addGap(22, 22, 22))
         );
 
-        illustration1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        illustration1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/illustration/—Pngtree—medical doctor pharmacy illustration vector_4384152.png"))); // NOI18N
+        illustrationRegister.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         title1.setFont(new java.awt.Font("Segoe UI", 1, 29)); // NOI18N
         title1.setForeground(new java.awt.Color(255, 255, 255));
@@ -383,7 +390,7 @@ public class LoginRegisterView extends javax.swing.JFrame {
                 .addGroup(rightRegisterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(slogan1, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(rightRegisterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(illustration1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(illustrationRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(title1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(36, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightRegisterPanelLayout.createSequentialGroup()
@@ -401,8 +408,8 @@ public class LoginRegisterView extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(slogan1)
                 .addGap(48, 48, 48)
-                .addComponent(illustration1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(illustrationRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
         );
 
         javax.swing.GroupLayout baseRegisterPanelLayout = new javax.swing.GroupLayout(baseRegisterPanel);
@@ -506,8 +513,8 @@ public class LoginRegisterView extends javax.swing.JFrame {
     private swing.component.ButtonOutLine btnCloseLogin;
     private swing.component.ButtonOutLine btnCloseRegister;
     private javax.swing.JPanel cardLayoutPanel;
-    private javax.swing.JLabel illustration;
-    private javax.swing.JLabel illustration1;
+    private javax.swing.JLabel illustrationLogin;
+    private javax.swing.JLabel illustrationRegister;
     private swing.component.TextField inputAlamatRegister;
     private swing.component.TextField inputNamaRegister;
     private swing.component.TextField inputNoTelpRegister;
