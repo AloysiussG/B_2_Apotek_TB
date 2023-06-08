@@ -4,7 +4,14 @@
  */
 package panel.superadmin;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.table.AbstractTableModel;
+import swing.ColorPallete;
+import swing.component.dashboard.NoUserCard;
+import swing.component.dashboard.UserCard;
 
 /**
  *
@@ -12,22 +19,72 @@ import javax.swing.table.AbstractTableModel;
  */
 public class ReadDataPembeli extends javax.swing.JPanel {
 
-    public void setLabel(String text) {
-        label.setText(text);
+    private static ColorPallete cp = new ColorPallete();
+    private UserCard userCard = new UserCard();
+    private NoUserCard noUserCard = new NoUserCard();
+
+    public void setJudulForm(String text) {
+        judulForm.setForeground(cp.getColor(0));
+        judulForm.setText("Tabel " + text);
+
+        judulDataPilihan.setForeground(cp.getColor(0));
+        judulDataPilihan.setText(text);
     }
 
     public void setTableModel(AbstractTableModel tableModel) {
         this.customTable.setModel(tableModel);
     }
 
-    /** Creates new form TestPanel */
-    public ReadDataPembeli(AbstractTableModel tableModel) {
-        initComponents();
-        setTableModel(tableModel);
+    public void showUserCard(Component panel) {
+        panelCard.removeAll();
+        panelCard.add(panel);
+        panelCard.repaint();
+        panelCard.revalidate();
     }
 
-    public ReadDataPembeli() {
+    /** Creates new form TestPanel */
+    public ReadDataPembeli(AbstractTableModel tableModel, String namaForm) {
         initComponents();
+
+        showUserCard(noUserCard);
+
+        setTableModel(tableModel);
+        setJudulForm(namaForm);
+        searchField.setHint("Cari berdasarkan nama, kategori, dan lain-lain");
+        initTableListener();
+    }
+
+    private void initTableListener() {
+        customTable.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent arg0) {
+                int clickedRow = customTable.getSelectedRow();
+                String nama = customTable.getValueAt(clickedRow, 1).toString();
+                String alamat = customTable.getValueAt(clickedRow, 2).toString();
+                String noTelp = customTable.getValueAt(clickedRow, 3).toString();
+
+                showUserCard(userCard);
+                userCard.setLblNamaLengkap("<html>" + nama + "</html>");
+                userCard.setLblAlamat(alamat);
+                userCard.setLblNoTelp(noTelp);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent arg0) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent arg0) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent arg0) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent arg0) {
+            }
+        });
     }
 
     /** This method is called from within the constructor to
@@ -40,17 +97,26 @@ public class ReadDataPembeli extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        label = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        customTable = new javax.swing.JTable();
+        judulForm = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        customTable = new swing.component.CustomTable();
+        jPanel2 = new javax.swing.JPanel();
+        buttonRectangle1 = new swing.component.ButtonRectangle();
+        searchField = new swing.component.TextFieldWithBackground();
+        jPanel3 = new javax.swing.JPanel();
+        buttonRectangle2 = new swing.component.ButtonRectangle();
+        panelCard = new javax.swing.JPanel();
+        judulDataPilihan = new javax.swing.JLabel();
 
         setOpaque(false);
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        label.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        label.setForeground(new java.awt.Color(0, 0, 0));
-        label.setText("Judul Form");
+        judulForm.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        judulForm.setForeground(new java.awt.Color(0, 0, 0));
+        judulForm.setText("Judul Form");
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         customTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -63,40 +129,124 @@ public class ReadDataPembeli extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(customTable);
+        customTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(customTable);
+
+        jPanel2.setOpaque(false);
+
+        buttonRectangle1.setText("Cari");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonRectangle1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonRectangle1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        jPanel3.setOpaque(false);
+
+        buttonRectangle2.setText("Tambah Data");
+
+        panelCard.setOpaque(false);
+        panelCard.setPreferredSize(new java.awt.Dimension(407, 80));
+        panelCard.setLayout(new java.awt.BorderLayout());
+
+        judulDataPilihan.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        judulDataPilihan.setForeground(new java.awt.Color(0, 0, 0));
+        judulDataPilihan.setText("Judul Pilihan");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addComponent(panelCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
+                .addComponent(buttonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(judulDataPilihan)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(judulDataPilihan)
+                .addGap(8, 8, 8)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(panelCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(23, 23, 23))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(buttonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(304, Short.MAX_VALUE)
-                .addComponent(label)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 331, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(63, 63, 63)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 622, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(judulForm)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(30, 30, 30))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(91, 91, 91)
+                .addGap(30, 30, 30)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(judulForm, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable customTable;
+    private swing.component.ButtonRectangle buttonRectangle1;
+    private swing.component.ButtonRectangle buttonRectangle2;
+    private swing.component.CustomTable customTable;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel label;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel judulDataPilihan;
+    private javax.swing.JLabel judulForm;
+    private javax.swing.JPanel panelCard;
+    private swing.component.TextFieldWithBackground searchField;
     // End of variables declaration//GEN-END:variables
 }

@@ -12,7 +12,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.ComponentListener;
 import net.miginfocom.swing.MigLayout;
 import swing.ColorPallete;
 import swing.events.EventMenu;
@@ -48,7 +47,7 @@ public class Menu extends javax.swing.JPanel {
 
         //mendefine variabel warna gradient
         color1 = colorPallete.getColor(1);
-        color2 = colorPallete.getColor(1);
+        color2 = colorPallete.getColor(0);
 
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setVerticalScrollBar(new ScrollBarCustom());

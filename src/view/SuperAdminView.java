@@ -14,6 +14,7 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import panel.DashboardMainPanel;
+import panel.superadmin.CreateDataPembeli;
 import panel.superadmin.ReadDataPembeli;
 import swing.component.dashboard.Header;
 import swing.component.dashboard.Menu;
@@ -115,7 +116,10 @@ public class SuperAdminView extends javax.swing.JFrame {
             }
         });
         //saat app dijalankan, mulai dengan menampilkan panel form ini
-        mainPanel.showForm(new ReadDataPembeli(penggunaControl.showDataPengguna("")));
+        //read data pembeli (view table dll)
+        mainPanel.showForm(new ReadDataPembeli(penggunaControl.showDataPengguna(""), "Data Pembeli"));
+        //create
+        mainPanel.showForm(new CreateDataPembeli());
     }
 
     /** This method is called from within the constructor to

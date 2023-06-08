@@ -23,7 +23,7 @@ public class CustomTableHeader extends JLabel {
         super(text);
         setOpaque(true);
         setBackground(cp.getWhite());
-        setFont(new Font("sansserif", 1, 12));
+        setFont(new Font("sansserif", 1, 13));
         setForeground(cp.getColor(0));
         setBorder(new EmptyBorder(10, 5, 10, 5));
     }

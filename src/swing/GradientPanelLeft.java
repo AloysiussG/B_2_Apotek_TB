@@ -78,8 +78,7 @@ public class GradientPanelLeft extends javax.swing.JPanel {
         //menghapus border radius sebelah kanan dengan membuat rectangle baru yang menutupi
         //parameter: startX, startY, endX, endY
         //g2.fillRect(width - 105, 0, width, height);
-        g2.fillRect(width, 0, width - 105, height);
-
+//        g2.fillRect(width, 0, width - 105, height);
 //        g2.dispose();
 //        super.paintComponent(g);
     }
