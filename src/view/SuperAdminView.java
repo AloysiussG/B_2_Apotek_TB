@@ -9,8 +9,6 @@ import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.UIManager;
-import model.Pengguna;
-import model.Staff;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
@@ -23,7 +21,6 @@ import swing.component.dashboard.Header;
 import swing.component.dashboard.Menu;
 import swing.events.EventMenuPanelResize;
 import swing.events.EventMenuSelected;
-import swing.events.EventUserCard;
 
 /**
  *

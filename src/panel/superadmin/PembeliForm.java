@@ -13,10 +13,12 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import swing.component.dashboard.NoUserCard;
 import swing.component.dashboard.UserCard;
-import swing.events.EventUserCard;
 import table.PenggunaTable;
 import control.PenggunaControl;
 import java.awt.CardLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.concurrent.CompletableFuture;
 import model.Pengguna;
 import swing.ColorPallete;
 
@@ -32,9 +34,10 @@ public class PembeliForm extends javax.swing.JPanel {
     private static ColorPallete cp = new ColorPallete();
     private UserCard userCard;
     private NoUserCard noUserCard = new NoUserCard();
-    private EventUserCard event;
     private String namaUserGroup;
     private CardLayout cardLayout;
+
+    private String searchInput = "";
 
     //Getter Setter penggunaControl
     public void updatePenggunaControl(PenggunaControl pControl) {
@@ -56,21 +59,22 @@ public class PembeliForm extends javax.swing.JPanel {
 
         setTableModel(pc.showDataPengguna(""));
         setJudulForm(namaUserGroup);
-        searchField.setHint("Cari berdasarkan nama, kategori, dan lain-lain");
+        fieldSearch.setHint("Cari berdasarkan nama, kategori, dan lain-lain");
 
         cardLayout = (CardLayout) cardPanel.getLayout();
 
         //action listeners
         initTableListener();
-        //other listeners
 
+        //other listeners
         //button back action listener pada panel update
         //fungsinya untuk mengembalikan panel UpdateDataPembeli ke ReadDataPembeli lagi
         addBtnBackActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                setTableModel(pc.showDataPengguna(""));
-                showUserCard(noUserCard);
+                //reset data dan pindah ke panel read
+                resetUpdatePanel();
+                resetReadPanel();
                 cardLayout.show(cardPanel, "read");
             }
         });
@@ -87,8 +91,8 @@ public class PembeliForm extends javax.swing.JPanel {
                 penggunaNew.setNoTelp(inputNoTelp.getText());
                 pc.updateDataPengguna(penggunaNew);
                 //update table model dan user card dan kembalikan ke panel read
-                setTableModel(pc.showDataPengguna(""));
-                showUserCard(noUserCard);
+                resetUpdatePanel();
+                resetReadPanel();
                 cardLayout.show(cardPanel, "read");
             }
         });
@@ -96,14 +100,18 @@ public class PembeliForm extends javax.swing.JPanel {
         addBtnCancelActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                setTableModel(pc.showDataPengguna(""));
-                showUserCard(noUserCard);
+                //reset data dan pindah panel
+                resetUpdatePanel();
+                resetReadPanel();
                 cardLayout.show(cardPanel, "read");
             }
         });
-
+        //action listener untuk search
+        //tanpa button
+        addFieldSearchActionListener();
     }
 
+    //Method-method pada Update Panel
     private void setTextToComponent(String nama, String alamat, String noTelp) {
         inputNamaLengkap.setText(nama);
         inputAlamat.setText(alamat);
@@ -122,6 +130,49 @@ public class PembeliForm extends javax.swing.JPanel {
         btnCancel.addActionListener(event);
     }
 
+    private void resetUpdatePanel() {
+        inputNamaLengkap.setText("");
+        inputAlamat.setText("");
+        inputNoTelp.setText("");
+    }
+
+    //Method-method pada Read Panel
+    private void resetReadPanel() {
+        searchInput = "";
+        fieldSearch.setText(searchInput);
+        showUserCard(noUserCard);
+        setTableModel(pc.showDataPengguna(""));
+    }
+
+    //untuk melakukan search segera setelah keyboard direlease
+    private void addFieldSearchActionListener() {
+        fieldSearch.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent arg0) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent arg0) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent arg0) {
+                searchInput = fieldSearch.getText();
+                //asynchronous process
+                Thread newThread = new Thread(() -> {
+                    customTable.revalidate();
+                    customTable.setModel(pc.showDataPengguna(searchInput));
+                });
+                newThread.start();
+//
+//                CompletableFuture.runAsync(() -> {
+//                    setTableModel(pc.showDataPengguna(searchInput));
+//                });
+//
+            }
+        });
+    }
+
     private void setJudulForm(String text) {
         judulForm.setForeground(cp.getColor(0));
         judulForm.setText("Tabel Data " + text);
@@ -138,11 +189,6 @@ public class PembeliForm extends javax.swing.JPanel {
         panelCard.add(panel);
         panelCard.repaint();
         panelCard.revalidate();
-    }
-
-    //method untuk memanggil event user card
-    public void callEvent(EventUserCard eventCalled) {
-        event = eventCalled;
     }
 
     //listener untuk table clicked pada panel ReadDataPembeli 
@@ -169,6 +215,17 @@ public class PembeliForm extends javax.swing.JPanel {
                             //fungsinya untuk mengganti panel ReadDataPembeli ke panel UpdateDataPembeli
                             cardLayout.show(cardPanel, "update");
                             setTextToComponent(pengguna.getNama(), pengguna.getAlamat(), pengguna.getNoTelp());
+                        }
+                    });
+                    //user card button delete action listener
+                    userCard.addBtnDeleteActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent arg0) {
+                            //ketika btn delete di user card
+                            pc.deleteDataPengguna(pengguna.getIdPengguna());
+                            System.out.println("Berhasil delete");
+                            showUserCard(noUserCard);
+                            setTableModel(pc.showDataPengguna(""));
                         }
                     });
                 }
@@ -208,8 +265,7 @@ public class PembeliForm extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         customTable = new swing.component.CustomTable();
         jPanel3 = new javax.swing.JPanel();
-        searchBtn = new swing.component.ButtonRectangle();
-        searchField = new swing.component.TextFieldWithBackground();
+        fieldSearch = new swing.component.TextFieldWithBackground();
         jPanel4 = new javax.swing.JPanel();
         btnTambah = new swing.component.ButtonRectangle();
         panelCard = new javax.swing.JPanel();
@@ -262,26 +318,20 @@ public class PembeliForm extends javax.swing.JPanel {
 
         jPanel3.setOpaque(false);
 
-        searchBtn.setText("Cari");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(fieldSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(12, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(fieldSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -523,6 +573,7 @@ public class PembeliForm extends javax.swing.JPanel {
     private swing.component.ButtonRectangle btnTambah;
     private javax.swing.JPanel cardPanel;
     private swing.component.CustomTable customTable;
+    private swing.component.TextFieldWithBackground fieldSearch;
     private swing.component.TextFieldInput inputAlamat;
     private swing.component.TextFieldInput inputNamaLengkap;
     private swing.component.TextFieldInput inputNoTelp;
@@ -541,8 +592,6 @@ public class PembeliForm extends javax.swing.JPanel {
     private javax.swing.JLabel judulForm;
     private javax.swing.JPanel panelCard;
     private javax.swing.JPanel readPembeli;
-    private swing.component.ButtonRectangle searchBtn;
-    private swing.component.TextFieldWithBackground searchField;
     private javax.swing.JPanel updatePembeli;
     // End of variables declaration//GEN-END:variables
 }

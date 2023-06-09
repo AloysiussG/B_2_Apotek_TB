@@ -58,6 +58,10 @@ public class UserCard extends javax.swing.JPanel {
         lblNoTelp.setText(noTelp);
     }
 
+    public void addBtnDeleteActionListener(ActionListener event) {
+        btnDelete.addActionListener(event);
+    }
+
     public void addBtnEditActionListener(ActionListener event) {
         btnEdit.addActionListener(event);
     }
