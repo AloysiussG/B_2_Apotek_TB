@@ -21,9 +21,8 @@ public class UserDAO {
     public void insertUser(User u) {
         con = dbCon.makeConnection();
 
-        String sql = "INSERT INTO user(idUser, username, password) VALUES ('"
-                + u.getIdUser() + "','" + u.getUsername() + "', '"
-                + u.getPassword() + "')";
+        String sql = "INSERT INTO user(username, password) VALUES ('"
+                + u.getUsername() + "', '" + u.getPassword() + "')";
 
         System.out.println("Adding User...");
 

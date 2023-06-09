@@ -39,7 +39,7 @@ public class ObatTable extends AbstractTableModel{
             case 3:
                 return obat.get(rowIndex).getTanggalProduksi();
             case 4:
-                return obat.get(rowIndex).getTanggalKaldaluarsa();
+                return obat.get(rowIndex).getTanggalKadaluarsa();
             case 5:
                 return obat.get(rowIndex).getHarga();
             default:

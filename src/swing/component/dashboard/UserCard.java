@@ -5,8 +5,10 @@
 package swing.component.dashboard;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.event.ActionListener;
 import javax.swing.Icon;
-import javax.swing.JLabel;
+import model.Pengguna;
+import model.Staff;
 
 /**
  *
@@ -14,11 +16,50 @@ import javax.swing.JLabel;
  */
 public class UserCard extends javax.swing.JPanel {
 
+    private Pengguna pengguna = null;
+    private Staff staff = null;
+
+    public int getIdUser() {
+        if (!pengguna.equals(null)) {
+            return pengguna.getUser().getIdUser();
+        } else {
+            return staff.getUser().getIdUser();
+        }
+    }
+
     /** Creates new form UserCard */
     public UserCard() {
         initComponents();
         initLeftPic("default");
         initBtn();
+    }
+
+    //untuk staff
+    public UserCard(Staff staff) {
+        this.staff = staff;
+        initComponents();
+        initLeftPic("default");
+        initBtn();
+        initAttributeAndLabel(staff.getNama(), staff.getAlamat(), staff.getNoTelp());
+    }
+
+    //untuk pengguna
+    public UserCard(Pengguna pengguna) {
+        this.pengguna = pengguna;
+        initComponents();
+        initLeftPic("default");
+        initBtn();
+        initAttributeAndLabel(pengguna.getNama(), pengguna.getAlamat(), pengguna.getNoTelp());
+    }
+
+    public void initAttributeAndLabel(String nama, String alamat, String noTelp) {
+        lblNamaLengkap.setText(nama);
+        lblAlamat.setText(alamat);
+        lblNoTelp.setText(noTelp);
+    }
+
+    public void addBtnEditActionListener(ActionListener event) {
+        btnEdit.addActionListener(event);
     }
 
     public void initLeftPic(String role) {
@@ -37,31 +78,6 @@ public class UserCard extends javax.swing.JPanel {
         btnEdit.setIcon(new FlatSVGIcon("img/icon/edit.svg", 0.5f));
         btnDelete.setIcon(new FlatSVGIcon("img/icon/delete.svg", 0.5f));
         btnMakeStaff.setIcon(new FlatSVGIcon("img/icon/makestaff.svg", 0.5f));
-
-    }
-
-    public JLabel getLblAlamat() {
-        return lblAlamat;
-    }
-
-    public void setLblAlamat(String lblAlamat) {
-        this.lblAlamat.setText(lblAlamat);
-    }
-
-    public JLabel getLblNamaLengkap() {
-        return lblNamaLengkap;
-    }
-
-    public void setLblNamaLengkap(String lblNamaLengkap) {
-        this.lblNamaLengkap.setText(lblNamaLengkap);
-    }
-
-    public JLabel getLblNoTelp() {
-        return lblNoTelp;
-    }
-
-    public void setLblNoTelp(String lblNoTelp) {
-        this.lblNoTelp.setText(lblNoTelp);
     }
 
     /** This method is called from within the constructor to

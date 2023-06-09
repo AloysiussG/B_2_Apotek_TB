@@ -7,6 +7,7 @@ package panel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import javax.swing.border.EmptyBorder;
+import swing.events.EventMenuSelected;
 
 /**
  *
@@ -16,6 +17,8 @@ public class DashboardMainPanel extends javax.swing.JPanel {
 
     //panel main dari jframe, berada di tengah (di sebelah kanan dashboard panel)
     //muncul saat pertama kali jframe dijalankan
+    private EventMenuSelected event;
+
     public DashboardMainPanel() {
         initComponents();
         setOpaque(false);
@@ -29,6 +32,10 @@ public class DashboardMainPanel extends javax.swing.JPanel {
         add(panelForm);
         repaint();
         revalidate();
+    }
+
+    public void addEventSelected(EventMenuSelected event) {
+        this.event = event;
     }
 
     /** This method is called from within the constructor to

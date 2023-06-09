@@ -1,8 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package Dao;
+package dao;
 
 /**
  *
@@ -27,9 +23,8 @@ public class PengadaanObatDAO {
 
         String sql
                 = "INSERT INTO pengadaanobat"
-                + "(idPengadaan,idObat,kuantitas,supplier,tanggalPengadaan) "
+                + "(idObat,kuantitas,supplier,tanggalPengadaan) "
                 + "VALUES ("
-                + "'" + po.getIdPengadaan() + "', "
                 + "'" + po.getObat().getIdObat() + "', "
                 + "'" + po.getKuantitas() + "', "
                 + "'" + po.getSupplier() + "', "
@@ -56,10 +51,10 @@ public class PengadaanObatDAO {
 
         String sql
                 = "SELECT po.*, ob.*"
-                + "FROM pengadaanobat AS po"
-                + "JOIN obat AS ob"
-                + "ON ob.idObat = po.idObat "
-                + "WHERE ("
+                + "FROM pengadaanobat AS po "
+                + "JOIN obat AS ob "
+                + "ON po.idObat = ob.idObat "
+                + "WHERE ( "
                 + "po.idPengadaan LIKE '%" + query + "%' "
                 + "OR ob.idObat LIKE '%" + query + "%' "
                 + "OR po.kuantitas LIKE '%" + query + "%' "
@@ -80,8 +75,8 @@ public class PengadaanObatDAO {
                             Integer.parseInt(rs.getString("ob.kuantitas")),
                             rs.getString("ob.namaObat"),
                             rs.getString("ob.tanggalKadaluarsa"),
-                            rs.getString("ob.namaObat"),
-                            Double.parseDouble(rs.getString("ob.tanggalKadaluarsa")));
+                            rs.getString("ob.tanggalProduksi"),
+                            Double.parseDouble(rs.getString("ob.harga")));
 
                     PengadaanObat pObat = new PengadaanObat(
                             Integer.parseInt(rs.getString("po.idPengadaan")),
@@ -110,9 +105,10 @@ public class PengadaanObatDAO {
 
         String sql
                 = "UPDATE pengadaanobat SET "
+                + "idObat = '" + po.getObat().getIdObat() + "', "
                 + "kuantitas = '" + po.getKuantitas() + "', "
                 + "supplier = '" + po.getSupplier() + "', "
-                + "tanggalPengadaan = '" + po.getTanggalPengadaan() + "', "
+                + "tanggalPengadaan = '" + po.getTanggalPengadaan() + "' "
                 + "WHERE idPengadaan = '" + po.getIdPengadaan() + "'";
 
         System.out.println("Editing Pengadaan Obat...");
@@ -133,7 +129,7 @@ public class PengadaanObatDAO {
     public void deletePengadaanObat(int idPengadaanObat) {
         con = dbCon.makeConnection();
 
-        String sql = "DELETE FROM pengadaanobat WHERE id = " + idPengadaanObat;
+        String sql = "DELETE FROM pengadaanobat WHERE idPengadaan = " + idPengadaanObat;
 
         System.out.println("Deleting Stok Obat...");
 

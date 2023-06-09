@@ -28,8 +28,7 @@ public class TransaksiDAO {
     public void insertTransaksi (Transaksi t){
         con = dbCon.makeConnection();
         
-        String sql = "INSERT INTO transaksi(idTransaksi, NIP, idObat, idPengguna, tanggalPembelian, jumlah) VALUES ('"
-               + t.getIdTransaksi() +"', '"
+        String sql = "INSERT INTO transaksi(NIP, idObat, idPengguna, tanggalPembelian, jumlah) VALUES ('"
                + t.getStaff().getNIP() +"', '"
                + t.getObat().getIdObat()+"', '"
                + t.getPengguna().getIdPengguna() +"', '"
@@ -96,7 +95,6 @@ public class TransaksiDAO {
                     );
 
                     Pengguna p = new Pengguna(
-                                    Integer.parseInt(rs.getString("p.idUser")),
                                     Integer.parseInt(rs.getString("p.idPengguna")),
                                     rs.getString("p.nama"),
                                     rs.getString("p.noTelp"),
@@ -122,26 +120,26 @@ public class TransaksiDAO {
         return list;
     }
     
-    public void updateTransaksi(Transaksi t) {
-        con = dbCon.makeConnection();
-        
-        String sql = "UPDATE transaksi SET tanggalPembelian = '" + t.getTanggalPembelian()
-                + "', nama = '" + t.getPengguna().getNama()
-                + "', nama = '" + t.getStaff().getNama()
-                + "', jumlah = '" + t.getJumlah()
-                + "' WHERE idTransaksi = '" + t.getIdTransaksi()+ "'";
-        
-        System.out.println("Editing Transaksi...");
-
-        try {
-            Statement statement = con.createStatement();
-            int result = statement.executeUpdate(sql);
-            System.out.println("Edited " + result + " Pengguna " + t.getIdTransaksi());
-            statement.close();
-        } catch (Exception e) {
-            System.out.println("Error editing Transaksi...");
-            System.out.println(e);
-        }
-        dbCon.closeConnection();
-    }
+//    public void updateTransaksi(Transaksi t) {
+//        con = dbCon.makeConnection();
+//        
+//        String sql = "UPDATE transaksi SET tanggalPembelian = '" + t.getTanggalPembelian()
+//                + "', idPengguna = '" + t.getPengguna().getIdPengguna()
+//                + "', nip = '" + t.getStaff().getNIP()
+//                + "', jumlah = '" + t.getJumlah()
+//                + "' WHERE idTransaksi = '" + t.getIdTransaksi()+ "'";
+//        
+//        System.out.println("Editing Transaksi...");
+//
+//        try {
+//            Statement statement = con.createStatement();
+//            int result = statement.executeUpdate(sql);
+//            System.out.println("Edited " + result + " Pengguna " + t.getIdTransaksi());
+//            statement.close();
+//        } catch (Exception e) {
+//            System.out.println("Error editing Transaksi...");
+//            System.out.println(e);
+//        }
+//        dbCon.closeConnection();
+//    }
 }

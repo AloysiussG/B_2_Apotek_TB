@@ -9,12 +9,12 @@ package model;
  * @author Gregory Wilson
  */
 public class Pengguna {
-    private int idUser, idPengguna;
+
+    private int idPengguna;
     private String nama, noTelp, alamat;
     private User user;
 
-    public Pengguna(int idUser, int idPengguna, String nama, String noTelp, String alamat, User user) {
-        this.idUser = idUser;
+    public Pengguna(int idPengguna, String nama, String noTelp, String alamat, User user) {
         this.idPengguna = idPengguna;
         this.nama = nama;
         this.noTelp = noTelp;
@@ -25,19 +25,15 @@ public class Pengguna {
     public User getUser() {
         return user;
     }
-    
-    public int getIdUser() {
-        return idUser;
-    }
 
     public int getIdPengguna() {
         return idPengguna;
     }
-    
+
     public String getNama() {
         return nama;
     }
-    
+
     public String getNoTelp() {
         return noTelp;
     }
@@ -49,15 +45,11 @@ public class Pengguna {
     public void setUser(User user) {
         this.user = user;
     }
-    
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
-    }
 
     public void setIdPengguna(int idPengguna) {
         this.idPengguna = idPengguna;
     }
-    
+
     public void setNama(String nama) {
         this.nama = nama;
     }
@@ -69,13 +61,11 @@ public class Pengguna {
     public void setAlamat(String alamat) {
         this.alamat = alamat;
     }
-    
-    public String showData(){        
-            return
-                    "Id Pengguna :"+ this.idPengguna + "\n" +
-                    "Id User :"+ this.idUser + "\n" +
-                    "Nama : "+ this.nama + "\n" +
-                    "Alamat : "+ this.alamat + "\n" +
-                    "No Telepon : "+ this.noTelp + "\n";        
+
+    public String showData() {
+        return "Id Pengguna :" + this.idPengguna + "\n"
+                + "Nama : " + this.nama + "\n"
+                + "Alamat : " + this.alamat + "\n"
+                + "No Telepon : " + this.noTelp + "\n";
     }
 }

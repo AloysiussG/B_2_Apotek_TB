@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Control;
+package control;
 
-import Dao.PengadaanObatDAO;
+import dao.PengadaanObatDAO;
 import java.util.List;
 import model.PengadaanObat;
 import table.PengadaanObatTable;
@@ -31,7 +31,7 @@ public class PengadaanObatControl {
         PODao.updatePengadaanObat(po);
     }
 
-    public void deleteDataRekamMedis(int id) {
+    public void deletePengadaanObat(int id) {
         PODao.deletePengadaanObat(id);
     }
 }

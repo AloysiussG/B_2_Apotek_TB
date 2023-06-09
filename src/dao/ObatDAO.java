@@ -23,13 +23,13 @@ public class ObatDAO {
     
     public List<Obat> showObat(String query){
         con = dbCon.makeConnection();
-        String sql = "SELECT * FROM obat WHERE"
-                + "idObat LIKE '%" +query + "%'"
+        String sql = "SELECT * FROM obat WHERE (idObat LIKE "
+                + "'%" +query + "%'"
                 + "OR namaObat LIKE '%" +query + "%'"
                 + "OR tanggalKadaluarsa LIKE '%" +query + "%'"
                 + "OR harga LIKE '%" +query + "%'"
                 + "OR tanggalProduksi LIKE '%" +query + "%'"
-                + "OR kuantitas LIKE '%" +query + "%'";
+                + "OR kuantitas LIKE '%" +query + "%')";    
         
         System.out.println(sql);
         System.out.println("Mengambil Data Obat");
@@ -46,7 +46,7 @@ public class ObatDAO {
                             Integer.parseInt(rs.getString("kuantitas")),
                             rs.getString("namaObat"),
                             rs.getString("tanggalKadaluarsa"),
-                            rs.getString("tanggalProduksi"),
+                            rs.getString("tanggalProduksi"), 
                             Double.parseDouble(rs.getString("harga"))
                             );
                 }
@@ -64,9 +64,8 @@ public class ObatDAO {
         con = dbCon.makeConnection();
         String sql = null;
         
-        sql = "INSERT INTO `obat` (`idObat`, `namaObat`, `tanggalKadaluarsa`, `harga`, `tanggalProduksi`, `kuantitas`) VALUES ("
-                + obat.getIdObat() + ", '" + obat.getNamaObat() + "','" + obat.getTanggalKaldaluarsa()+ "'," + obat.getHarga() + ",'" + obat.getTanggalProduksi() + "'," + obat.getKuantitas()+ ")";
-        System.out.println("Adding Obat");
+        sql = "INSERT INTO `obat` (`namaObat`, `tanggalKadaluarsa`, `harga`, `tanggalProduksi`, `kuantitas`) VALUES ("
+                + obat.getNamaObat() + "','" + obat.getTanggalKadaluarsa()+ "'," + obat.getHarga() + ",'" + obat.getTanggalProduksi() + "'," + obat.getKuantitas()+ ")"; System.out.println("Adding Obat");
         
         try{
             Statement statement = con.createStatement();
@@ -85,7 +84,12 @@ public class ObatDAO {
         con = dbCon.makeConnection();
         String sql = null;
         
-        sql = "UPDATE `obat` SET = `namaObat` = " + obat.getNamaObat() + ", `tanggalKadaluarsa`=" + obat.getTanggalKaldaluarsa()+ ", `harga`=" + obat.getHarga() + ", `tanggalProduksi`=" + obat.getTanggalProduksi() + ", `kuantitas`=" + obat.getKuantitas()+ " WHERE `idObat` = " + id;
+        sql = "UPDATE obat SET namaObat = '" + obat.getNamaObat()
+                + "', tanggalKadaluarsa = '" + obat.getTanggalKadaluarsa()
+                + "', harga = '" + obat.getHarga() 
+                + "', tanggalProduksi = '" + obat.getTanggalProduksi()
+                + "', kuantitas = '" + obat.getKuantitas()
+                + "' WHERE idObat = '" + obat.getIdObat() + "'";
         System.out.println("Editing Obat");
         
         try{

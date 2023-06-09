@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package table;
-
-/**
- *
- * @author ASUS
- */
 
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import model.Pengguna;
+
 
 public class PenggunaTable extends AbstractTableModel {
     private List<Pengguna> pengguna;
@@ -24,17 +16,16 @@ public class PenggunaTable extends AbstractTableModel {
     public int getRowCount(){
         return pengguna.size();
     }
-    
-    
-    public int getColumnCount(){
+
+    @Override
+    public int getColumnCount() {
         return 5;
     }
     
-    
-    public Object getValueAt(int rowIndex, int columnIndex){
+    public Object getValueAt(int rowIndex, int columnIndex) {
         switch(columnIndex){
             case 0:
-                return pengguna.get(rowIndex).getIdUser();
+                return pengguna.get(rowIndex).getUser().getIdUser();
             case 1:
                 return pengguna.get(rowIndex).getNama();
             case 2:
@@ -45,12 +36,16 @@ public class PenggunaTable extends AbstractTableModel {
                 return pengguna.get(rowIndex).getUser().getUsername();
             case 5:
                 return pengguna.get(rowIndex).getUser().getPassword();
+            case 6:
+                //untuk memudahkan passing satu set instance pengguna secara utuh
+                //namun tetap tidak akan ditampilkan pada tabel
+                return pengguna.get(rowIndex);
             default:
                 return null;
         }
     }
     
-    public String getColumnName(int column){
+    public String getColumnName(int column) {
         switch(column){
             case 0:
                 return "ID User";

@@ -14,30 +14,14 @@ public class Staff {
     private Role role;
     private User user;
 
-    public Staff(int NIP, int idRole, int idUser, String nama, String tahunMasuk, String noTelp, String alamat, Role role, User user) {
-        this.NIP = NIP;
-        this.idRole = idRole;
-        this.idUser = idUser;
-        this.nama = nama;
-        this.tahunMasuk = tahunMasuk;
-        this.noTelp = noTelp;
-        this.alamat = alamat;
-        this.role = role;
-        this.user = user;
-    }
-
     public Staff(int NIP, String nama, String tahunMasuk, String noTelp, String alamat, Role r, User u) {
         this.NIP = NIP;
         this.nama = nama;
         this.tahunMasuk = tahunMasuk;
         this.noTelp = noTelp;
         this.alamat = alamat;
-        this.role = role;
-        this.user = user;
-    }
-
-    public int getIdUser() {
-        return idUser;
+        this.role = r;
+        this.user = u;
     }
 
     public Role getRole() {
@@ -48,9 +32,6 @@ public class Staff {
         return user;
     }
 
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
-    }
 
     public void setRole(Role role) {
         this.role = role;

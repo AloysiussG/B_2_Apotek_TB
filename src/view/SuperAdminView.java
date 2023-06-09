@@ -4,22 +4,26 @@
  */
 package view;
 
-import Control.PenggunaControl;
+import control.PenggunaControl;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.UIManager;
+import model.Pengguna;
+import model.Staff;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import panel.DashboardMainPanel;
-import panel.superadmin.CreateDataPembeli;
+import panel.superadmin.PembeliForm;
 import panel.superadmin.ReadDataPembeli;
+import panel.superadmin.UpdateDataPembeli;
 import swing.component.dashboard.Header;
 import swing.component.dashboard.Menu;
 import swing.events.EventMenuPanelResize;
 import swing.events.EventMenuSelected;
+import swing.events.EventUserCard;
 
 /**
  *
@@ -28,6 +32,9 @@ import swing.events.EventMenuSelected;
 public class SuperAdminView extends javax.swing.JFrame {
 
     private PenggunaControl penggunaControl;
+
+    private ReadDataPembeli read;
+    private UpdateDataPembeli update;
 
     private MigLayout layout;
     private Menu menu;
@@ -43,9 +50,11 @@ public class SuperAdminView extends javax.swing.JFrame {
         //inisialisasi komponen
         initComponents();
         initSuperAdminView();
+
     }
 
     private void initSuperAdminView() {
+
         //membuat layout bertipe miglayout
         layout = new MigLayout("fill", "0[]0[100%, fill]0", "0[fill, top]0");
         background.setLayout(layout);
@@ -74,6 +83,7 @@ public class SuperAdminView extends javax.swing.JFrame {
         background.add(mainPanel, "w 100%, h 100%");
         //animasi untuk hide show dashboard menu di kiri
         TimingTarget target = new TimingTargetAdapter() {
+
             @Override
             public void timingEvent(float fraction) {
                 double width;
@@ -82,8 +92,8 @@ public class SuperAdminView extends javax.swing.JFrame {
                 } else {
                     width = 62 + (170 * (fraction));
                 }
-                layout.setComponentConstraints(menu, "w " + width + "!, spanY 2");
                 menu.revalidate();
+                layout.setComponentConstraints(menu, "w " + width + "!, spanY 2");
             }
 
             @Override
@@ -112,14 +122,53 @@ public class SuperAdminView extends javax.swing.JFrame {
         menu.addEventResize(new EventMenuPanelResize() {
             @Override
             public void resizeMenuPanel() {
-                animator.start();
+                if (!animator.isRunning()) {
+                    animator.start();
+                }
             }
         });
         //saat app dijalankan, mulai dengan menampilkan panel form ini
-        //read data pembeli (view table dll)
-        mainPanel.showForm(new ReadDataPembeli(penggunaControl.showDataPengguna(""), "Data Pembeli"));
-        //create
-        mainPanel.showForm(new CreateDataPembeli());
+        //view read data pembeli (view table dll)
+        mainPanel.showForm(new PembeliForm());
+        //
+//        //update = new UpdateDataPembeli(pengguna);
+//        read = new ReadDataPembeli(penggunaControl.showDataPengguna(""), "Pembeli");
+//        read.callEvent(new EventUserCard() {
+//            @Override
+//            //untuk pengguna/pembeli
+//            public void runEvent(Pengguna pengguna) {
+//                setPengguna(pengguna);
+//                //jika menekan tombol edit di user card, akan diarahkan ke panel edit/update
+////                update = new UpdateDataPembeli(pengguna);
+////                update.addBtnBackActionListener(new ActionListener() {
+////                    @Override
+////                    public void actionPerformed(ActionEvent arg0) {
+////                        //balik ke read lagi
+////                    }
+////                });
+////                mainPanel.showForm(update);
+//                System.out.println("Run");
+//            }
+//
+//            //untuk staff
+//            @Override
+//            public void runEvent(Staff staff) {
+//            }
+//
+//            @Override
+//            public void runEvent() {
+//            }
+//
+//        });
+
+//        update.addBtnBackActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent arg0) {
+//                //balik ke read lagi
+//            }
+//        });
+        //view update data pembeli
+//        mainPanel.showForm(new UpdateDataPembeli());
     }
 
     /** This method is called from within the constructor to

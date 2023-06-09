@@ -4,19 +4,54 @@
  */
 package panel.superadmin;
 
+import control.PenggunaControl;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Action;
+import model.Pengguna;
 import swing.ColorPallete;
 
 /**
  *
  * @author AG SETO GALIH D
  */
-public class CreateDataPembeli extends javax.swing.JPanel {
+public class UpdateDataPembeli extends javax.swing.JPanel {
 
+    private PenggunaControl pc;
     private ColorPallete cp = new ColorPallete();
 
+    private int idUser;
+
     /** Creates new form UpdateDataPembeli */
-    public CreateDataPembeli() {
+    public UpdateDataPembeli(Pengguna pengguna) {
+        pc = new PenggunaControl();
+        this.idUser = pengguna.getUser().getIdUser();
         initComponents();
+        setTextToComponent(pengguna.getNama(), pengguna.getAlamat(), pengguna.getNoTelp());
+        addBtnSaveActionListener(pengguna);
+    }
+
+    private void setTextToComponent(String nama, String alamat, String noTelp) {
+        inputNamaLengkap.setText(nama);
+        inputAlamat.setText(alamat);
+        inputNoTelp.setText(noTelp);
+    }
+
+    public void addBtnBackActionListener(ActionListener event) {
+        btnBack.addActionListener(event);
+    }
+
+    private void addBtnSaveActionListener(Pengguna penggunaOld) {
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                Pengguna penggunaNew = penggunaOld;
+                penggunaNew.setNama(inputNamaLengkap.getText());
+                penggunaNew.setAlamat(inputAlamat.getText());
+                penggunaNew.setNoTelp(inputNoTelp.getText());
+                pc.updateDataPengguna(penggunaNew);
+            }
+        });
     }
 
     /** This method is called from within the constructor to
@@ -30,14 +65,16 @@ public class CreateDataPembeli extends javax.swing.JPanel {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        button1 = new swing.component.Button();
+        btnBack = new swing.component.Button();
         jPanel3 = new javax.swing.JPanel();
-        textFieldInput3 = new swing.component.TextFieldInput();
         jLabel2 = new javax.swing.JLabel();
+        inputNamaLengkap = new swing.component.TextFieldInput();
         jLabel3 = new javax.swing.JLabel();
-        textFieldInput4 = new swing.component.TextFieldInput();
+        inputNoTelp = new swing.component.TextFieldInput();
         jLabel4 = new javax.swing.JLabel();
-        textFieldInput5 = new swing.component.TextFieldInput();
+        inputAlamat = new swing.component.TextFieldInput();
+        jPanel5 = new javax.swing.JPanel();
+        btnSave = new swing.component.ButtonRound();
         jPanel4 = new javax.swing.JPanel();
 
         setOpaque(false);
@@ -46,7 +83,7 @@ public class CreateDataPembeli extends javax.swing.JPanel {
 
         jPanel2.setOpaque(false);
 
-        button1.setText("Back");
+        btnBack.setText("Back");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -54,46 +91,67 @@ public class CreateDataPembeli extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
         jPanel3.setOpaque(false);
 
-        textFieldInput3.setHint("John Doe");
-
         jLabel2.setText("Nama Lengkap");
+
+        inputNamaLengkap.setHint("John Doe");
 
         jLabel3.setText("Nomor Telepon");
 
-        textFieldInput4.setHint("081201389442");
-        textFieldInput4.setName(""); // NOI18N
+        inputNoTelp.setHint("081201389442");
+        inputNoTelp.setName(""); // NOI18N
 
         jLabel4.setText("Alamat");
 
-        textFieldInput5.setHint("Jl. Babarsari No.19");
+        inputAlamat.setHint("Jl. Babarsari No.19");
+
+        btnSave.setText("Save");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(44, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(textFieldInput3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textFieldInput4, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textFieldInput5, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE))
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addGap(25, 25, 25)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(inputNamaLengkap, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(inputNoTelp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(inputAlamat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -101,16 +159,18 @@ public class CreateDataPembeli extends javax.swing.JPanel {
                 .addGap(22, 22, 22)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textFieldInput3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(inputNamaLengkap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textFieldInput4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(inputNoTelp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textFieldInput5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(208, Short.MAX_VALUE))
+                .addComponent(inputAlamat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
         );
 
         jPanel4.setOpaque(false);
@@ -165,7 +225,11 @@ public class CreateDataPembeli extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private swing.component.Button button1;
+    private swing.component.Button btnBack;
+    private swing.component.ButtonRound btnSave;
+    private swing.component.TextFieldInput inputAlamat;
+    private swing.component.TextFieldInput inputNamaLengkap;
+    private swing.component.TextFieldInput inputNoTelp;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -173,8 +237,6 @@ public class CreateDataPembeli extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private swing.component.TextFieldInput textFieldInput3;
-    private swing.component.TextFieldInput textFieldInput4;
-    private swing.component.TextFieldInput textFieldInput5;
+    private javax.swing.JPanel jPanel5;
     // End of variables declaration//GEN-END:variables
 }

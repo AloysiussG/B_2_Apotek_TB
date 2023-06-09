@@ -1,4 +1,4 @@
-package Control;
+package control;
 
 import model.User;
 import java.util.List;

@@ -12,14 +12,14 @@ import java.util.Date;
  */
 public class Obat {
     private int idObat, kuantitas;
-    private String namaObat, tanggalKaldaluarsa, tanggalProduksi;
+    private String namaObat, tanggalKadaluarsa, tanggalProduksi;
     private double harga;
 
     public Obat(int idObat, int kuantitas, String namaObat, String tanggalKaldaluarsa, String tanggalProduksi, double harga) {
         this.idObat = idObat;
         this.kuantitas = kuantitas;
         this.namaObat = namaObat;
-        this.tanggalKaldaluarsa = tanggalKaldaluarsa;
+        this.tanggalKadaluarsa = tanggalKaldaluarsa;
         this.tanggalProduksi = tanggalProduksi;
         this.harga = harga;
     }
@@ -36,8 +36,8 @@ public class Obat {
         return namaObat;
     }
 
-    public String getTanggalKaldaluarsa() {
-        return tanggalKaldaluarsa;
+    public String getTanggalKadaluarsa() {
+        return tanggalKadaluarsa;
     }
 
     public String getTanggalProduksi() {
@@ -60,8 +60,8 @@ public class Obat {
         this.namaObat = namaObat;
     }
 
-    public void setTanggalKaldaluarsa(String tanggalKaldaluarsa) {
-        this.tanggalKaldaluarsa = tanggalKaldaluarsa;
+    public void setTanggalKadaluarsa(String tanggalKaldaluarsa) {
+        this.tanggalKadaluarsa = tanggalKaldaluarsa;
     }
 
     public void setTanggalProduksi(String tanggalProduksi) {
@@ -75,7 +75,7 @@ public class Obat {
     public String showData(){        
             return
                     "Nama Obat : "+ this.namaObat + "\n" +
-                    "Expire Date : "+ this.tanggalKaldaluarsa + "\n" +
+                    "Expire Date : "+ this.tanggalKadaluarsa + "\n" +
                     "Harga : "+ this.harga + "\n" +
                     "Tanggal Produksi : "+ this.tanggalProduksi + "\n" +
                     "Kuantitas : "+ this.kuantitas + "\n";        

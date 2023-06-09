@@ -1,4 +1,4 @@
-package Control;
+package control;
 
 import model.Staff;
 import java.util.List;
@@ -9,8 +9,8 @@ import table.StaffTable;
 public class StaffControl {
     private StaffDAO sd = new StaffDAO();
     
-    public void insertDataStaff(Staff s,User u){
-        sd.insertStaff(s, u);
+    public void insertDataStaff(Staff s){
+        sd.insertStaff(s);
     }
     
     public StaffTable showDataStaff(String query){

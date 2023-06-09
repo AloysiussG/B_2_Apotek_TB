@@ -5,13 +5,18 @@
 package panel.superadmin;
 
 import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
+import model.Pengguna;
 import swing.ColorPallete;
 import swing.component.dashboard.NoUserCard;
 import swing.component.dashboard.UserCard;
+import swing.events.EventUserCard;
+import table.PenggunaTable;
 
 /**
  *
@@ -20,19 +25,20 @@ import swing.component.dashboard.UserCard;
 public class ReadDataPembeli extends javax.swing.JPanel {
 
     private static ColorPallete cp = new ColorPallete();
-    private UserCard userCard = new UserCard();
+    private UserCard userCard;
     private NoUserCard noUserCard = new NoUserCard();
+    private EventUserCard event;
+    private String namaUserGroup;
 
     public void setJudulForm(String text) {
         judulForm.setForeground(cp.getColor(0));
-        judulForm.setText("Tabel " + text);
-
+        judulForm.setText("Tabel Data " + text);
         judulDataPilihan.setForeground(cp.getColor(0));
-        judulDataPilihan.setText(text);
+        judulDataPilihan.setText("Kelola Data " + text);
     }
 
     public void setTableModel(AbstractTableModel tableModel) {
-        this.customTable.setModel(tableModel);
+        this.customTable.setModel((PenggunaTable) tableModel);
     }
 
     public void showUserCard(Component panel) {
@@ -43,30 +49,48 @@ public class ReadDataPembeli extends javax.swing.JPanel {
     }
 
     /** Creates new form TestPanel */
-    public ReadDataPembeli(AbstractTableModel tableModel, String namaForm) {
+    public ReadDataPembeli(AbstractTableModel tableModel, String namaUserGroup) {
+        this.namaUserGroup = namaUserGroup;
+
         initComponents();
 
         showUserCard(noUserCard);
 
         setTableModel(tableModel);
-        setJudulForm(namaForm);
+        setJudulForm(namaUserGroup);
         searchField.setHint("Cari berdasarkan nama, kategori, dan lain-lain");
         initTableListener();
+    }
+
+    //method untuk memanggil event user card
+    public void callEvent(EventUserCard eventCalled) {
+        event = eventCalled;
     }
 
     private void initTableListener() {
         customTable.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent arg0) {
-                int clickedRow = customTable.getSelectedRow();
-                String nama = customTable.getValueAt(clickedRow, 1).toString();
-                String alamat = customTable.getValueAt(clickedRow, 2).toString();
-                String noTelp = customTable.getValueAt(clickedRow, 3).toString();
 
-                showUserCard(userCard);
-                userCard.setLblNamaLengkap("<html>" + nama + "</html>");
-                userCard.setLblAlamat(alamat);
-                userCard.setLblNoTelp(noTelp);
+                //get value dari table clicked
+                if (namaUserGroup.equalsIgnoreCase("Pembeli")) {
+                    int clickedRow = customTable.getSelectedRow();
+                    TableModel tableModel = customTable.getModel();
+                    Pengguna pengguna = (Pengguna) tableModel.getValueAt(clickedRow, 6);
+                    //show user card panel
+                    userCard = new UserCard(pengguna);
+                    showUserCard(userCard);
+
+                    //user card action listener
+                    userCard.addBtnEditActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent arg0) {
+                            //melempar event untuk dieksekusi ke panel/frame diatasnya yaitu SuperAdminView
+                            //fungsinya untuk mengganti panel ReadDataPembeli ke panel UpdateDataPembeli
+                            event.runEvent(pengguna);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -179,7 +203,6 @@ public class ReadDataPembeli extends javax.swing.JPanel {
                 .addComponent(buttonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
                 .addComponent(judulDataPilihan)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );

@@ -17,11 +17,11 @@ public class StaffDAO {
     
     public List<Staff> showStaff(String query){
         con = dbCon.makeConnection();
-        String sql = "SELECT * FROM staff as s JOIN role as r on s.idRole = r.idRole JOIN User as u on s.idUser = u.idUser  WHERE"
+        String sql = "SELECT * FROM staff as s JOIN role as r on s.idRole = r.idRole JOIN user as u on s.idUser = u.idUser  WHERE"
                 + "(NIP LIKE '%" +query + "%'"
                 + "OR s.nama LIKE '%" + query + "%'"
                 + "OR s.TahunMasuk LIKE '%" + query + "%'"
-                + "OR s.no_telp LIKE '%" + query + "%'"
+                + "OR s.noTelp LIKE '%" + query + "%'"
                 + "OR s.alamat LIKE '%" + query + "%'"
                 + "OR r.namaRole LIKE '%" + query + "s'"
                 + "OR u.username LIKE '%" + query + "%'"
@@ -59,13 +59,12 @@ public class StaffDAO {
         return list;
     }
     
-    public void insertStaff(Staff s,User u){
+    public void insertStaff(Staff s){
         con = dbCon.makeConnection();
         
-        String sql ="INSERT INTO `Staff`(`NIP`,`idUser`,`idRole`, `nama`, `TahunMasuk`, `no_telp`, `Alamat`)"+
-        "VALUES ("+ s.getNIP()+" '," 
-                + u.getIdUser() + ","
-                + s.getRole().getIdRole()+ ",'"
+        String sql ="INSERT INTO `staff`(`idUser`,`idRole`, `nama`, `TahunMasuk`, `noTelp`, `alamat`) VALUES ('" 
+                + s.getUser().getIdUser() + "','"
+                + s.getRole().getIdRole()+ "','"
                 + s.getNama() +"','" 
                 + s.getTahunMasuk() +"','" 
                 +s.getNoTelp()+ "','" 
@@ -88,13 +87,11 @@ public class StaffDAO {
     public void updateStaff(Staff s){
         con = dbCon.makeConnection();
         
-        String sql = "UPDATE staff SET NIP = " + s.getNIP()
-                + ",iduser = " + s.getUser().getIdUser()
-                +", idRole  = " + s.getRole().getIdRole()
-                + ", nama= '" + s.getNama()
+        String sql = "UPDATE staff SET idRole  = '" + s.getRole().getIdRole()
+                + "', nama= '" + s.getNama()
                 + "', TahunMasuk = '" + s.getTahunMasuk()
                 + "', noTelp = '" + s.getNoTelp()
-                + "', Alamat = '" + s.getAlamat()
+                + "', alamat = '" + s.getAlamat()
                 + "' WHERE NIP = '" + s.getNIP() + "'";
         
         System.out.println("Editing Setaf");
