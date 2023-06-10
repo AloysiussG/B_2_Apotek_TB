@@ -357,7 +357,7 @@ public class PembeliForm extends javax.swing.JPanel {
     private void showUserCard(Component panel) {
         panelCard.removeAll();
         panelCard.add(panel);
-        panelCard.repaint();
+//        panelCard.repaint();
         panelCard.revalidate();
     }
 
@@ -594,7 +594,7 @@ public class PembeliForm extends javax.swing.JPanel {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelCard, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(23, 23, 23))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         judulForm.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N

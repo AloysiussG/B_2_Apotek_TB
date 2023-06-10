@@ -8,7 +8,6 @@ import control.PenggunaControl;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.CompletableFuture;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
@@ -58,7 +57,7 @@ public class SuperAdminView extends javax.swing.JFrame {
         background.setLayout(layout);
         //buat objek komponen lain
         menu = new Menu();
-        header = new Header();
+        header = new Header("master", "Super Admin");
         mainPanel = new DashboardMainPanel();
         menu.addEventSelected(new EventMenuSelected() {
             @Override
@@ -116,7 +115,7 @@ public class SuperAdminView extends javax.swing.JFrame {
         menu.setShowMenu(false);
         //add component ke background
         background.add(menu, "w 62!, spanY 2"); //width = 230 | span Y == 2 cells
-        background.add(header, "h 50!, wrap");
+        background.add(header, "h 53!, wrap");
         background.add(mainPanel, "w 100%, h 100%");
         //animasi untuk hide show dashboard menu di kiri
         TimingTarget target = new TimingTargetAdapter() {
