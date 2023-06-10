@@ -7,6 +7,7 @@ package dao;
 import connection.DbConnection;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.sql.ResultSet;
 import model.User;
 
 /**
@@ -76,5 +77,27 @@ public class UserDAO {
             System.out.println(e);
         }
         dbCon.closeConnection();
+    }
+
+    public int findIdByUsername(String username) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT * FROM user WHERE username = '" + username + "'";
+        int id = -1;
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs != null) {
+                while (rs.next()) {
+                    id = rs.getInt("idUser");
+                }
+            }
+            rs.close();
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        dbCon.closeConnection();
+        return id;
     }
 }

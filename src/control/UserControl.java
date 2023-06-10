@@ -1,7 +1,6 @@
 package control;
 
 import model.User;
-import java.util.List;
 import dao.UserDAO;
 
 public class UserControl {
@@ -18,6 +17,10 @@ public class UserControl {
 
     public void deleteDataUser(int id) {
         ud.deleteUser(id);
+    }
+
+    public int findIdByUsername(String username) {
+        return ud.findIdByUsername(username);
     }
 
 }

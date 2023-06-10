@@ -26,6 +26,37 @@ public class ButtonRound extends JButton {
     private boolean mouseEntered;
     private boolean mouseExited;
     private Icon icon = null;
+    private int colorR, colorG, colorB;
+
+    public int getColorR() {
+        return colorR;
+    }
+
+    public void setColorR(int colorR) {
+        this.colorR = colorR;
+    }
+
+    public int getColorG() {
+        return colorG;
+    }
+
+    public void setColorG(int colorG) {
+        this.colorG = colorG;
+    }
+
+    public int getColorB() {
+        return colorB;
+    }
+
+    public void setColorB(int colorB) {
+        this.colorB = colorB;
+    }
+
+    public void setColorEffectRGB(int r, int g, int b) {
+        setColorR(r);
+        setColorG(g);
+        setColorB(b);
+    }
 
     public void setBtnIcon(Icon icon) {
         this.icon = icon;
@@ -40,10 +71,11 @@ public class ButtonRound extends JButton {
     }
 
     public ButtonRound() {
+        setColorEffectRGB(44, 110, 73);
         setBtnIcon(icon);
         setContentAreaFilled(false);
         setBorder(new EmptyBorder(5, 0, 5, 0));
-        setBackground(Color.WHITE);
+        setBackground(cp.getColor(1));
         setForeground(cp.getWhite());
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         addMouseListener(new MouseAdapter() {
@@ -95,14 +127,14 @@ public class ButtonRound extends JButton {
         Graphics2D g2 = (Graphics2D) grphcs.create(0, 0, width, height);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g2.setColor(cp.getColor(1));
+        g2.setColor(getBackground());
         g2.fillRoundRect(0, 0, width, height, height, height);
         if (mouseEntered) {
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
-            g2.setColor(new Color(44, 110, 73, alpha));
+            g2.setColor(new Color(colorR, colorG, colorB, alpha));
         } else if (mouseExited) {
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
-            g2.setColor(new Color(44, 110, 73, alpha));
+            g2.setColor(new Color(colorR, colorG, colorB, alpha));
         }
 
         g2.fillRoundRect(0, 0, width, height, height, height);

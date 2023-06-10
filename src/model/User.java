@@ -9,6 +9,7 @@ package model;
  * @author Gregory Wilson
  */
 public class User {
+
     private int idUser;
     private String username, password;
 
@@ -41,6 +42,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
+
 }

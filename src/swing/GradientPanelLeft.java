@@ -72,7 +72,7 @@ public class GradientPanelLeft extends javax.swing.JPanel {
 
         //untuk memberi border radius
         //parameter: startX, startY, endX, endY, borderArcWidth, borderArcHeight
-        int borderRadius = 50;
+        int borderRadius = width / 10;
         g2.fillRoundRect(0, 0, width, height, borderRadius, borderRadius);
 
         //menghapus border radius sebelah kanan dengan membuat rectangle baru yang menutupi

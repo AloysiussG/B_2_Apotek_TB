@@ -99,7 +99,7 @@ public class ButtonRectangle extends JButton {
             g2.setColor(cp.getColor(1));
         }
 
-        g2.fillRoundRect(0, 0, width, height, width / 5, width / 5);
+        g2.fillRoundRect(0, 0, width, height, width / 2, width / 2);
 
         if (pressedPoint != null) {
             g2.setColor(effectColor);

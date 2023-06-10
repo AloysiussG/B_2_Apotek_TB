@@ -24,7 +24,8 @@ public class CustomTable extends JTable {
         setGridColor(new Color(210, 210, 210));
         setRowHeight(30);
         getTableHeader().setReorderingAllowed(false);
-
+        setSelectionBackground(new Color(230, 230, 230));
+        setSelectionForeground(cp.getBlack());
         getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {

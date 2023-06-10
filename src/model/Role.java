@@ -9,6 +9,7 @@ package model;
  * @author Gregory Wilson
  */
 public class Role {
+
     private int idRole;
     private double gaji;
     private String namaRole;
@@ -41,5 +42,11 @@ public class Role {
 
     public void setNamaRole(String namaRole) {
         this.namaRole = namaRole;
+    }
+
+    //untuk dropdown combo box Role
+    @Override
+    public String toString() {
+        return namaRole;
     }
 }

@@ -8,6 +8,7 @@ import control.PenggunaControl;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.CompletableFuture;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
@@ -47,7 +48,6 @@ public class SuperAdminView extends javax.swing.JFrame {
         //inisialisasi komponen
         initComponents();
         initSuperAdminView();
-
     }
 
     private void initSuperAdminView() {
@@ -66,16 +66,43 @@ public class SuperAdminView extends javax.swing.JFrame {
                 if (menuIndex == 0) {
                     if (submenuIndex == 0) {
                         //show pembeli
-                        //masih laggy karena select dari database ga berjalan di background
-                        //mainPanel.showForm(new ReadDataPembeli(penggunaControl.showDataPengguna("")));
+                        //menggunakan async agar tidak lag animasinya saat dipencet
+                        System.out.println("Hai");
+                        Thread newThread = new Thread(() -> {
+                            try {
+                                Thread.sleep(250);
+                                mainPanel.showForm(new PembeliForm());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        newThread.start();
                     }
+                } else if (menuIndex == 1) {
+                    System.out.println("Menu 2");
+                } else if (menuIndex == 2) {
+                    //asynchronous process
+                    Thread newThread = new Thread(() -> {
+                        try {
+                            Thread.sleep(250);
+                            LoginRegisterView lview = new LoginRegisterView();
+                            dispose();
+                            lview.setVisible(true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    newThread.start();
                 }
             }
         });
         //set menu panel kiri dengan beberapa menu item khusus untuk superadmin
         menu.initMenuItemForSuperAdmin();
+        //set show menu, true berarti menu terbuka, false berarti menu minimize 
+        //(harus ganti width saat diadd juga!)
+        menu.setShowMenu(false);
         //add component ke background
-        background.add(menu, "w 230!, spanY 2"); //span Y == 2 cells
+        background.add(menu, "w 62!, spanY 2"); //width = 230 | span Y == 2 cells
         background.add(header, "h 50!, wrap");
         background.add(mainPanel, "w 100%, h 100%");
         //animasi untuk hide show dashboard menu di kiri
@@ -125,47 +152,8 @@ public class SuperAdminView extends javax.swing.JFrame {
             }
         });
         //saat app dijalankan, mulai dengan menampilkan panel form ini
-        //view read data pembeli (view table dll)
+        //view read data pembeli (view table, user card, dll)
         mainPanel.showForm(new PembeliForm());
-        //
-//        //update = new UpdateDataPembeli(pengguna);
-//        read = new ReadDataPembeli(penggunaControl.showDataPengguna(""), "Pembeli");
-//        read.callEvent(new EventUserCard() {
-//            @Override
-//            //untuk pengguna/pembeli
-//            public void runEvent(Pengguna pengguna) {
-//                setPengguna(pengguna);
-//                //jika menekan tombol edit di user card, akan diarahkan ke panel edit/update
-////                update = new UpdateDataPembeli(pengguna);
-////                update.addBtnBackActionListener(new ActionListener() {
-////                    @Override
-////                    public void actionPerformed(ActionEvent arg0) {
-////                        //balik ke read lagi
-////                    }
-////                });
-////                mainPanel.showForm(update);
-//                System.out.println("Run");
-//            }
-//
-//            //untuk staff
-//            @Override
-//            public void runEvent(Staff staff) {
-//            }
-//
-//            @Override
-//            public void runEvent() {
-//            }
-//
-//        });
-
-//        update.addBtnBackActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent arg0) {
-//                //balik ke read lagi
-//            }
-//        });
-        //view update data pembeli
-//        mainPanel.showForm(new UpdateDataPembeli());
     }
 
     /** This method is called from within the constructor to
@@ -188,11 +176,11 @@ public class SuperAdminView extends javax.swing.JFrame {
         background.setLayout(backgroundLayout);
         backgroundLayout.setHorizontalGroup(
             backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 967, Short.MAX_VALUE)
+            .addGap(0, 1033, Short.MAX_VALUE)
         );
         backgroundLayout.setVerticalGroup(
             backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 629, Short.MAX_VALUE)
+            .addGap(0, 722, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

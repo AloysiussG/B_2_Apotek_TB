@@ -27,6 +27,16 @@ public class Button extends JButton {
     private float alpha;
     private Color effectColor = cp.getWhite();
     private boolean mouseEntered;
+    private Color color1;
+    private Color color2;
+
+    public void setColor1(Color color1) {
+        this.color1 = color1;
+    }
+
+    public void setColor2(Color color2) {
+        this.color2 = color2;
+    }
 
     public Color getEffectColor() {
         return effectColor;
@@ -37,6 +47,8 @@ public class Button extends JButton {
     }
 
     public Button() {
+        setColor1(cp.getColor(0));
+        setColor2(cp.getColor(1));
         setContentAreaFilled(false);
         setBorder(new EmptyBorder(5, 0, 5, 0));
         setBackground(Color.WHITE);
@@ -94,9 +106,9 @@ public class Button extends JButton {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (mouseEntered) {
-            g2.setColor(cp.getColor(0));
+            g2.setColor(color1);
         } else {
-            g2.setColor(cp.getColor(1));
+            g2.setColor(color2);
         }
 
         g2.fillRoundRect(0, 0, width, height, height, height);
