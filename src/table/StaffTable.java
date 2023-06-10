@@ -46,6 +46,8 @@ public class StaffTable extends AbstractTableModel{
                 return staff.get(rowIndex).getUser().getUsername();
             case 7:
                 return staff.get(rowIndex).getUser().getPassword();
+            case 8:
+                return staff.get(rowIndex);
             default:
                 return null;
         }

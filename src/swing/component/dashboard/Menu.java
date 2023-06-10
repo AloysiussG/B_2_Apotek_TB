@@ -65,7 +65,7 @@ public class Menu extends javax.swing.JPanel {
         int indexMenu = 0;
 
         addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "profile.svg", 0.5f), "Kelola Data", new String[]{"Data Pembeli", "Data Staff"}));
-        addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "home-white.svg", 0.5f), "User Login Credentials", new String[]{}));
+//        addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "home-white.svg", 0.5f), "User Login Credentials", new String[]{}));
         addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "logout-white.svg", 0.5f), "Logout", new String[]{}));
     }
 

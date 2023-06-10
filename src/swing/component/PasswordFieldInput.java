@@ -10,10 +10,10 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JTextField;
+import javax.swing.JPasswordField;
 import swing.ColorPallete;
 
-public class TextFieldInput extends JTextField {
+public class PasswordFieldInput extends JPasswordField {
 
     private ColorPallete cp = new ColorPallete();
 
@@ -62,7 +62,7 @@ public class TextFieldInput extends JTextField {
     private Icon suffixIcon;
     private String hint = "";
 
-    public TextFieldInput() {
+    public PasswordFieldInput() {
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(new Color(0, 0, 0, 0));
         setForeground(Color.decode("#7A8C8D"));

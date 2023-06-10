@@ -17,6 +17,7 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 import panel.DashboardMainPanel;
 import panel.superadmin.PembeliForm;
 import panel.superadmin.ReadDataPembeli;
+import panel.superadmin.StaffForm;
 import panel.superadmin.UpdateDataPembeli;
 import swing.component.dashboard.Header;
 import swing.component.dashboard.Menu;
@@ -65,13 +66,26 @@ public class SuperAdminView extends javax.swing.JFrame {
                 System.out.println("Menu index " + menuIndex + " | Submenu index " + submenuIndex);
                 if (menuIndex == 0) {
                     if (submenuIndex == 0) {
-                        //show pembeli
+                        //show pengguna/pembeli
                         //menggunakan async agar tidak lag animasinya saat dipencet
                         System.out.println("Hai");
                         Thread newThread = new Thread(() -> {
                             try {
-                                Thread.sleep(250);
+                                //Thread.sleep(150);
                                 mainPanel.showForm(new PembeliForm());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        newThread.start();
+                    } else if (submenuIndex == 1) {
+                        //show staff
+                        //menggunakan async agar tidak lag animasinya saat dipencet
+                        System.out.println("Hai");
+                        Thread newThread = new Thread(() -> {
+                            try {
+                                //Thread.sleep(150);
+                                mainPanel.showForm(new StaffForm());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -79,8 +93,7 @@ public class SuperAdminView extends javax.swing.JFrame {
                         newThread.start();
                     }
                 } else if (menuIndex == 1) {
-                    System.out.println("Menu 2");
-                } else if (menuIndex == 2) {
+                    //menu logout
                     //asynchronous process
                     Thread newThread = new Thread(() -> {
                         try {

@@ -26,18 +26,18 @@ public class UserCard extends javax.swing.JPanel {
             return staff.getUser().getIdUser();
         }
     }
-
-    /** Creates new form UserCard */
-    public UserCard() {
-        initComponents();
-        initLeftPic("default");
-        initBtn();
-    }
+//
+//    public UserCard() {
+//        initComponents();
+//        initLeftPic("default");
+//        initBtn();
+//    }
 
     //untuk staff
     public UserCard(Staff staff) {
         this.staff = staff;
         initComponents();
+        btnMakeStaff.setVisible(false);
         initLeftPic("default");
         initBtn();
         initAttributeAndLabel(staff.getNama(), staff.getAlamat(), staff.getNoTelp());
