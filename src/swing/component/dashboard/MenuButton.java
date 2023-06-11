@@ -37,6 +37,11 @@ public class MenuButton extends JButton {
     private float alpha;
     private Color effectColor = new Color(255, 255, 255, 150);
 
+    private Animator hoverAnimator;
+    private boolean mouseEntered;
+    private boolean mouseExited;
+    private float alphaHover;
+
     //constructor menu utama (ada icon + text)
     public MenuButton(Icon icon, String text) {
         super(text);
@@ -76,10 +81,22 @@ public class MenuButton extends JButton {
 
             @Override
             public void mouseEntered(MouseEvent e) {
+                mouseEntered = true;
+                mouseExited = false;
+                if (hoverAnimator.isRunning()) {
+                    hoverAnimator.stop();
+                }
+                hoverAnimator.start();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
+                mouseExited = true;
+                mouseEntered = false;
+                if (hoverAnimator.isRunning()) {
+                    hoverAnimator.stop();
+                }
+                hoverAnimator.start();
             }
 
         });
@@ -93,19 +110,45 @@ public class MenuButton extends JButton {
                 repaint();
             }
         };
+        TimingTarget hoverTarget = new TimingTargetAdapter() {
+            @Override
+            public void timingEvent(float fraction) {
+                if (fraction <= 1f) {
+                    if (mouseEntered) {
+                        alphaHover = (int) (240f * (fraction));
+                    } else if (mouseExited) {
+                        alphaHover = (int) (240f * (1f - fraction));
+                    }
+                }
+                repaint();
+            }
+        };
         animator = new Animator(400, target);
         animator.setResolution(0);
+
+        hoverAnimator = new Animator(300, hoverTarget);
+        hoverAnimator.setAcceleration(0.5f);
+        hoverAnimator.setDeceleration(0.5f);
+        hoverAnimator.setResolution(0);
     }
 
     @Override
     protected void paintComponent(Graphics grphcs) {
         Graphics2D g2 = (Graphics2D) grphcs;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        if (mouseEntered) {
+            g2.setColor(new Color(255, 255, 255, 20));
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+        } else if (mouseExited) {
+        }
+
         if (pressedPoint != null) {
             g2.setColor(effectColor);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
             g2.fillOval((int) (pressedPoint.x - animatSize / 2), (int) (pressedPoint.y - animatSize / 2), (int) animatSize, (int) animatSize);
         }
+
         g2.setComposite(AlphaComposite.SrcOver);
         super.paintComponent(grphcs);
     }

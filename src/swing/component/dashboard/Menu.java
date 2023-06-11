@@ -8,6 +8,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import swing.component.scrollbar.ScrollBarCustom;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -38,7 +39,9 @@ public class Menu extends javax.swing.JPanel {
     private Color color1;
     private Color color2;
 
-    public Menu() {
+    private final String iconDir = "img/icon/";
+
+    public Menu(String title) {
         initComponents();
 
         //agar panel menjadi transaparan di settingan background colornya
@@ -55,17 +58,39 @@ public class Menu extends javax.swing.JPanel {
         layout = new MigLayout("wrap, fillX, insets 0", "[fill]", "[]0[]");
         panelMenu.setLayout(layout);
 
-        titleAndIcon.setIcon(new FlatSVGIcon("img/icon/profile.svg", 0.8f));
-        titleAndIcon.setIconTextGap(11);
+        titleAndIcon.setIcon(new FlatSVGIcon("img/logo/logo-white.svg", 0.05f));
+        titleAndIcon.setIconTextGap(12);
+        titleAndIcon.setFont(new Font("Segoe UI", 1, 18));
+        titleAndIcon.setText("Tumbuh Bersama");
+
+        separator.setForeground(new Color(255, 255, 255, 150));
+        separator.setVisible(false);
     }
 
     public void initMenuItemForSuperAdmin() {
         //untuk menambahkan beberapa panel menu item ke dalam panel menu
-        final String iconDir = "img/icon/";
         int indexMenu = 0;
 
         addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "manage_account.svg", 0.5f), "Kelola Data", new String[]{"Data Pembeli", "Data Staff"}));
-//        addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "home-white.svg", 0.5f), "User Login Credentials", new String[]{}));
+        addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "logout-white.svg", 0.5f), "Logout", new String[]{}));
+        //addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "home-white.svg", 0.5f), "User Login Credentials", new String[]{}));
+    }
+
+    public void initMenuItemForKasir() {
+        int indexMenu = 0;
+        addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "receipt.svg", 0.5f), "Kelola Data Transaksi", new String[]{}));
+        addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "logout-white.svg", 0.5f), "Logout", new String[]{}));
+    }
+
+    public void initMenuItemForKepalaGudang() {
+        int indexMenu = 0;
+        addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "inventory.svg", 0.5f), "Kelola Pengadaan Obat", new String[]{}));
+        addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "logout-white.svg", 0.5f), "Logout", new String[]{}));
+    }
+
+    public void initMenuItemForApoteker() {
+        int indexMenu = 0;
+        addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "medicine.svg", 0.5f), "Kelola Data Obat", new String[]{}));
         addMenuItem(indexMenu++, new DashboardModelMenu(new FlatSVGIcon(iconDir + "logout-white.svg", 0.5f), "Logout", new String[]{}));
     }
 
@@ -175,9 +200,11 @@ public class Menu extends javax.swing.JPanel {
 
         profileHeaderPanel = new javax.swing.JPanel();
         titleAndIcon = new javax.swing.JLabel();
+        separator = new javax.swing.JSeparator();
         scrollPane = new javax.swing.JScrollPane();
         panelMenu = new javax.swing.JPanel();
 
+        profileHeaderPanel.setBackground(new java.awt.Color(0, 0, 0));
         profileHeaderPanel.setOpaque(false);
 
         titleAndIcon.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -190,16 +217,19 @@ public class Menu extends javax.swing.JPanel {
         profileHeaderPanelLayout.setHorizontalGroup(
             profileHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, profileHeaderPanelLayout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addComponent(titleAndIcon)
-                .addGap(18, 18, 18))
+                .addGap(11, 11, 11)
+                .addComponent(titleAndIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(72, 72, 72))
+            .addComponent(separator)
         );
         profileHeaderPanelLayout.setVerticalGroup(
             profileHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(profileHeaderPanelLayout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(titleAndIcon)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         scrollPane.setBorder(null);
@@ -242,6 +272,7 @@ public class Menu extends javax.swing.JPanel {
     private javax.swing.JPanel panelMenu;
     private javax.swing.JPanel profileHeaderPanel;
     private javax.swing.JScrollPane scrollPane;
+    private javax.swing.JSeparator separator;
     private javax.swing.JLabel titleAndIcon;
     // End of variables declaration//GEN-END:variables
 }

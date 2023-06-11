@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package panel.superadmin;
+package panel.kasir;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Component;
@@ -12,10 +12,10 @@ import java.awt.event.MouseEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import swing.component.dashboard.NoUserCard;
-import swing.component.dashboard.UserCard;
 import control.PenggunaControl;
 import control.RoleControl;
 import control.StaffControl;
+import control.TransaksiControl;
 import control.UserControl;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -28,27 +28,33 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import javax.swing.SwingUtilities;
+import model.Pengguna;
 import model.Role;
 import model.Staff;
+import model.Transaksi;
 import swing.ColorPallete;
-import table.StaffTable;
+import swing.component.dashboard.TransaksiCard;
+import table.TransaksiTable;
 
 /**
  *
  * @author AG SETO GALIH D
  */
-public class StaffForm extends javax.swing.JPanel {
+public class TransaksiKasirForm extends javax.swing.JPanel {
 
-    //untuk menyimpan info Staff yang sedang dipilih
-    private Staff staff;
+    private Transaksi transaksi;
+    private TransaksiControl tc;
 
-    private StaffControl sc;
+    //untuk menyimpan info Pengguna yang sedang dipilih
+    private Pengguna pengguna;
+
     private PenggunaControl pc;
+    private StaffControl sc;
     private UserControl uc;
     private RoleControl rc;
 
     private static ColorPallete cp = new ColorPallete();
-    private UserCard userCard;
+    private TransaksiCard transaksiCard;
     private NoUserCard noUserCard = new NoUserCard();
     private String namaUserGroup;
     private CardLayout cardLayout;
@@ -56,43 +62,44 @@ public class StaffForm extends javax.swing.JPanel {
     private String searchInput = "";
 
     //Konstruktor
-    public StaffForm() {
-        this.namaUserGroup = "Staff";
-        this.sc = new StaffControl();
+    public TransaksiKasirForm() {
+        this.namaUserGroup = "Transaksi";
+
+        this.tc = new TransaksiControl();
+
         this.pc = new PenggunaControl();
         this.uc = new UserControl();
         this.rc = new RoleControl();
+        this.sc = new StaffControl();
 
         initComponents();
 
-        btnTambah.setVisible(false);
-
         showUserCard(noUserCard);
 
-        setTableModel(sc.showDataStaff(""));
+        setTableModel(tc.showDataTransaksi(""));
+
         setJudulForm(namaUserGroup);
         fieldSearch.setHint("Cari berdasarkan nama, kategori, dan lain-lain");
-//
-//        btnTambah.setIcon(new FlatSVGIcon("img/icon/addperson.svg", 1.5f));
-//        btnTambah.setText("");
-//
+        btnTambah.setIcon(new FlatSVGIcon("img/icon/addnote.svg", 0.7f));
+        btnTambah.setText("");
+
         btnBack.setIcon(new FlatSVGIcon("img/icon/back.svg", 0.2f));
         btnCancel.setBackground(new Color(240, 240, 240));
         btnCancel.setForeground(cp.getColor(0));
         btnCancel.setColorEffectRGB(220, 220, 220);
-//
-//        btnBackTbh.setIcon(new FlatSVGIcon("img/icon/back.svg", 0.2f));
-//        btnCancelTbh.setBackground(new Color(240, 240, 240));
-//        btnCancelTbh.setForeground(cp.getColor(0));
-//        btnCancelTbh.setColorEffectRGB(220, 220, 220);
-//
-//        btnBackMS.setIcon(new FlatSVGIcon("img/icon/back.svg", 0.2f));
-//        btnCancelMS.setBackground(new Color(240, 240, 240));
-//        btnCancelMS.setForeground(cp.getColor(0));
-//        btnCancelMS.setColorEffectRGB(220, 220, 220);
-//
-//        containerCreate.setBackground(new Color(255, 255, 255));
-//
+
+        btnBackTbh.setIcon(new FlatSVGIcon("img/icon/back.svg", 0.2f));
+        btnCancelTbh.setBackground(new Color(240, 240, 240));
+        btnCancelTbh.setForeground(cp.getColor(0));
+        btnCancelTbh.setColorEffectRGB(220, 220, 220);
+
+        btnBackMS.setIcon(new FlatSVGIcon("img/icon/back.svg", 0.2f));
+        btnCancelMS.setBackground(new Color(240, 240, 240));
+        btnCancelMS.setForeground(cp.getColor(0));
+        btnCancelMS.setColorEffectRGB(220, 220, 220);
+
+        containerCreate.setBackground(new Color(255, 255, 255));
+
         cardLayout = (CardLayout) cardPanel.getLayout();
 
         //action listeners
@@ -101,91 +108,72 @@ public class StaffForm extends javax.swing.JPanel {
         //other listeners
         //action listener pada read
         //btn tambah
-//        addBtnTambahActionListener(new ActionListener() {
+        addBtnTambahActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                cardLayout.show(cardPanel, "create");
+            }
+        });
+//        //action listener pada update
+//        //button back action listener pada panel update
+//        //fungsinya untuk mengembalikan panel UpdateDataPembeli ke ReadDataPembeli lagi
+//        addBtnBackActionListener(new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent arg0) {
-//                cardLayout.show(cardPanel, "create");
+//                //reset data dan pindah ke panel read
+//                resetUpdatePanel();
+//                resetReadPanel();
+//                cardLayout.show(cardPanel, "read");
 //            }
 //        });
-        //
-        //action listener pada update
-        //button back action listener pada panel update
-        //fungsinya untuk mengembalikan panel UpdateDataPembeli ke ReadDataPembeli lagi
-        addBtnBackActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                //reset data dan pindah ke panel read
-                resetUpdatePanel();
-                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
-            }
-        });
-        //button save action listener untuk save update di database
-        addBtnSaveActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                //update data ke database
-                Staff staffNew = staff;
-                staffNew.setNama(inputNamaLengkap.getText());
-                staffNew.setAlamat(inputAlamat.getText());
-                staffNew.setNoTelp(inputNoTelp.getText());
-
-                //mengambil value dari jdatechooser dan combo box dropdown
-                //lalu melakukan insert staff dan mendelete pengguna/pembeli
-                if (tanggalMasukDateChooser.getDate() != null) {
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
-                    staffNew.setTahunMasuk(inputTglMasuk);
-
-                    Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
-                    staffNew.setRole(rolePilihan);
-
-                    sc.updateDataStaff(staffNew);
-
-                    System.out.println(inputTglMasuk);
-                    System.out.println(rolePilihan.getIdRole());
-                    System.out.println("Berhasil update staff!");
-                } else {
-                    System.out.println("[EXCEPTION] Tanggal pilihan null!");
-                }
-
-                //update table model dan user card dan kembalikan ke panel read
-                resetUpdatePanel();
-                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
-            }
-        });
-        //button cancel action listener fungsinya sama seperti button back
-        addBtnCancelActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                //reset data dan pindah panel
-                resetUpdatePanel();
-                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
-            }
-        });
+//        //button save action listener untuk save update di database
+//        addBtnSaveActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent arg0) {
+//                //update data ke database
+//                Pengguna penggunaNew = pengguna;
+//                penggunaNew.setNama(inputNamaLengkap.getText());
+//                penggunaNew.setAlamat(inputAlamat.getText());
+//                penggunaNew.setNoTelp(inputNoTelp.getText());
+//                pc.updateDataPengguna(penggunaNew);
+//                //update table model dan user card dan kembalikan ke panel read
+//                resetUpdatePanel();
+//                resetReadPanel();
+//                cardLayout.show(cardPanel, "read");
+//            }
+//        });
+//        //button cancel action listener fungsinya sama seperti button back
+//        addBtnCancelActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent arg0) {
+//                //reset data dan pindah panel
+//                resetUpdatePanel();
+//                resetReadPanel();
+//                cardLayout.show(cardPanel, "read");
+//            }
+//        });
         //action listener pada tambah panel
         //
-//        btnBackTbh.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent arg0) {
-//                resetCreatePanel();
-//                resetReadPanel();
-//                cardLayout.show(cardPanel, "read");
-//            }
-//        });
-//        btnCancelTbh.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent arg0) {
-//                resetCreatePanel();
-//                resetReadPanel();
-//                cardLayout.show(cardPanel, "read");
-//            }
-//        });
-//        btnSaveTbh.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent arg0) {
+        btnBackTbh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                resetCreatePanel();
+                resetReadPanel();
+                cardLayout.show(cardPanel, "read");
+            }
+        });
+        btnCancelTbh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                resetCreatePanel();
+                resetReadPanel();
+                cardLayout.show(cardPanel, "read");
+            }
+        });
+        btnSaveTbh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                //insert data transaksi ke database
 //                //insert user data ke database
 //                String username = inputUsernameTbh.getText();
 //                User createUser = new User(-1, username, inputPasswordTbh.getText());
@@ -193,114 +181,99 @@ public class StaffForm extends javax.swing.JPanel {
 //                createUser.setIdUser(uc.findIdByUsername(username));
 //                //insert pengguna data ke database
 //                Pengguna createPengguna = new Pengguna(-1, inputNamaLengkapTbh.getText(),
-//                        inputNoTelpTbh.getText(), inputAlamatTbh.getText(), createUser);
+//                        inputNoTelpTbh.getText(), inputKuantitas.getText(), createUser);
 //                pc.insertPengguna(createPengguna);
 //                //update table model dan user card dan kembalikan ke panel read
 //                resetUpdatePanel();
 //                resetReadPanel();
-//                cardLayout.show(cardPanel, "read");
-//            }
-//        });
-        //
+                cardLayout.show(cardPanel, "read");
+            }
+        });
         //action listener pada makestaff panel
         //
-//        btnBackMS.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent arg0) {
-//                resetMakeStaffPanel();
-//                resetReadPanel();
-//                cardLayout.show(cardPanel, "read");
-//            }
-//        });
-//        btnCancelMS.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent arg0) {
-//                resetMakeStaffPanel();
-//                resetReadPanel();
-//                cardLayout.show(cardPanel, "read");
-//            }
-//        });
-//        btnSaveMS.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent arg0) {
-//                //mengambil value dari jdatechooser dan combo box dropdown
-//                //lalu melakukan insert staff dan mendelete pengguna/pembeli
-//                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//                if (tanggalMasukDateChooser.getDate() != null) {
-//                    String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
-//                    Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
-//                    //nip -1 karena pada akhirnya saat insert juga auto increment
-//                    Staff staffInput = new Staff(-1, pengguna.getNama(), inputTglMasuk, pengguna.getNoTelp(), pengguna.getAlamat(), rolePilihan, pengguna.getUser());
-//                    sc.insertDataStaff(staffInput);
-//                    pc.deleteDataPengguna(pengguna.getIdPengguna());
-//                    //
-//                    System.out.println(inputTglMasuk);
-//                    System.out.println(rolePilihan.getIdRole());
-//                    System.out.println("Berhasil make staff!");
-//                } else {
-//                    System.out.println("[EXCEPTION] Tanggal pilihan null!");
-//                }
-//            }
-//        });
-        //
+        btnBackMS.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                resetMakeStaffPanel();
+                resetReadPanel();
+                cardLayout.show(cardPanel, "read");
+            }
+        });
+        btnCancelMS.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                resetMakeStaffPanel();
+                resetReadPanel();
+                cardLayout.show(cardPanel, "read");
+            }
+        });
+        btnSaveMS.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                //mengambil value dari jdatechooser dan combo box dropdown
+                //lalu melakukan insert staff dan mendelete pengguna/pembeli
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                if (tanggalMasukDateChooser.getDate() != null) {
+                    String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
+                    Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
+                    //nip -1 karena pada akhirnya saat insert juga auto increment
+                    Staff staffInput = new Staff(-1, pengguna.getNama(), inputTglMasuk, pengguna.getNoTelp(), pengguna.getAlamat(), rolePilihan, pengguna.getUser());
+                    sc.insertDataStaff(staffInput);
+                    pc.deleteDataPengguna(pengguna.getIdPengguna());
+                    //
+                    System.out.println(inputTglMasuk);
+                    System.out.println(rolePilihan.getIdRole());
+                    System.out.println("Berhasil make staff!");
+                } else {
+                    System.out.println("[EXCEPTION] Tanggal pilihan null!");
+                }
+                resetMakeStaffPanel();
+                resetReadPanel();
+                cardLayout.show(cardPanel, "read");
+            }
+        });
+
         //action listener untuk search
         //tanpa button
         addFieldSearchActionListener();
     }
 
-    private void resetTanggalMasuk() {
+    //Method-method pada Make Staff Panel
+    private void resetMakeStaffPanel() {
         tanggalMasukDateChooser.setDate(null);
     }
 
-    private void insertAndSetRoleToComboBox(Staff s) {
+    private void insertRoleToComboBox() {
         List<Role> listRole = rc.showRole();
         roleComboBox.removeAllItems();
         for (Role role : listRole) {
             roleComboBox.addItem(role);
         }
-        roleComboBox.setSelectedItem(s.getRole());
     }
 
-    private void initTanggalMasuk(Staff s) {
-        try {
-            LocalDate dateToday = LocalDate.now();
-            LocalDate dateThreeMonthsBeforeToday = dateToday.minusMonths(3);
-            //Maksimal input adalah hari ini, dan minimal input adalah 3 bulan sebelum hari ini atau tanggal masuk dari inputan terakhir (dicari yg paling kecil)
-            //Fungsi dibawah adalah untuk konversi dari LocalDate ke Date
-            Date threeMonthsBefore = Date.from(dateThreeMonthsBeforeToday.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-            tanggalMasukDateChooser.setMaxSelectableDate(Date.from(dateToday.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-
-            String stringTglMasuk = s.getTahunMasuk();
-            Date dateTglMasuk = new SimpleDateFormat("yyyy-MM-dd").parse(stringTglMasuk);
-            if (dateTglMasuk != null) {
-                tanggalMasukDateChooser.setDate(dateTglMasuk);
-                if (dateTglMasuk.compareTo(threeMonthsBefore) > 0) {
-                    tanggalMasukDateChooser.setMinSelectableDate(threeMonthsBefore);
-                } else if (dateTglMasuk.compareTo(threeMonthsBefore) < 0) {
-                    tanggalMasukDateChooser.setMinSelectableDate(dateTglMasuk);
-                } else {
-                    tanggalMasukDateChooser.setMinSelectableDate(threeMonthsBefore);
-                }
-            } else {
-                System.out.println("tanggal masuk gagal dikonversi!");
-            }
-        } catch (Exception e) {
-            System.out.println("tanggal masuk gagal dikonversi!");
-        }
-
+    private void initTanggalMasuk() {
+        LocalDate dateToday = LocalDate.now();
+        LocalDate dateThreeMonthsBeforeToday = dateToday.minusMonths(3);
+        //Maksimal input adalah hari ini, dan minimal input adalah 3 bulan sebelum hari ini
+        //Fungsi dibawah adalah untuk konversi dari LocalDate ke Date
+        tanggalMasukDateChooser.setMinSelectableDate(Date.from(dateThreeMonthsBeforeToday.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+        Date today = Date.from(dateToday.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        tanggalMasukDateChooser.setMaxSelectableDate(today);
+        //Default value awal untuk textField tanggal masuk adalah today alias hari ini
+        //Sehingga disetting sebagai berikut:
+        tanggalMasukDateChooser.setDate(today);
     }
-    //
+
     //Method-method pada Create/Tambah Panel
-//    private void resetCreatePanel() {
+    private void resetCreatePanel() {
 //        inputNamaLengkapTbh.setText("");
-//        inputAlamatTbh.setText("");
+//        inputKuantitas.setText("");
 //        inputNoTelpTbh.setText("");
 //        inputUsernameTbh.setText("");
 //        inputPasswordTbh.setText("");
-//    }
-    //
-    //Method-method pada Update Panel
+    }
 
+    //Method-method pada Update Panel
     private void setTextToComponent(String nama, String alamat, String noTelp) {
         inputNamaLengkap.setText(nama);
         inputAlamat.setText(alamat);
@@ -323,7 +296,6 @@ public class StaffForm extends javax.swing.JPanel {
         inputNamaLengkap.setText("");
         inputAlamat.setText("");
         inputNoTelp.setText("");
-        resetTanggalMasuk();
     }
 
     //Method-method pada Read Panel
@@ -335,7 +307,7 @@ public class StaffForm extends javax.swing.JPanel {
         searchInput = "";
         fieldSearch.setText(searchInput);
         showUserCard(noUserCard);
-        setTableModel(sc.showDataStaff(""));
+        setTableModel(tc.showDataTransaksi(""));
     }
 
     //untuk melakukan search segera setelah keyboard direlease
@@ -356,9 +328,9 @@ public class StaffForm extends javax.swing.JPanel {
                 Thread newThread = new Thread(() -> {
                     try {
                         Thread.sleep(200);
-                        StaffTable st = sc.showDataStaff(searchInput);
+                        TransaksiTable tTable = tc.showDataTransaksi(searchInput);
                         SwingUtilities.invokeLater(() -> {
-                            customTable.setModel(st);
+                            customTable.setModel(tTable);
                             customTable.revalidate();
                         });
                     } catch (Exception e) {
@@ -376,16 +348,18 @@ public class StaffForm extends javax.swing.JPanel {
         judulDataPilihan.setText("Kelola Data " + text);
         judulUpdate.setForeground(cp.getColor(0));
         judulUpdate.setText("Update Data " + text);
+        judulCreate.setForeground(cp.getColor(0));
+        judulCreate.setText("Tambah Data " + text);
     }
 
     private void setTableModel(AbstractTableModel tableModel) {
-        this.customTable.setModel((StaffTable) tableModel);
+        this.customTable.setModel((TransaksiTable) tableModel);
     }
 
     private void showUserCard(Component panel) {
         panelCard.removeAll();
         panelCard.add(panel);
-        panelCard.repaint();
+//        panelCard.repaint();
         panelCard.revalidate();
     }
 
@@ -396,44 +370,41 @@ public class StaffForm extends javax.swing.JPanel {
         customTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent event) {
-
                 //get value dari table clicked
-                if (namaUserGroup.equalsIgnoreCase("Staff")) {
+                if (namaUserGroup.equalsIgnoreCase("Transaksi")) {
                     int clickedRow = customTable.getSelectedRow();
                     TableModel tableModel = customTable.getModel();
-                    //untuk reset staff
-                    staff = null;
-                    //assign staff sesuai row yang di klik pada tabel
-                    staff = (Staff) tableModel.getValueAt(clickedRow, 8);
+                    //untuk reset pengguna
+                    transaksi = null;
+                    //assign pengguna sesuai row yang di klik pada tabel
+                    transaksi = (Transaksi) tableModel.getValueAt(clickedRow, 7);
                     //show user card panel
-                    userCard = new UserCard(staff);
-                    showUserCard(userCard);
+                    transaksiCard = new TransaksiCard(transaksi);
+                    showUserCard(transaksiCard);
 
-                    //user card button edit action listener
-                    userCard.addBtnEditActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent arg0) {
-                            //melempar event untuk dieksekusi ke panel/frame diatasnya yaitu SuperAdminView
-                            //fungsinya untuk mengganti panel ReadDataPembeli ke panel UpdateDataPembeli
-                            setTextToComponent(staff.getNama(), staff.getAlamat(), staff.getNoTelp());
-                            insertAndSetRoleToComboBox(staff);
-                            initTanggalMasuk(staff);
-                            cardLayout.show(cardPanel, "update");
-                        }
-                    });
-                    //user card button delete action listener
-                    userCard.addBtnDeleteActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent arg0) {
-                            //ketika btn delete di user card
-                            sc.deleteDataStaff(staff.getNIP());
-                            uc.deleteDataUser(staff.getUser().getIdUser());
-                            System.out.println("Berhasil delete");
-                            showUserCard(noUserCard);
-                            setTableModel(sc.showDataStaff(""));
-                        }
-                    });
-                    //user card button make staff action listener
+//                    //user card button edit action listener
+//                    userCard.addBtnEditActionListener(new ActionListener() {
+//                        @Override
+//                        public void actionPerformed(ActionEvent arg0) {
+//                            //melempar event untuk dieksekusi ke panel/frame diatasnya yaitu SuperAdminView
+//                            //fungsinya untuk mengganti panel ReadDataPembeli ke panel UpdateDataPembeli
+//                            //setTextToComponent(pengguna.getNama(), pengguna.getAlamat(), pengguna.getNoTelp());
+//                            //cardLayout.show(cardPanel, "update");
+//                        }
+//                    });
+//                    //user card button delete action listener
+//                    userCard.addBtnDeleteActionListener(new ActionListener() {
+//                        @Override
+//                        public void actionPerformed(ActionEvent arg0) {
+//                            //ketika btn delete di user card
+//                            pc.deleteDataPengguna(pengguna.getIdPengguna());
+//                            uc.deleteDataUser(pengguna.getUser().getIdUser());
+//                            System.out.println("Berhasil delete");
+//                            showUserCard(noUserCard);
+//                            setTableModel(tc.showDataTransaksi(""));
+//                        }
+//                    });
+//                    //user card button make staff action listener
 //                    userCard.addBtnMakeStaffActionListener(new ActionListener() {
 //                        @Override
 //                        public void actionPerformed(ActionEvent arg0) {
@@ -466,7 +437,7 @@ public class StaffForm extends javax.swing.JPanel {
     private void initComponents() {
 
         cardPanel = new javax.swing.JPanel();
-        readStaff = new javax.swing.JPanel();
+        readTransaksi = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         customTable = new swing.component.CustomTable();
@@ -478,10 +449,10 @@ public class StaffForm extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         btnTambah = new swing.component.ButtonRectangle();
         judulForm = new javax.swing.JLabel();
-        updateStaff = new javax.swing.JPanel();
+        updatePembeli = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         btnBack = new swing.component.ButtonOutLine();
-        panelComponentUpdate = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         inputNamaLengkap = new swing.component.TextFieldInput();
         jLabel3 = new javax.swing.JLabel();
@@ -492,24 +463,16 @@ public class StaffForm extends javax.swing.JPanel {
         btnSave = new swing.component.ButtonRound();
         btnCancel = new swing.component.ButtonRound();
         judulUpdate = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        tanggalMasukDateChooser = new com.toedter.calendar.JDateChooser();
-        jLabel13 = new javax.swing.JLabel();
-        roleComboBox = new javax.swing.JComboBox<>();
         jPanel8 = new javax.swing.JPanel();
-        createPembeli = new javax.swing.JPanel();
+        createTransaksi = new javax.swing.JPanel();
         scrollPaneCreate = new javax.swing.JScrollPane();
         containerCreate = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        inputNamaLengkapTbh = new swing.component.TextFieldInput();
-        jLabel6 = new javax.swing.JLabel();
-        inputNoTelpTbh = new swing.component.TextFieldInput();
-        jLabel7 = new javax.swing.JLabel();
-        inputAlamatTbh = new swing.component.TextFieldInput();
-        jLabel8 = new javax.swing.JLabel();
-        inputUsernameTbh = new swing.component.TextFieldInput();
-        jLabel9 = new javax.swing.JLabel();
-        inputPasswordTbh = new swing.component.TextFieldInput();
+        labelTanggal = new javax.swing.JLabel();
+        tanggalTransaksiDateChooser = new com.toedter.calendar.JDateChooser();
+        labelNamaObat = new javax.swing.JLabel();
+        namaObatComboBox = new javax.swing.JComboBox<>();
+        labelKuantitas = new javax.swing.JLabel();
+        inputKuantitas = new swing.component.TextFieldInput();
         judulCreate = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
         btnSaveTbh = new swing.component.ButtonRound();
@@ -518,6 +481,15 @@ public class StaffForm extends javax.swing.JPanel {
         makeStaff = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         btnBackMS = new swing.component.ButtonOutLine();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jPanel12 = new javax.swing.JPanel();
+        btnSaveMS = new swing.component.ButtonRound();
+        btnCancelMS = new swing.component.ButtonRound();
+        judulMS = new javax.swing.JLabel();
+        tanggalMasukDateChooser = new com.toedter.calendar.JDateChooser();
+        roleComboBox = new javax.swing.JComboBox<>();
         jPanel13 = new javax.swing.JPanel();
 
         setOpaque(false);
@@ -527,7 +499,7 @@ public class StaffForm extends javax.swing.JPanel {
         cardPanel.setPreferredSize(new java.awt.Dimension(684, 652));
         cardPanel.setLayout(new java.awt.CardLayout());
 
-        readStaff.setOpaque(false);
+        readTransaksi.setOpaque(false);
 
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -627,30 +599,30 @@ public class StaffForm extends javax.swing.JPanel {
         judulForm.setForeground(new java.awt.Color(0, 0, 0));
         judulForm.setText("Judul Form");
 
-        javax.swing.GroupLayout readStaffLayout = new javax.swing.GroupLayout(readStaff);
-        readStaff.setLayout(readStaffLayout);
-        readStaffLayout.setHorizontalGroup(
-            readStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(readStaffLayout.createSequentialGroup()
+        javax.swing.GroupLayout readTransaksiLayout = new javax.swing.GroupLayout(readTransaksi);
+        readTransaksi.setLayout(readTransaksiLayout);
+        readTransaksiLayout.setHorizontalGroup(
+            readTransaksiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(readTransaksiLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(readStaffLayout.createSequentialGroup()
+            .addGroup(readTransaksiLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addGroup(readStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(readStaffLayout.createSequentialGroup()
+                .addGroup(readTransaksiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(readTransaksiLayout.createSequentialGroup()
                         .addComponent(judulForm)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(readStaffLayout.createSequentialGroup()
-                        .addGroup(readStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(readTransaksiLayout.createSequentialGroup()
+                        .addGroup(readTransaksiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE))
                         .addGap(30, 30, 30))))
         );
-        readStaffLayout.setVerticalGroup(
-            readStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, readStaffLayout.createSequentialGroup()
+        readTransaksiLayout.setVerticalGroup(
+            readTransaksiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, readTransaksiLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -660,13 +632,13 @@ public class StaffForm extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
                 .addGap(43, 43, 43))
         );
 
-        cardPanel.add(readStaff, "read");
+        cardPanel.add(readTransaksi, "read");
 
-        updateStaff.setOpaque(false);
+        updatePembeli.setOpaque(false);
 
         jPanel5.setOpaque(false);
 
@@ -691,7 +663,7 @@ public class StaffForm extends javax.swing.JPanel {
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
-        panelComponentUpdate.setOpaque(false);
+        jPanel6.setOpaque(false);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jLabel2.setForeground(cp.getColor(0)
@@ -739,7 +711,7 @@ public class StaffForm extends javax.swing.JPanel {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
         judulUpdate.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -747,63 +719,33 @@ public class StaffForm extends javax.swing.JPanel {
         );
         judulUpdate.setText("Update Data Pembeli");
 
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel12.setForeground(cp.getColor(0)
-        );
-        jLabel12.setText("Role");
-
-        tanggalMasukDateChooser.setBackground(new java.awt.Color(255, 255, 255));
-        tanggalMasukDateChooser.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        tanggalMasukDateChooser.setForeground(new java.awt.Color(0, 0, 0));
-        tanggalMasukDateChooser.setDateFormatString("dd MMMM yyyy");
-        tanggalMasukDateChooser.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        tanggalMasukDateChooser.setMaxSelectableDate(new java.util.Date(253370743293000L));
-        tanggalMasukDateChooser.setOpaque(false);
-        tanggalMasukDateChooser.setPreferredSize(new java.awt.Dimension(88, 42));
-
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel13.setForeground(cp.getColor(0)
-        );
-        jLabel13.setText("Tanggal Masuk");
-
-        roleComboBox.setBackground(new java.awt.Color(240, 240, 240));
-        roleComboBox.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        roleComboBox.setForeground(new java.awt.Color(122, 140, 141));
-        roleComboBox.setBorder(null);
-        roleComboBox.setPreferredSize(new java.awt.Dimension(72, 42));
-
-        javax.swing.GroupLayout panelComponentUpdateLayout = new javax.swing.GroupLayout(panelComponentUpdate);
-        panelComponentUpdate.setLayout(panelComponentUpdateLayout);
-        panelComponentUpdateLayout.setHorizontalGroup(
-            panelComponentUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(panelComponentUpdateLayout.createSequentialGroup()
+            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(panelComponentUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelComponentUpdateLayout.createSequentialGroup()
-                        .addGroup(panelComponentUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(judulUpdate)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap(491, Short.MAX_VALUE))
-                    .addGroup(panelComponentUpdateLayout.createSequentialGroup()
-                        .addGroup(panelComponentUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(inputNamaLengkap, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
                             .addComponent(inputNoTelp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(inputAlamat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(panelComponentUpdateLayout.createSequentialGroup()
-                        .addGroup(panelComponentUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tanggalMasukDateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
-                            .addComponent(judulUpdate)
-                            .addComponent(roleComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addComponent(inputAlamat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
-        panelComponentUpdateLayout.setVerticalGroup(
-            panelComponentUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelComponentUpdateLayout.createSequentialGroup()
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addComponent(judulUpdate)
                 .addGap(25, 25, 25)
@@ -818,17 +760,9 @@ public class StaffForm extends javax.swing.JPanel {
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(inputAlamat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22)
-                .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(roleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel13)
-                .addGap(1, 1, 1)
-                .addComponent(tanggalMasukDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(65, 65, 65))
+                .addGap(40, 40, 40))
         );
 
         jPanel8.setOpaque(false);
@@ -844,32 +778,32 @@ public class StaffForm extends javax.swing.JPanel {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout updateStaffLayout = new javax.swing.GroupLayout(updateStaff);
-        updateStaff.setLayout(updateStaffLayout);
-        updateStaffLayout.setHorizontalGroup(
-            updateStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(updateStaffLayout.createSequentialGroup()
-                .addGroup(updateStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+        javax.swing.GroupLayout updatePembeliLayout = new javax.swing.GroupLayout(updatePembeli);
+        updatePembeli.setLayout(updatePembeliLayout);
+        updatePembeliLayout.setHorizontalGroup(
+            updatePembeliLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(updatePembeliLayout.createSequentialGroup()
+                .addGroup(updatePembeliLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, updateStaffLayout.createSequentialGroup()
-                        .addComponent(panelComponentUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, updatePembeliLayout.createSequentialGroup()
+                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(17, 17, 17))
         );
-        updateStaffLayout.setVerticalGroup(
-            updateStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(updateStaffLayout.createSequentialGroup()
+        updatePembeliLayout.setVerticalGroup(
+            updatePembeliLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(updatePembeliLayout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addGroup(updateStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelComponentUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(updatePembeliLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
-        cardPanel.add(updateStaff, "update");
+        cardPanel.add(updatePembeli, "update");
 
-        createPembeli.setOpaque(false);
+        createTransaksi.setOpaque(false);
 
         scrollPaneCreate.setBackground(new java.awt.Color(255, 255, 255));
         scrollPaneCreate.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -877,46 +811,33 @@ public class StaffForm extends javax.swing.JPanel {
         scrollPaneCreate.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         scrollPaneCreate.setOpaque(false);
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel5.setForeground(cp.getColor(0)
+        labelTanggal.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        labelTanggal.setForeground(cp.getColor(0)
         );
-        jLabel5.setText("Nama Lengkap");
+        labelTanggal.setText("Tanggal Transaksi (Default: Hari Ini)");
 
-        inputNamaLengkapTbh.setHint("John Doe");
+        tanggalTransaksiDateChooser.setForeground(new java.awt.Color(122, 140, 141));
+        tanggalTransaksiDateChooser.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel6.setForeground(cp.getColor(0)
+        labelNamaObat.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        labelNamaObat.setForeground(cp.getColor(0)
         );
-        jLabel6.setText("Nomor Telepon");
+        labelNamaObat.setText("Nama Obat");
 
-        inputNoTelpTbh.setHint("081201389442");
-        inputNoTelpTbh.setName(""); // NOI18N
+        namaObatComboBox.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        namaObatComboBox.setForeground(new java.awt.Color(122, 140, 141));
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel7.setForeground(cp.getColor(0)
+        labelKuantitas.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        labelKuantitas.setForeground(cp.getColor(0)
         );
-        jLabel7.setText("Alamat");
+        labelKuantitas.setText("Kuantitas");
 
-        inputAlamatTbh.setHint("Jl. Babarsari No.19");
-
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel8.setForeground(cp.getColor(0)
-        );
-        jLabel8.setText("Username");
-
-        inputUsernameTbh.setHint("akuganteng123");
-
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel9.setForeground(cp.getColor(0)
-        );
-        jLabel9.setText("Password");
-
-        inputPasswordTbh.setHint("4TM@JAY^");
+        inputKuantitas.setHint("25");
 
         judulCreate.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         judulCreate.setForeground(cp.getColor(0)
         );
-        judulCreate.setText("Tambah Data Pembeli");
+        judulCreate.setText("Tambah Data");
 
         jPanel11.setOpaque(false);
 
@@ -933,7 +854,7 @@ public class StaffForm extends javax.swing.JPanel {
                 .addComponent(btnSaveTbh, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCancelTbh, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(461, Short.MAX_VALUE))
+                .addContainerGap(480, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -955,31 +876,28 @@ public class StaffForm extends javax.swing.JPanel {
             containerCreateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(containerCreateLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnBackTbh, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(containerCreateLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(containerCreateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(containerCreateLayout.createSequentialGroup()
                         .addComponent(judulCreate)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(containerCreateLayout.createSequentialGroup()
-                        .addGroup(containerCreateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(containerCreateLayout.createSequentialGroup()
-                        .addGroup(containerCreateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(inputNamaLengkapTbh, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
-                            .addComponent(inputNoTelpTbh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(inputAlamatTbh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(inputUsernameTbh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(inputPasswordTbh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(containerCreateLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnBackTbh, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(containerCreateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labelTanggal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(containerCreateLayout.createSequentialGroup()
+                                .addGroup(containerCreateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(namaObatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(containerCreateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(tanggalTransaksiDateChooser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(labelKuantitas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(labelNamaObat, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+                                        .addComponent(inputKuantitas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
         containerCreateLayout.setVerticalGroup(
             containerCreateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -989,44 +907,36 @@ public class StaffForm extends javax.swing.JPanel {
                 .addGap(23, 23, 23)
                 .addComponent(judulCreate)
                 .addGap(25, 25, 25)
-                .addComponent(jLabel5)
+                .addComponent(labelTanggal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputNamaLengkapTbh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22)
-                .addComponent(jLabel6)
+                .addComponent(tanggalTransaksiDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(labelNamaObat)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputNoTelpTbh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22)
-                .addComponent(jLabel7)
+                .addComponent(namaObatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(labelKuantitas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputAlamatTbh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22)
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputUsernameTbh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22)
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputPasswordTbh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
+                .addComponent(inputKuantitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(53, 53, 53)
                 .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
         );
 
         scrollPaneCreate.setViewportView(containerCreate);
 
-        javax.swing.GroupLayout createPembeliLayout = new javax.swing.GroupLayout(createPembeli);
-        createPembeli.setLayout(createPembeliLayout);
-        createPembeliLayout.setHorizontalGroup(
-            createPembeliLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout createTransaksiLayout = new javax.swing.GroupLayout(createTransaksi);
+        createTransaksi.setLayout(createTransaksiLayout);
+        createTransaksiLayout.setHorizontalGroup(
+            createTransaksiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(scrollPaneCreate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 684, Short.MAX_VALUE)
         );
-        createPembeliLayout.setVerticalGroup(
-            createPembeliLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPaneCreate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
+        createTransaksiLayout.setVerticalGroup(
+            createTransaksiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(scrollPaneCreate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
         );
 
-        cardPanel.add(createPembeli, "create");
+        cardPanel.add(createTransaksi, "create");
 
         makeStaff.setOpaque(false);
 
@@ -1053,6 +963,98 @@ public class StaffForm extends javax.swing.JPanel {
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
+        jPanel10.setOpaque(false);
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        jLabel10.setForeground(cp.getColor(0)
+        );
+        jLabel10.setText("Tanggal Masuk");
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        jLabel11.setForeground(cp.getColor(0)
+        );
+        jLabel11.setText("Role");
+
+        jPanel12.setOpaque(false);
+
+        btnSaveMS.setText("Save");
+
+        btnCancelMS.setText("Cancel");
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(btnSaveMS, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCancelMS, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSaveMS, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCancelMS, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(100, Short.MAX_VALUE))
+        );
+
+        judulMS.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        judulMS.setForeground(cp.getColor(0)
+        );
+        judulMS.setText("Jadikan <Nama> Sebagai Staff?");
+
+        tanggalMasukDateChooser.setBackground(new java.awt.Color(255, 255, 255));
+        tanggalMasukDateChooser.setForeground(new java.awt.Color(0, 0, 0));
+        tanggalMasukDateChooser.setDateFormatString("dd MMMM yyyy");
+        tanggalMasukDateChooser.setMaxSelectableDate(new java.util.Date(253370743293000L));
+        tanggalMasukDateChooser.setPreferredSize(new java.awt.Dimension(88, 42));
+
+        roleComboBox.setPreferredSize(new java.awt.Dimension(72, 42));
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(494, Short.MAX_VALUE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(judulMS)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(roleComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(tanggalMasukDateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))
+                        .addContainerGap(201, Short.MAX_VALUE))))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGap(2, 2, 2)
+                .addComponent(judulMS)
+                .addGap(25, 25, 25)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tanggalMasukDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(roleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46)
+                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(195, 195, 195))
+        );
+
         jPanel13.setOpaque(false);
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
@@ -1074,7 +1076,8 @@ public class StaffForm extends javax.swing.JPanel {
                 .addGroup(makeStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, makeStaffLayout.createSequentialGroup()
-                        .addGap(616, 616, 616)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(17, 17, 17))
         );
@@ -1083,7 +1086,9 @@ public class StaffForm extends javax.swing.JPanel {
             .addGroup(makeStaffLayout.createSequentialGroup()
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(makeStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         cardPanel.add(makeStaff, "makeStaff");
@@ -1105,40 +1110,36 @@ public class StaffForm extends javax.swing.JPanel {
     private swing.component.ButtonOutLine btnBackMS;
     private swing.component.ButtonOutLine btnBackTbh;
     private swing.component.ButtonRound btnCancel;
+    private swing.component.ButtonRound btnCancelMS;
     private swing.component.ButtonRound btnCancelTbh;
     private swing.component.ButtonRound btnSave;
+    private swing.component.ButtonRound btnSaveMS;
     private swing.component.ButtonRound btnSaveTbh;
     private swing.component.ButtonRectangle btnTambah;
     private javax.swing.JPanel cardPanel;
     private javax.swing.JPanel containerCreate;
-    private javax.swing.JPanel createPembeli;
+    private javax.swing.JPanel createTransaksi;
     private swing.component.CustomTable customTable;
     private swing.component.TextFieldWithBackground fieldSearch;
     private swing.component.TextFieldInput inputAlamat;
-    private swing.component.TextFieldInput inputAlamatTbh;
+    private swing.component.TextFieldInput inputKuantitas;
     private swing.component.TextFieldInput inputNamaLengkap;
-    private swing.component.TextFieldInput inputNamaLengkapTbh;
     private swing.component.TextFieldInput inputNoTelp;
-    private swing.component.TextFieldInput inputNoTelpTbh;
-    private swing.component.TextFieldInput inputPasswordTbh;
-    private swing.component.TextFieldInput inputUsernameTbh;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
@@ -1146,14 +1147,19 @@ public class StaffForm extends javax.swing.JPanel {
     private javax.swing.JLabel judulCreate;
     private javax.swing.JLabel judulDataPilihan;
     private javax.swing.JLabel judulForm;
+    private javax.swing.JLabel judulMS;
     private javax.swing.JLabel judulUpdate;
+    private javax.swing.JLabel labelKuantitas;
+    private javax.swing.JLabel labelNamaObat;
+    private javax.swing.JLabel labelTanggal;
     private javax.swing.JPanel makeStaff;
+    private javax.swing.JComboBox<String> namaObatComboBox;
     private javax.swing.JPanel panelCard;
-    private javax.swing.JPanel panelComponentUpdate;
-    private javax.swing.JPanel readStaff;
+    private javax.swing.JPanel readTransaksi;
     private javax.swing.JComboBox<Role> roleComboBox;
     private javax.swing.JScrollPane scrollPaneCreate;
     private com.toedter.calendar.JDateChooser tanggalMasukDateChooser;
-    private javax.swing.JPanel updateStaff;
+    private com.toedter.calendar.JDateChooser tanggalTransaksiDateChooser;
+    private javax.swing.JPanel updatePembeli;
     // End of variables declaration//GEN-END:variables
 }

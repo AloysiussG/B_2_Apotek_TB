@@ -41,6 +41,8 @@ public class TransaksiTable extends AbstractTableModel {
                 return list.get(rowIndex).getJumlah();
             case 6:
                 return list.get(rowIndex).totalPembelian();
+            case 7:
+                return list.get(rowIndex);
             default :
                 return null;
         }

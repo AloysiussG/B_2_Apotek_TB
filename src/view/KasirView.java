@@ -13,8 +13,7 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import panel.DashboardMainPanel;
-import panel.superadmin.PembeliForm;
-import panel.superadmin.StaffForm;
+import panel.kasir.TransaksiKasirForm;
 import swing.component.dashboard.Header;
 import swing.component.dashboard.Menu;
 import swing.events.EventMenuPanelResize;
@@ -24,7 +23,7 @@ import swing.events.EventMenuSelected;
  *
  * @author AG SETO GALIH D
  */
-public class SuperAdminView extends javax.swing.JFrame {
+public class KasirView extends javax.swing.JFrame {
 
     private MigLayout layout;
     private Menu menu;
@@ -33,53 +32,64 @@ public class SuperAdminView extends javax.swing.JFrame {
     private Animator animator;
 
     /** Creates new form SuperAdminView */
-    public SuperAdminView() {
+    public KasirView() {
         //inisialisasi variabel (disarankan berada diatas init components)
 
         //inisialisasi komponen
         initComponents();
-        initSuperAdminView();
+        initKasirView("Kasir", "Xx_K4s1R_xX");
     }
 
-    private void initSuperAdminView() {
+    private void initKasirView(String roleView, String usernameView) {
 
         //membuat layout bertipe miglayout
         layout = new MigLayout("fill", "0[]0[100%, fill]0", "0[fill, top]0");
         background.setLayout(layout);
         //buat objek komponen lain
-        menu = new Menu("Super Admin");
-        header = new Header("master", "Super Admin");
+        menu = new Menu(roleView);
+        header = new Header(usernameView, roleView);
         mainPanel = new DashboardMainPanel();
         menu.addEventSelected(new EventMenuSelected() {
             @Override
             public void menuSelected(int menuIndex, int submenuIndex) {
                 System.out.println("Menu index " + menuIndex + " | Submenu index " + submenuIndex);
                 if (menuIndex == 0) {
-                    if (submenuIndex == 0) {
-                        //show pengguna/pembeli
-                        //menggunakan async agar tidak lag animasinya saat dipencet
-                        Thread newThread = new Thread(() -> {
-                            try {
-                                //Thread.sleep(150);
-                                mainPanel.showForm(new PembeliForm());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-                        newThread.start();
-                    } else if (submenuIndex == 1) {
-                        //show staff
-                        //menggunakan async agar tidak lag animasinya saat dipencet
-                        Thread newThread = new Thread(() -> {
-                            try {
-                                //Thread.sleep(150);
-                                mainPanel.showForm(new StaffForm());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-                        newThread.start();
-                    }
+                    //show transaksi kasir form
+                    //menggunakan async agar tidak lag animasinya saat dipencet
+                    Thread newThread = new Thread(() -> {
+                        try {
+                            mainPanel.showForm(new TransaksiKasirForm());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    newThread.start();
+
+//                    if (submenuIndex == 0) {
+//                        //show pengguna/pembeli
+//                        //menggunakan async agar tidak lag animasinya saat dipencet
+//                        Thread newThread = new Thread(() -> {
+//                            try {
+//                                //Thread.sleep(150);
+//                                mainPanel.showForm(new PembeliForm());
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        });
+//                        newThread.start();
+//                    } else if (submenuIndex == 1) {
+//                        //show staff
+//                        //menggunakan async agar tidak lag animasinya saat dipencet
+//                        Thread newThread = new Thread(() -> {
+//                            try {
+//                                //Thread.sleep(150);
+//                                mainPanel.showForm(new StaffForm());
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        });
+//                        newThread.start();
+//                    }
                 } else if (menuIndex == 1) {
                     //menu logout
                     //asynchronous process
@@ -98,7 +108,7 @@ public class SuperAdminView extends javax.swing.JFrame {
             }
         });
         //set menu panel kiri dengan beberapa menu item khusus untuk superadmin
-        menu.initMenuItemForSuperAdmin();
+        menu.initMenuItemForKasir();
         //set show menu, true berarti menu terbuka, false berarti menu minimize 
         //(harus ganti width saat diadd juga!)
         menu.setShowMenu(false);
@@ -154,7 +164,7 @@ public class SuperAdminView extends javax.swing.JFrame {
         });
         //saat app dijalankan, mulai dengan menampilkan panel form ini
         //view read data pembeli (view table, user card, dll)
-        mainPanel.showForm(new PembeliForm());
+        mainPanel.showForm(new TransaksiKasirForm());
     }
 
     /** This method is called from within the constructor to
@@ -212,7 +222,7 @@ public class SuperAdminView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SuperAdminView().setVisible(true);
+                new KasirView().setVisible(true);
             }
         });
     }

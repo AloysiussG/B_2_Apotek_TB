@@ -366,6 +366,7 @@ public class PembeliForm extends javax.swing.JPanel {
     private void initTableListener() {
 
         customTable.addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent event) {
 
                 //get value dari table clicked

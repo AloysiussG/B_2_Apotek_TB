@@ -39,6 +39,8 @@ public class PengadaanObatTable extends AbstractTableModel {
                 return list.get(rowIndex).getSupplier();
             case 4:
                 return list.get(rowIndex).getTanggalPengadaan();
+            case 5:
+                return list.get(rowIndex);
             default :
                 return null;
         }
