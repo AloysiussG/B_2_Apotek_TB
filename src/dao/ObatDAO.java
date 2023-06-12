@@ -8,7 +8,6 @@ package dao;
  *
  * @author ASUS
  */
-
 import model.Obat;
 import connection.DbConnection;
 import java.sql.Connection;
@@ -18,111 +17,113 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ObatDAO {
+
     private DbConnection dbCon = new DbConnection();
-    private Connection con; 
-    
-    public List<Obat> showObat(String query){
+    private Connection con;
+
+    public List<Obat> showObat(String query) {
         con = dbCon.makeConnection();
         String sql = "SELECT * FROM obat WHERE (idObat LIKE "
-                + "'%" +query + "%'"
-                + "OR namaObat LIKE '%" +query + "%'"
-                + "OR tanggalKadaluarsa LIKE '%" +query + "%'"
-                + "OR harga LIKE '%" +query + "%'"
-                + "OR tanggalProduksi LIKE '%" +query + "%'"
-                + "OR kuantitas LIKE '%" +query + "%')";    
-        
+                + "'%" + query + "%' "
+                + "OR namaObat LIKE '%" + query + "%' "
+                + "OR tanggalKadaluarsa LIKE '%" + query + "%' "
+                + "OR harga LIKE '%" + query + "%' "
+                + "OR tanggalProduksi LIKE '%" + query + "%' "
+                + "OR kuantitas LIKE '%" + query + "%')";
+
         System.out.println(sql);
         System.out.println("Mengambil Data Obat");
-        
+
         List<Obat> list = new ArrayList();
-        
-        try{
+
+        try {
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery(sql);
-            if(rs != null){
-                while(rs.next()){
-                    Obat obat = new Obat
-                            (Integer.parseInt(rs.getString("idObat")),
+            if (rs != null) {
+                while (rs.next()) {
+                    Obat obat = new Obat(Integer.parseInt(rs.getString("idObat")),
                             Integer.parseInt(rs.getString("kuantitas")),
                             rs.getString("namaObat"),
                             rs.getString("tanggalKadaluarsa"),
-                            rs.getString("tanggalProduksi"), 
+                            rs.getString("tanggalProduksi"),
                             Double.parseDouble(rs.getString("harga"))
-                            );
+                    );
+                    list.add(obat);
                 }
             }
-        }catch(Exception e){
-            System.out.println("Error Reading Databse");
+        } catch (Exception e) {
+            System.out.println("Error Reading Database");
             e.printStackTrace();
         }
-        
+
         dbCon.closeConnection();
         return list;
     }
-    
-    public void insertObat(Obat obat){
+
+    public void insertObat(Obat obat) {
         con = dbCon.makeConnection();
         String sql = null;
-        
+
         sql = "INSERT INTO `obat` (`namaObat`, `tanggalKadaluarsa`, `harga`, `tanggalProduksi`, `kuantitas`) VALUES ("
-                + obat.getNamaObat() + "','" + obat.getTanggalKadaluarsa()+ "'," + obat.getHarga() + ",'" + obat.getTanggalProduksi() + "'," + obat.getKuantitas()+ ")"; System.out.println("Adding Obat");
-        
-        try{
+                + obat.getNamaObat() + "','" + obat.getTanggalKadaluarsa() + "'," + obat.getHarga() + ",'" + obat.getTanggalProduksi() + "'," + obat.getKuantitas() + ")";
+        System.out.println("Adding Obat");
+
+        try {
             Statement statement = con.createStatement();
             int result = statement.executeUpdate(sql);
             System.out.println("Added " + result + " obat");
             statement.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Error Adding Obat");
             System.out.println(e);
         }
-        
+
         dbCon.closeConnection();
     }
-    
-    public void updateObat(int id, Obat obat){
+
+    public void updateObat(int id, Obat obat) {
         con = dbCon.makeConnection();
         String sql = null;
-        
+
         sql = "UPDATE obat SET namaObat = '" + obat.getNamaObat()
                 + "', tanggalKadaluarsa = '" + obat.getTanggalKadaluarsa()
-                + "', harga = '" + obat.getHarga() 
+                + "', harga = '" + obat.getHarga()
                 + "', tanggalProduksi = '" + obat.getTanggalProduksi()
                 + "', kuantitas = '" + obat.getKuantitas()
                 + "' WHERE idObat = '" + obat.getIdObat() + "'";
         System.out.println("Editing Obat");
-        
-        try{
+
+        try {
             Statement statement = con.createStatement();
             int result = statement.executeUpdate(sql);
             System.out.println("Edited " + result + " obat");
             statement.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Error Editing Obat");
             System.out.println(e);
         }
-        
+
         dbCon.closeConnection();
-    }   
-    
-    public void deleteObat(int id){
+    }
+
+    public void deleteObat(int id) {
         con = dbCon.makeConnection();
         String sql = null;
-        
+
         sql = "DELETE FROM `obat` WHERE `idObat` = " + id + "";
         System.out.println("Deleting Obat");
-        
-        try{
+
+        try {
             Statement statement = con.createStatement();
             int result = statement.executeUpdate(sql);
-            System.out.println("Deleted "  + result + " obat");
+            System.out.println("Deleted " + result + " obat");
             statement.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Error Deleting Obat");
             System.out.println(e);
         }
-        
+
         dbCon.closeConnection();
     }
-    
+
 }

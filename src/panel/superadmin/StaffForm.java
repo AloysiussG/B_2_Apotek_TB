@@ -257,8 +257,10 @@ public class StaffForm extends javax.swing.JPanel {
         roleComboBox.removeAllItems();
         for (Role role : listRole) {
             roleComboBox.addItem(role);
+            if (role.getNamaRole().equals(s.getRole().getNamaRole())) {
+                roleComboBox.setSelectedItem(role);
+            }
         }
-        roleComboBox.setSelectedItem(s.getRole());
     }
 
     private void initTanggalMasuk(Staff s) {
