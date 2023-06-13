@@ -14,7 +14,9 @@ import swing.component.dashboard.NoUserCard;
 import control.PenggunaControl;
 import control.RoleControl;
 import control.StaffControl;
+import control.TransaksiControl;
 import control.UserControl;
+import exception.DeleteObatException;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -46,6 +48,7 @@ public class ObatForm extends javax.swing.JPanel {
     private StaffControl sc;
     private UserControl uc;
     private RoleControl rc;
+    private TransaksiControl tc;
 
     private static ColorPallete cp = new ColorPallete();
     private ObatCard obatCard;
@@ -65,6 +68,7 @@ public class ObatForm extends javax.swing.JPanel {
         this.uc = new UserControl();
         this.rc = new RoleControl();
         this.sc = new StaffControl();
+        this.tc = new TransaksiControl();
 
         initComponents();
 
@@ -259,7 +263,12 @@ public class ObatForm extends javax.swing.JPanel {
         addFieldSearchActionListener();
     }
 
-    //Method-method pada Make Staff Panel
+    private void deleteObatException(int idObat) throws DeleteObatException {
+        if (tc.cekNullObat(idObat) == 1) {
+            throw new DeleteObatException();
+        }
+    }
+
     //Method-method pada Create/Tambah Panel
     private void resetCreatePanel() {
         inputNama.setText("");
@@ -407,12 +416,18 @@ public class ObatForm extends javax.swing.JPanel {
                     obatCard.addBtnDeleteActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {
-                            //ketika btn delete di user card
-                            oc.deleteDataObat(obat.getIdObat());
-                            //uc.deleteDataUser(pengguna.getUser().getIdUser());
-                            System.out.println("Berhasil delete");
-                            showUserCard(noUserCard);
-                            setTableModel(oc.showDataObat(""));
+                            try {
+                                //ketika btn delete di user card
+                                deleteObatException(obat.getIdObat());
+                                oc.deleteDataObat(obat.getIdObat());
+                                //uc.deleteDataUser(pengguna.getUser().getIdUser());
+                                System.out.println("Berhasil delete");
+                                showUserCard(noUserCard);
+                                setTableModel(oc.showDataObat(""));
+
+                            } catch (DeleteObatException e) {
+                                JOptionPane.showMessageDialog(null, e.message());
+                            }
                         }
                     });
 //                    //user card button make staff action listener

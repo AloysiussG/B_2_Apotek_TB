@@ -518,11 +518,42 @@ public class LoginRegisterView extends javax.swing.JFrame {
     }
     
     public void uniqueException() throws UniqueException{
-       for(int i=0; i<uc.countDataUser(); i++){
-           if(uc.uniqueUser(inputNamaRegister.getText()) == true){
-               throw new UniqueException();
-           }
-       }
+        if(uc.uniqueUser(inputUsernameRegister.getText()) == true){
+            throw new UniqueException();
+        }
+       
+    }
+    
+    public void namaKosongException() throws NamaKosongException{
+        if(inputNamaRegister.getText().isEmpty()){
+            throw new NamaKosongException();
+        }
+    }
+    
+    public void noHpKosongException() throws NoHpKosongException{
+        if(inputNoTelpRegister.getText().isEmpty()){
+            throw new NoHpKosongException();
+        }
+    }
+    
+    public void alamatKosongException() throws AlamatKosongException{
+        if(inputAlamatRegister.getText().isEmpty()){
+            throw new AlamatKosongException();
+        }
+    }
+    
+    public void noHpNumericException() throws NumberFormatException, NoHpNumericException{
+        try{
+            long temp = Long.parseLong(inputNoTelpRegister.getText());
+        }catch(NumberFormatException e){
+            throw new NoHpNumericException();
+        }
+    }
+    
+    public void noTelplengthException() throws noTelpLengthException{
+        if(inputNoTelpRegister.getText().length() < 10 || inputNoTelpRegister.getText().length() > 13){
+            throw new noTelpLengthException();
+        }
     }
 
     private void registerHereMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registerHereMouseClicked
@@ -548,116 +579,125 @@ public class LoginRegisterView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseRegisterActionPerformed
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
-        try{
-//           usernameLoginKosongException();
-//           passwordLoginKosongException();
-            
-            //Async process agar animasi tidak lag saat ditekan sembari menunggu memproses query
-            Thread newThread = new Thread(() -> {
-                if(inputUsernameLogin.getText().isEmpty()){
-                    JOptionPane.showMessageDialog(null, "Username tidak boleh kosong!");
-                }else if(inputPasswordLogin.getPassword().length == 0){
-                    JOptionPane.showMessageDialog(null, "Password tidak boleh kosong!");
-                }else{
-                    String temp = String.valueOf(inputPasswordLogin.getPassword());
-                    String temp2 = inputUsernameLogin.getText();
-                    int index = uc.checkLoginUser(temp2, temp);
-                    int indexStaff = sc.findStaff(index);
-                    
-                    System.out.println(index);
-                    if(inputUsernameLogin.getText().equals("master") && temp.equals("master")){
-                        JOptionPane.showMessageDialog(null, "Login as Master!");
-                        SuperAdminView sav = new SuperAdminView();
-                        this.dispose();
-                        sav.setVisible(true);
-                    }else if(indexStaff != -1){
-                        tempStaff = sc.returnStaff(indexStaff);
-                        sLogin = new Staff(tempStaff.getNIP(), tempStaff.getNama(), null, tempStaff.getNoTelp(), tempStaff.getAlamat(), tempStaff.getRole(), tempStaff.getUser());
-                        System.out.println(sLogin.getRole().getIdRole());
-                        switch (sLogin.getRole().getIdRole()) {
-                            case 4:
-                                JOptionPane.showMessageDialog(null, "Login as " + sc.returnName(index) + " - Kepala Gudang");
-                                KepalaGudangView kgv = new KepalaGudangView(sLogin);
-                                this.dispose();
-                                kgv.setVisible(true);
-                                break;
-                            case 5:
-                                JOptionPane.showMessageDialog(null, "Login as " + sc.returnName(index) + " - Apoteker");
-                                ApotekerView av = new ApotekerView(sLogin);
-                                this.dispose();
-                                av.setVisible(true);
-                                break;
-                            case 6:
-                                JOptionPane.showMessageDialog(null, "Login as " + sc.returnName(index) + " - Kasir");
-                                KasirView kv = new KasirView(sLogin);
-                                this.dispose();
-                                kv.setVisible(true);
-                                break;
-                            default:
-                                JOptionPane.showMessageDialog(null, "Error");
-                                break;
+        
+        //Async process agar animasi tidak lag saat ditekan sembari menunggu memproses query
+        Thread newThread = new Thread(() -> {
+            try{
+                usernameLoginKosongException();
+                passwordLoginKosongException();
+
+                String temp = String.valueOf(inputPasswordLogin.getPassword());
+                String temp2 = inputUsernameLogin.getText();
+                int index = uc.checkLoginUser(temp2, temp);
+                int indexStaff = sc.findStaff(index);
+                System.out.println(index);
+                if(inputUsernameLogin.getText().equals("master") && temp.equals("master")){
+                    JOptionPane.showMessageDialog(null, "Login as Master!");
+                    SuperAdminView sav = new SuperAdminView();
+                    this.dispose();
+                    sav.setVisible(true);
+                }else if(indexStaff != -1){
+                    tempStaff = sc.returnStaff(indexStaff);
+                    sLogin = new Staff(tempStaff.getNIP(), tempStaff.getNama(), null, tempStaff.getNoTelp(), tempStaff.getAlamat(), tempStaff.getRole(), tempStaff.getUser());
+                    System.out.println(sLogin.getRole().getIdRole());
+                    switch (sLogin.getRole().getIdRole()) {
+                        case 1:
+                            JOptionPane.showMessageDialog(null, "Login as " + sc.returnName(index) + " - Apoteker");
+                            ApotekerView av = new ApotekerView(sLogin);
+                            this.dispose();
+                            av.setVisible(true);
+                            break;
+                        case 2:
+                            JOptionPane.showMessageDialog(null, "Login as " + sc.returnName(index) + " - Kepala Gudang");
+                            KepalaGudangView kgv = new KepalaGudangView(sLogin);
+                            this.dispose();
+                            kgv.setVisible(true);
+                            break;
+                        case 3:
+                            JOptionPane.showMessageDialog(null, "Login as " + sc.returnName(index) + " - Kasir");
+                            KasirView kv = new KasirView(sLogin);
+                            this.dispose();
+                            kv.setVisible(true);
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(null, "Error");
+                            break;
                         }
-                    }else if(index != -1){
-                        System.out.println(index);
-                        JOptionPane.showMessageDialog(null, "Login as " + pc.returnNamePengguna(index));
-                        String pw = String.valueOf(inputPasswordLogin.getPassword());
-                        User uLogin = new User(index, inputUsernameLogin.getText(), pw);
-                        System.out.println(uLogin.getUsername());
-                        tempPengguna = pc.findPengguna(uLogin.getIdUser(), uLogin);
-                        pLogin = new Pengguna(tempPengguna.getIdPengguna(), tempPengguna.getNama(), tempPengguna.getNoTelp(), tempPengguna.getAlamat(), uLogin);
-                        System.out.println(pLogin.getNama());
-                        System.out.println(pLogin.getNoTelp());
-                        PenggunaView pv = new PenggunaView(pLogin);
-                        this.dispose();
-                        pv.setVisible(true);
-                    }else{
-                        JOptionPane.showMessageDialog(null, "User tidak ditemukan!");   
-                    }
+                }else if(index != -1){
+                    System.out.println(index);
+                    JOptionPane.showMessageDialog(null, "Login as " + pc.returnNamePengguna(index));
+                    String pw = String.valueOf(inputPasswordLogin.getPassword());
+                    User uLogin = new User(index, inputUsernameLogin.getText(), pw);
+                    System.out.println(uLogin.getUsername());
+                    tempPengguna = pc.findPengguna(uLogin.getIdUser(), uLogin);
+                    pLogin = new Pengguna(tempPengguna.getIdPengguna(), tempPengguna.getNama(), tempPengguna.getNoTelp(), tempPengguna.getAlamat(), uLogin);
+                    System.out.println(pLogin.getNama());
+                    System.out.println(pLogin.getNoTelp());
+                    PenggunaView pv = new PenggunaView(pLogin);
+                    this.dispose();
+                    pv.setVisible(true);
+                }else{
+                    JOptionPane.showMessageDialog(null, "User tidak ditemukan!");   
                 }
-            });
-            //Async
-            newThread.start();     
-        }catch(Exception e){
-            System.out.println(e);
-        }
+
+            }catch(UsernameKosongException e){
+                JOptionPane.showMessageDialog(null, e.message());
+            }catch(PasswordKosongException e){
+                JOptionPane.showMessageDialog(null, e.message());
+            }catch(Exception e){
+                System.out.println(e);
+            }
+        });
+        //Async
+        newThread.start();
     }//GEN-LAST:event_loginBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
-        try{
-//            usernameRegisterKosongException();
-//            passwordRegisterKosongException();
-            //Async process agar animasi tidak lag saat ditekan sembari menunggu memproses query
-            Thread newThread = new Thread(() -> {
-                if(inputUsernameRegister.getText().isEmpty()){
-                    JOptionPane.showMessageDialog(null, "Username tidak boleh kosong!");
-                }else if(uc.uniqueUser(inputUsernameRegister.getText()) == false){
-                    JOptionPane.showMessageDialog(null, "Username telah digunakan!");
-                }else if(inputNamaRegister.getText().isEmpty()){
-                    JOptionPane.showMessageDialog(null, "Nama tidak boleh kosong!");
-                }else if(inputNoTelpRegister.getText().isEmpty()){
-                    JOptionPane.showMessageDialog(null, "Nomor telepon tidak boleh kosong!");
-                }else if(inputAlamatRegister.getText().isEmpty()){
-                    JOptionPane.showMessageDialog(null, "Alamat tidak boleh kosong!");
-                }else if(inputPasswordRegister.getPassword().length == 0){
-                    JOptionPane.showMessageDialog(null, "Password tidak boleh kosong!");
-                }else{
-                    String pw = String.valueOf(inputPasswordRegister.getPassword());
-                    User u = new User(-1, inputUsernameRegister.getText(), pw);
-                    uc.insertDataUser(u);
-                    Pengguna p = new Pengguna(0, inputNamaRegister.getText(), inputNoTelpRegister.getText(), inputAlamatRegister.getText(), u);
-                    pc.insertPengguna(p);
+        //Async process agar animasi tidak lag saat ditekan sembari menunggu memproses query
+        Thread newThread = new Thread(() -> {
+            try{
 
-                    JOptionPane.showMessageDialog(null, "Berhasil Mendaftarkan " + p.getNama());
-                    clearRegisterComponents();
-                    cardLayout.show(cardLayoutPanel, "layoutLogin");
-                }
-            });
-            //Async
-            newThread.start();
-                
-        }catch(Exception e){
-            System.out.println(e);
-        }
+                usernameRegisterKosongException();
+                uniqueException();
+                namaKosongException();
+                noHpKosongException();
+                noHpNumericException();
+                noTelplengthException();
+                alamatKosongException();
+                passwordRegisterKosongException();
+
+                String pw = String.valueOf(inputPasswordRegister.getPassword());
+                User u = new User(-1, inputUsernameRegister.getText(), pw);
+                uc.insertDataUser(u);
+                Pengguna p = new Pengguna(0, inputNamaRegister.getText(), inputNoTelpRegister.getText(), inputAlamatRegister.getText(), u);
+                pc.insertPengguna(p);
+
+                JOptionPane.showMessageDialog(null, "Berhasil Mendaftarkan " + p.getNama());
+                clearRegisterComponents();
+                cardLayout.show(cardLayoutPanel, "layoutLogin");
+
+            }catch(UsernameKosongException e){
+                JOptionPane.showMessageDialog(null, e.message());
+            }catch(UniqueException e){
+                JOptionPane.showMessageDialog(null, e.message());
+            }catch(NamaKosongException e){
+                JOptionPane.showMessageDialog(null, e.message());
+            }catch(NoHpKosongException e){
+                JOptionPane.showMessageDialog(null, e.message());
+            }catch(NoHpNumericException e){
+                JOptionPane.showMessageDialog(null, e.message());
+            }catch(noTelpLengthException e){
+                JOptionPane.showMessageDialog(null, e.message());
+            }catch(AlamatKosongException e){
+                JOptionPane.showMessageDialog(null, e.message());
+            }catch(PasswordKosongException e){
+                JOptionPane.showMessageDialog(null, e.message());
+            }catch(Exception e){
+                System.out.println(e);
+            }
+        });
+        //Async
+        newThread.start();   
     }//GEN-LAST:event_registerBtnActionPerformed
 
     /**

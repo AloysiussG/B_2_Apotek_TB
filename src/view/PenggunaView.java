@@ -7,6 +7,8 @@ package view;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.UIManager;
 import model.Pengguna;
 import panel.pengguna.component.MainForm;
@@ -32,10 +34,20 @@ public class PenggunaView extends javax.swing.JFrame {
 
         initOtherComponents();
         setBackground(new Color(0, 0, 0, 0));
+
     }
 
     private void initOtherComponents() {
         mainForm = new MainForm(pengguna);
+
+        mainForm.addBtnLogoutActionListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                LoginRegisterView lrv = new LoginRegisterView();
+                dispose();
+                lrv.setVisible(true);
+            }
+        });
 
         winButton.initEvent(this, background);
         mainPanel.setLayout(new BorderLayout());

@@ -49,8 +49,85 @@ public class PengadaanObatDAO {
 
     }
 
+//    public List<PengadaanObat> showPengadaanObat(String query) {
+//
+//        con = dbCon.makeConnection();
+//
+//        String sql
+//                = "SELECT po.*, ob.*, s.*, r.*, u.* "
+//                + "FROM pengadaanobat AS po "
+//                + "JOIN obat AS ob "
+//                + "ON po.idObat = ob.idObat "
+//                + "JOIN staff AS s "
+//                + "ON po.nip = s.nip "
+//                + "JOIN role AS r "
+//                + "ON s.idRole = r.idRole "
+//                + "JOIN user AS u "
+//                + "ON s.idUser = u.idUser "
+//                + "WHERE ( "
+//                + "po.idPengadaan LIKE '%" + query + "%' "
+//                + "OR ob.idObat LIKE '%" + query + "%' "
+//                + "OR s.nama LIKE '%" + query + "%' "
+//                + "OR po.kuantitas LIKE '%" + query + "%' "
+//                + "OR po.supplier LIKE '%" + query + "%' "
+//                + "OR po.tanggalPengadaan LIKE '%" + query + "%')";
+//
+//        System.out.println("Mengambil Data Pengadaan Obat...");
+//        List<PengadaanObat> list = new ArrayList();
+//
+//        try {
+//            Statement statement = con.createStatement();
+//            ResultSet rs = statement.executeQuery(sql);
+//
+//            if (rs != null) {
+//                while (rs.next()) {
+//                    Obat obat = new Obat(
+//                            Integer.parseInt(rs.getString("ob.idObat")),
+//                            Integer.parseInt(rs.getString("ob.kuantitas")),
+//                            rs.getString("ob.namaObat"),
+//                            rs.getString("ob.tanggalKadaluarsa"),
+//                            rs.getString("ob.tanggalProduksi"),
+//                            Double.parseDouble(rs.getString("ob.harga")));
+//
+//                    Role role = new Role(
+//                            Integer.parseInt(rs.getString("r.idRole")),
+//                            Double.parseDouble(rs.getString("r.gaji")),
+//                            rs.getString("r.namaRole"));
+//
+//                    User user = new User(
+//                            Integer.parseInt(rs.getString("u.idUser")),
+//                            rs.getString("u.username"),
+//                            rs.getString("u.password"));
+//
+//                    Staff staff = new Staff(
+//                            Integer.parseInt(rs.getString("s.nip")),
+//                            rs.getString("s.nama"),
+//                            rs.getString("s.tahunMasuk"),
+//                            rs.getString("s.noTelp"),
+//                            rs.getString("s.alamat"),
+//                            role, user);
+//
+//                    PengadaanObat pObat = new PengadaanObat(
+//                            Integer.parseInt(rs.getString("po.idPengadaan")),
+//                            Integer.parseInt(rs.getString("po.kuantitas")),
+//                            Integer.parseInt(rs.getString("po.idObat")),
+//                            rs.getString("po.supplier"),
+//                            rs.getString("po.tanggalPengadaan"),
+//                            obat, staff);
+//                    list.add(pObat);
+//                }
+//            }
+//            rs.close();
+//            statement.close();
+//        } catch (Exception e) {
+//            System.out.println("Error Reading Database...");
+//            System.out.println(e);
+//        }
+//
+//        dbCon.closeConnection();
+//        return list;
+//    }
     public List<PengadaanObat> showPengadaanObat(String query) {
-
         con = dbCon.makeConnection();
 
         String sql
@@ -66,7 +143,7 @@ public class PengadaanObatDAO {
                 + "ON s.idUser = u.idUser "
                 + "WHERE ( "
                 + "po.idPengadaan LIKE '%" + query + "%' "
-                + "OR ob.idObat LIKE '%" + query + "%' "
+                + "OR ob.namaObat LIKE '%" + query + "%' "
                 + "OR s.nama LIKE '%" + query + "%' "
                 + "OR po.kuantitas LIKE '%" + query + "%' "
                 + "OR po.supplier LIKE '%" + query + "%' "

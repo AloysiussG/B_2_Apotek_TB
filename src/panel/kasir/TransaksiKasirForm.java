@@ -6,18 +6,17 @@ package panel.kasir;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import control.ObatControl;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import swing.component.dashboard.NoUserCard;
 import control.PenggunaControl;
 import control.RoleControl;
 import control.StaffControl;
 import control.TransaksiControl;
 import control.UserControl;
+import exception.InputNegatifException;
 import exception.JumlahObatException;
 import exception.JumlahObatKosongException;
 import exception.TanggalKosongException;
@@ -82,6 +81,9 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
 
         if (s != null) {
             this.staffLogin = s;
+        } else {
+            JOptionPane.showMessageDialog(null, "[WARNING] tidak ada parameter staff / null! View ini harus diakses melalui view Login!");
+            System.out.println("[WARNING] tidak ada parameter staff / null!");
         }
 
         this.namaUserGroup = "Transaksi";
@@ -197,6 +199,7 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent arg0) {
                 //insert data transaksi ke database
                 try {
+                    inputNegatifExceptionCreate();
                     selectedIndex = namaObatComboBox.getSelectedIndex();
                     selectedObat = listObat.get(selectedIndex);
                     tanggalKosongException();
@@ -229,6 +232,8 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(null, e.message());
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null, "Kuantitas Harus Angka");
+                } catch (InputNegatifException e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
                 }
             }
         });
@@ -279,6 +284,12 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
         //action listener untuk search
         //tanpa button
         addFieldSearchActionListener();
+    }
+
+    public void inputNegatifExceptionCreate() throws InputNegatifException {
+        if (Integer.parseInt(inputKuantitas.getText()) == 0 || Integer.parseInt(inputKuantitas.getText()) < 0) {
+            throw new InputNegatifException();
+        }
     }
 
     private void clearText() {

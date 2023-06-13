@@ -65,6 +65,7 @@ public class TransaksiDAO {
                 + "OR p.nama LIKE '%" + query + "%'"
                 + "OR s.nama LIKE '%" + query + "%'"
                 + "OR o.namaObat LIKE '%" + query + "%'"
+                + "OR o.harga LIKE '%" + query + "%'"
                 + "OR t.jumlah LIKE '%" + query + "%')";
 
         System.out.println("Mengambil data Transaksi...");
@@ -129,6 +130,7 @@ public class TransaksiDAO {
 
     }
 
+    //cek null pengguna
     public int cekNull(int idPengguna) {
         con = dbCon.makeConnection();
 
@@ -140,8 +142,60 @@ public class TransaksiDAO {
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery(sql);
             if (rs != null) {
-                cek = 1;
-                return cek;
+                while (rs.next()) {
+                    cek = 1;
+                    return cek;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Eror Reading Database");
+            e.printStackTrace();
+        }
+        dbCon.closeConnection();
+        return cek;
+    }
+
+    //cek null staff
+    public int cekStaffNull(int nip) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT idTransaksi from transaksi WHERE (nip LIKE '%" + nip + "%')";
+        System.out.println(sql);
+        System.out.println("Mengambil id transaksi");
+        int cek = 0;
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs != null) {
+                while (rs.next()) {
+                    cek = 1;
+                    return cek;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Eror Reading Database");
+            e.printStackTrace();
+        }
+        dbCon.closeConnection();
+        return cek;
+    }
+
+    //cek null obat
+    public int cekObatNull(int idObat) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT idTransaksi from transaksi WHERE (idObat = " + idObat + ")";
+        System.out.println(sql);
+        System.out.println("Mengambil id transaksi");
+        int cek = 0;
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs != null) {
+                while (rs.next()) {
+                    cek = 1;
+                    return cek;
+                }
             }
         } catch (Exception e) {
             System.out.println("Eror Reading Database");

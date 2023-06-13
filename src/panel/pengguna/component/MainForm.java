@@ -8,6 +8,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import control.ObatControl;
 import control.TransaksiControl;
 import java.awt.CardLayout;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -76,13 +77,15 @@ public class MainForm extends javax.swing.JPanel {
         showItem("");
         cardLayout = (CardLayout) cardLayoutPanel.getLayout();
 
-        btnSearch.setVisible(false);
-
         lblLogo.setIcon(new FlatSVGIcon("img/logo/logo-green.svg", 0.04f));
         lblLogo.setIconTextGap(12);
         lblLogo.setFont(new Font("sansserif", 1, 18));
         lblLogo.setForeground(cp.getColor(1));
         lblLogo.setText("Tumbuh Bersama");
+
+        btnLogout.setText("");
+        btnLogout.setIcon(new FlatSVGIcon("img/icon/logout-green.svg", 0.4f));
+        btnLogout.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         lblProfile.setText("");
         lblUsername.setText(namaPenggunaLogin);
@@ -168,7 +171,9 @@ public class MainForm extends javax.swing.JPanel {
                             SwingUtilities.invokeLater(() -> {
                                 itemPanel.removeAll();
                                 for (Obat obat : obatSearched) {
-                                    addItem(obat);
+                                    if (obat.getKuantitas() > 0) {
+                                        addItem(obat);
+                                    }
                                 }
                                 itemPanel.revalidate();
                             });
@@ -189,6 +194,10 @@ public class MainForm extends javax.swing.JPanel {
             }
 
         });
+    }
+
+    public void addBtnLogoutActionListener(MouseAdapter event) {
+        btnLogout.addMouseListener(event);
     }
 
     private void initCheckout(Obat obat) {
@@ -212,7 +221,9 @@ public class MainForm extends javax.swing.JPanel {
         Obat obat;
         for (int i = 0; i < to.getRowCount(); i++) {
             obat = (Obat) to.getValueAt(i, 6);
-            addItem(obat);
+            if (obat.getKuantitas() > 0) {
+                addItem(obat);
+            }
         }
 
         //For List Item, add Item
@@ -262,9 +273,9 @@ public class MainForm extends javax.swing.JPanel {
         logo = new javax.swing.JPanel();
         lblLogo = new javax.swing.JLabel();
         searchField = new swing.component.TextFieldInput();
-        btnSearch = new swing.component.ButtonRectangle();
         lblProfile = new javax.swing.JLabel();
         lblUsername = new javax.swing.JLabel();
+        btnLogout = new javax.swing.JLabel();
         body = new javax.swing.JPanel();
         scrollPane = new javax.swing.JScrollPane();
         itemPanel = new panel.pengguna.component.ItemPanel();
@@ -317,9 +328,7 @@ public class MainForm extends javax.swing.JPanel {
                 .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(searchField, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(62, 62, 62))
         );
         logoLayout.setVerticalGroup(
             logoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -327,8 +336,7 @@ public class MainForm extends javax.swing.JPanel {
                 .addGap(6, 6, 6)
                 .addGroup(logoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(searchField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(searchField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(6, 6, 6))
         );
 
@@ -339,6 +347,8 @@ public class MainForm extends javax.swing.JPanel {
         lblUsername.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblUsername.setText("dddddddddddddddddddddddd");
 
+        btnLogout.setText("log");
+
         javax.swing.GroupLayout headerLayout = new javax.swing.GroupLayout(header);
         header.setLayout(headerLayout);
         headerLayout.setHorizontalGroup(
@@ -346,8 +356,10 @@ public class MainForm extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(logo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 112, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addComponent(btnLogout)
+                .addGap(10, 10, 10)
+                .addComponent(lblUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
                 .addComponent(lblProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -359,7 +371,8 @@ public class MainForm extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblProfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblUsername, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lblUsername, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -505,7 +518,7 @@ public class MainForm extends javax.swing.JPanel {
                         .addComponent(lblRp)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(132, Short.MAX_VALUE))
+                .addContainerGap(207, Short.MAX_VALUE))
         );
         panelDesc2Layout.setVerticalGroup(
             panelDesc2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -608,9 +621,9 @@ public class MainForm extends javax.swing.JPanel {
     private javax.swing.JPanel bodyCheckout;
     private swing.component.ButtonOutLine btnBack;
     private swing.component.ButtonRound btnBayar;
+    private javax.swing.JLabel btnLogout;
     private swing.component.ButtonRectangle btnMinus;
     private swing.component.ButtonRectangle btnPlus;
-    private swing.component.ButtonRectangle btnSearch;
     private javax.swing.JPanel cardLayoutPanel;
     private javax.swing.JPanel checkoutItemCard;
     private javax.swing.JPanel header;

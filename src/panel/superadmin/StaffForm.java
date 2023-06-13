@@ -4,6 +4,7 @@
  */
 package panel.superadmin;
 
+import Exception.InputKosongException;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -16,7 +17,11 @@ import swing.component.dashboard.UserCard;
 import control.PenggunaControl;
 import control.RoleControl;
 import control.StaffControl;
+import control.TransaksiControl;
 import control.UserControl;
+import exception.DeleteStaffException;
+import exception.NoHpNumericException;
+import exception.NoTelpException;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -27,6 +32,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import model.Role;
 import model.Staff;
@@ -46,6 +52,7 @@ public class StaffForm extends javax.swing.JPanel {
     private PenggunaControl pc;
     private UserControl uc;
     private RoleControl rc;
+    private TransaksiControl tc;
 
     private static ColorPallete cp = new ColorPallete();
     private UserCard userCard;
@@ -62,6 +69,7 @@ public class StaffForm extends javax.swing.JPanel {
         this.pc = new PenggunaControl();
         this.uc = new UserControl();
         this.rc = new RoleControl();
+        this.tc = new TransaksiControl();
 
         initComponents();
 
@@ -124,35 +132,49 @@ public class StaffForm extends javax.swing.JPanel {
         addBtnSaveActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                //update data ke database
-                Staff staffNew = staff;
-                staffNew.setNama(inputNamaLengkap.getText());
-                staffNew.setAlamat(inputAlamat.getText());
-                staffNew.setNoTelp(inputNoTelp.getText());
+                try {
+                    exceptionUpdatePanel();
+                    noTelpExceptionEdit();
+                    noNumericExceptionUpdate();
 
-                //mengambil value dari jdatechooser dan combo box dropdown
-                //lalu melakukan insert staff dan mendelete pengguna/pembeli
-                if (tanggalMasukDateChooser.getDate() != null) {
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
-                    staffNew.setTahunMasuk(inputTglMasuk);
+                    //update data ke database
+                    Staff staffNew = staff;
+                    staffNew.setNama(inputNamaLengkap.getText());
+                    staffNew.setAlamat(inputAlamat.getText());
+                    staffNew.setNoTelp(inputNoTelp.getText());
 
-                    Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
-                    staffNew.setRole(rolePilihan);
+                    //mengambil value dari jdatechooser dan combo box dropdown
+                    //lalu melakukan insert staff dan mendelete pengguna/pembeli
+                    if (tanggalMasukDateChooser.getDate() != null) {
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                        String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
+                        staffNew.setTahunMasuk(inputTglMasuk);
 
-                    sc.updateDataStaff(staffNew);
+                        Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
+                        staffNew.setRole(rolePilihan);
 
-                    System.out.println(inputTglMasuk);
-                    System.out.println(rolePilihan.getIdRole());
-                    System.out.println("Berhasil update staff!");
-                } else {
-                    System.out.println("[EXCEPTION] Tanggal pilihan null!");
+                        sc.updateDataStaff(staffNew);
+
+                        System.out.println(inputTglMasuk);
+                        System.out.println(rolePilihan.getIdRole());
+                        System.out.println("Berhasil update staff!");
+                    } else {
+                        System.out.println("[EXCEPTION] Tanggal pilihan null!");
+                    }
+
+                    //update table model dan user card dan kembalikan ke panel read
+                    resetUpdatePanel();
+                    resetReadPanel();
+                    JOptionPane.showMessageDialog(null, "Berhasil update staff");
+                    cardLayout.show(cardPanel, "read");
+
+                } catch (InputKosongException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (NoTelpException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (NoHpNumericException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
                 }
-
-                //update table model dan user card dan kembalikan ke panel read
-                resetUpdatePanel();
-                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
             }
         });
         //button cancel action listener fungsinya sama seperti button back
@@ -246,6 +268,30 @@ public class StaffForm extends javax.swing.JPanel {
         //action listener untuk search
         //tanpa button
         addFieldSearchActionListener();
+    }
+
+    private void noTelpExceptionEdit() throws NoTelpException {
+        if (inputNoTelp.getText().length() < 10 || inputNoTelp.getText().length() > 13) {
+            throw new NoTelpException();
+        }
+    }
+
+    public void noNumericExceptionUpdate() throws NumberFormatException, NoHpNumericException {
+        try {
+            long temp = Long.parseLong(inputNoTelp.getText());
+        } catch (NumberFormatException e) {
+            throw new NoHpNumericException();
+        }
+    }
+
+    private void exceptionUpdatePanel() throws InputKosongException {
+        if (inputNamaLengkap.getText().isBlank()
+                || inputAlamat.getText().isBlank()
+                || inputNoTelp.getText().isBlank()
+                || tanggalMasukDateChooser.getDate() == null
+                || roleComboBox.getModel().getSelectedItem() == null) {
+            throw new InputKosongException();
+        }
     }
 
     private void resetTanggalMasuk() {
@@ -391,6 +437,12 @@ public class StaffForm extends javax.swing.JPanel {
         panelCard.revalidate();
     }
 
+    private void deleteStaffException(int nip) throws DeleteStaffException {
+        if (tc.cekNullStaff(nip) == 1) {
+            throw new DeleteStaffException();
+        }
+    }
+
     //listener untuk table clicked pada panel ReadDataPembeli 
     //serta memiliki listener untuk komponen2 pada panel selanjutnya
     private void initTableListener() {
@@ -427,12 +479,17 @@ public class StaffForm extends javax.swing.JPanel {
                     userCard.addBtnDeleteActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {
-                            //ketika btn delete di user card
-                            sc.deleteDataStaff(staff.getNIP());
-                            uc.deleteDataUser(staff.getUser().getIdUser());
-                            System.out.println("Berhasil delete");
-                            showUserCard(noUserCard);
-                            setTableModel(sc.showDataStaff(""));
+                            try {
+                                deleteStaffException(staff.getNIP());
+                                //ketika btn delete di user card
+                                sc.deleteDataStaff(staff.getNIP());
+                                uc.deleteDataUser(staff.getUser().getIdUser());
+                                System.out.println("Berhasil delete");
+                                showUserCard(noUserCard);
+                                setTableModel(sc.showDataStaff(""));
+                            } catch (DeleteStaffException e) {
+                                JOptionPane.showMessageDialog(null, e.message());
+                            }
                         }
                     });
                     //user card button make staff action listener
