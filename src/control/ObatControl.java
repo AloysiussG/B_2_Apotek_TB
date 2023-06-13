@@ -37,7 +37,17 @@ public class ObatControl {
         oDao.updateObat(id, obat);
     }
 
-    public void deleteDataPasien(int id) {
+    public void deleteDataObat(int id) {
         oDao.deleteObat(id);
+    }
+
+    //tambahan
+    public int findDataKuantitasObat(String namaObat) {
+        return oDao.findKuantitasObat(namaObat);
+    }
+
+    public List<Obat> showListObat() {
+        List<Obat> dataObat = oDao.showObatDropdown();
+        return dataObat;
     }
 }

@@ -41,7 +41,8 @@ public class ObatDAO {
             ResultSet rs = statement.executeQuery(sql);
             if (rs != null) {
                 while (rs.next()) {
-                    Obat obat = new Obat(Integer.parseInt(rs.getString("idObat")),
+                    Obat obat = new Obat(
+                            Integer.parseInt(rs.getString("idObat")),
                             Integer.parseInt(rs.getString("kuantitas")),
                             rs.getString("namaObat"),
                             rs.getString("tanggalKadaluarsa"),
@@ -124,6 +125,63 @@ public class ObatDAO {
         }
 
         dbCon.closeConnection();
+    }
+
+    //tambahan
+    public List<Obat> showObatDropdown() {
+        con = dbCon.makeConnection();
+        String sql = "SELECT * FROM obat";
+        System.out.println("Mengambil data Obat...");
+
+        List<Obat> list = new ArrayList();
+
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs != null) {
+                while (rs.next()) {
+                    Obat o = new Obat(
+                            Integer.parseInt(rs.getString("idObat")),
+                            Integer.parseInt(rs.getString("kuantitas")),
+                            rs.getString("namaObat"),
+                            rs.getString("tanggalKadaluarsa"),
+                            rs.getString("tanggalProduksi"),
+                            Double.parseDouble(rs.getString("harga"))
+                    );
+                    list.add(o);
+                }
+            }
+            rs.close();
+            statement.close();
+        } catch (Exception e) {
+            System.out.println("Eror reading database...");
+            System.out.println(e);
+        }
+        dbCon.closeConnection();
+
+        return list;
+    }
+
+    public int findKuantitasObat(String namaObat) {
+        con = dbCon.makeConnection();
+        String sql = "SELECT kuantitas FROM obat WHERE (namaObat LIKE '%" + namaObat + "%')";
+        System.out.println(sql);
+        System.out.println("Mengambil Kuantitas Obat");
+        int kuantitas = 0;
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            while (rs.next()) {
+                kuantitas = Integer.parseInt(rs.getString("kuantitas"));
+                return kuantitas;
+            }
+        } catch (Exception e) {
+            System.out.println("Eror Reading Database");
+            e.printStackTrace();
+        }
+
+        dbCon.closeConnection();
+        return kuantitas;
     }
 
 }

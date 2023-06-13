@@ -9,17 +9,20 @@ package model;
  * @author Gregory Wilson
  */
 public class PengadaanObat {
+
     private int idPengadaan, kuantitas, idObat;
     private String supplier, tanggalPengadaan;
     private Obat obat;
+    private Staff staff;
 
-    public PengadaanObat(int idPengadaan, int kuantitas, int idObat, String supplier, String tanggalPengadaan, Obat obat) {
+    public PengadaanObat(int idPengadaan, int kuantitas, int idObat, String supplier, String tanggalPengadaan, Obat obat, Staff staff) {
         this.idPengadaan = idPengadaan;
         this.kuantitas = kuantitas;
         this.idObat = idObat;
         this.supplier = supplier;
         this.tanggalPengadaan = tanggalPengadaan;
         this.obat = obat;
+        this.staff = staff;
     }
 
     public Obat getObat() {
@@ -73,6 +76,13 @@ public class PengadaanObat {
     public void setTanggalPengadaan(String tanggalPengadaan) {
         this.tanggalPengadaan = tanggalPengadaan;
     }
-    
-    
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
+
 }

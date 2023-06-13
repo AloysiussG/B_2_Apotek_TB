@@ -3,6 +3,7 @@ package control;
 import model.Pengguna;
 import java.util.List;
 import dao.PenggunaDAO;
+import model.User;
 import table.PenggunaTable;
 
 public class PenggunaControl {
@@ -25,6 +26,22 @@ public class PenggunaControl {
 
     public void deleteDataPengguna(int id) {
         pm.deletePengguna(id);
+    }
+
+    public String returnNamePengguna(int index) {
+        return pm.returnName(index);
+    }
+
+    public int findLastIdPengguna() {
+        return pm.findLastId();
+    }
+
+    public Pengguna findPengguna(int idUser, User user) {
+        return pm.findPengguna(idUser, user);
+    }
+
+    public void alterIncrement() {
+        pm.setIncrement();
     }
 
 }

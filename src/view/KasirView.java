@@ -8,6 +8,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.UIManager;
+import model.Staff;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
@@ -30,14 +31,20 @@ public class KasirView extends javax.swing.JFrame {
     private Header header;
     private DashboardMainPanel mainPanel;
     private Animator animator;
+    private Staff staff;
 
     /** Creates new form SuperAdminView */
-    public KasirView() {
+    public KasirView(Staff s) {
         //inisialisasi variabel (disarankan berada diatas init components)
 
         //inisialisasi komponen
         initComponents();
-        initKasirView("Kasir", "Xx_K4s1R_xX");
+        if (s != null) {
+            this.staff = s;
+            initKasirView("Kasir", s.getNama());
+        } else {
+            initKasirView("Kasir", "KasirTheGod");
+        }
     }
 
     private void initKasirView(String roleView, String usernameView) {
@@ -58,7 +65,7 @@ public class KasirView extends javax.swing.JFrame {
                     //menggunakan async agar tidak lag animasinya saat dipencet
                     Thread newThread = new Thread(() -> {
                         try {
-                            mainPanel.showForm(new TransaksiKasirForm());
+                            mainPanel.showForm(new TransaksiKasirForm(staff));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -164,7 +171,7 @@ public class KasirView extends javax.swing.JFrame {
         });
         //saat app dijalankan, mulai dengan menampilkan panel form ini
         //view read data pembeli (view table, user card, dll)
-        mainPanel.showForm(new TransaksiKasirForm());
+        mainPanel.showForm(new TransaksiKasirForm(staff));
     }
 
     /** This method is called from within the constructor to
@@ -222,7 +229,7 @@ public class KasirView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new KasirView().setVisible(true);
+                new KasirView(null).setVisible(true);
             }
         });
     }

@@ -1,9 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package panel.apoteker;
 
+import Exception.InputKosongException;
+import Exception.TglProduksiException;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import control.ObatControl;
 import java.awt.Component;
@@ -22,14 +20,12 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import model.Obat;
 import model.Pengguna;
-import model.Role;
 import swing.ColorPallete;
 import swing.component.dashboard.ObatCard;
 import table.ObatTable;
@@ -91,11 +87,10 @@ public class ObatForm extends javax.swing.JPanel {
         btnCancelTbh.setForeground(cp.getColor(0));
         btnCancelTbh.setColorEffectRGB(220, 220, 220);
 
-        btnBackMS.setIcon(new FlatSVGIcon("img/icon/back.svg", 0.2f));
-        btnCancelMS.setBackground(new Color(240, 240, 240));
-        btnCancelMS.setForeground(cp.getColor(0));
-        btnCancelMS.setColorEffectRGB(220, 220, 220);
-
+//        btnBackMS.setIcon(new FlatSVGIcon("img/icon/back.svg", 0.2f));
+//        btnCancelMS.setBackground(new Color(240, 240, 240));
+//        btnCancelMS.setForeground(cp.getColor(0));
+//        btnCancelMS.setColorEffectRGB(220, 220, 220);
         containerCreate.setBackground(new Color(255, 255, 255));
 
         cardLayout = (CardLayout) cardPanel.getLayout();
@@ -128,16 +123,31 @@ public class ObatForm extends javax.swing.JPanel {
         addBtnSaveActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                //update data ke database
-//                Pengguna penggunaNew = pengguna;
-//                penggunaNew.setNama(inputNamaLengkap.getText());
-//                penggunaNew.setAlamat(inputAlamat.getText());
-//                penggunaNew.setNoTelp(inputNoTelp.getText());
+                try {
+                    inputKosongUpdateException();
+                    tglProduksiException(tanggalKadaluarsaChooser1.getDate(), tanggalProduksiChooser1.getDate());
+
+                    //update data ke database
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    String TanggalProduksi = formatter.format(tanggalProduksiChooser1.getDate());
+                    String TanggalKadaluarsa = formatter.format(tanggalKadaluarsaChooser1.getDate());
+                    Obat obatNew = new Obat(obat.getIdObat(), Integer.parseInt(inputKuantitas2.getText()), inputNama1.getText(), TanggalKadaluarsa, TanggalProduksi, Double.parseDouble(inputHarga1.getText()));
+                    oc.updateDataObat(obat.getIdObat(), obatNew);
+                    setTableModel(oc.showDataObat(""));
 //                pc.updateDataPengguna(penggunaNew);
 //                //update table model dan user card dan kembalikan ke panel read
 //                resetUpdatePanel();
 //                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
+                    resetReadPanel();
+                    cardLayout.show(cardPanel, "read");
+                } catch (InputKosongException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (NumberFormatException ec) {
+                    JOptionPane.showMessageDialog(null, "Kuantitas Dan Harga harus angka");
+                } catch (TglProduksiException ex) {
+                    JOptionPane.showMessageDialog(null, ex.message());
+                }
+
             }
         });
         //button cancel action listener fungsinya sama seperti button back
@@ -172,19 +182,32 @@ public class ObatForm extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 //insert data transaksi ke database
-//                //insert user data ke database
-//                String username = inputUsernameTbh.getText();
-//                User createUser = new User(-1, username, inputPasswordTbh.getText());
-//                uc.insertDataUser(createUser);
-//                createUser.setIdUser(uc.findIdByUsername(username));
-//                //insert pengguna data ke database
-//                Pengguna createPengguna = new Pengguna(-1, inputNamaLengkapTbh.getText(),
-//                        inputNoTelpTbh.getText(), inputKuantitas.getText(), createUser);
-//                pc.insertPengguna(createPengguna);
-//                //update table model dan user card dan kembalikan ke panel read
-//                resetUpdatePanel();
-//                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
+                try {
+                    inputKosongException();
+                    tglProduksiException(tanggalKadaluarsaChooser.getDate(), tanggalProduksiChooser.getDate());
+                    String namaObat = inputNama.getText();
+                    double hargaObat = Double.parseDouble(inputHarga.getText());
+                    int kuantitasObat = Integer.parseInt(inputKuantitas.getText());
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    String TanggalProduksi = formatter.format(tanggalProduksiChooser.getDate());
+                    String TanggalKadaluarsa = formatter.format(tanggalKadaluarsaChooser.getDate());
+                    Obat Ob = new Obat(0, kuantitasObat, namaObat, TanggalKadaluarsa, TanggalProduksi, hargaObat);
+                    oc.insertDataObat(Ob);
+//            RekamMedis rm = new RekamMedis(diagnosaInput.getText(), Float.parseFloat(totalBiayaInput.getText()),tindakan, selectedTM, selectedPasien);
+//            rmc.insertDataRekamMedis(rm);
+                    //setTableModel(oc.showDataObat(""));
+                    resetCreatePanel();
+                    resetReadPanel();
+                    cardLayout.show(cardPanel, "read");
+                    //setComponents();
+                } catch (InputKosongException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (NumberFormatException ec) {
+                    JOptionPane.showMessageDialog(null, "Kuantitas Dan Harga harus angka");
+                } catch (TglProduksiException ex) {
+                    JOptionPane.showMessageDialog(null, ex.message());
+                }
+
             }
         });
         //action listener pada makestaff panel
@@ -237,45 +260,34 @@ public class ObatForm extends javax.swing.JPanel {
     }
 
     //Method-method pada Make Staff Panel
-    private void resetMakeStaffPanel() {
-        tanggalMasukDateChooser.setDate(null);
-    }
-
-    private void insertRoleToComboBox() {
-        List<Role> listRole = rc.showRole();
-        roleComboBox.removeAllItems();
-        for (Role role : listRole) {
-            roleComboBox.addItem(role);
-        }
-    }
-
-    private void initTanggalMasuk() {
-        LocalDate dateToday = LocalDate.now();
-        LocalDate dateThreeMonthsBeforeToday = dateToday.minusMonths(3);
-        //Maksimal input adalah hari ini, dan minimal input adalah 3 bulan sebelum hari ini
-        //Fungsi dibawah adalah untuk konversi dari LocalDate ke Date
-        tanggalMasukDateChooser.setMinSelectableDate(Date.from(dateThreeMonthsBeforeToday.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-        Date today = Date.from(dateToday.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-        tanggalMasukDateChooser.setMaxSelectableDate(today);
-        //Default value awal untuk textField tanggal masuk adalah today alias hari ini
-        //Sehingga disetting sebagai berikut:
-        tanggalMasukDateChooser.setDate(today);
-    }
-
     //Method-method pada Create/Tambah Panel
     private void resetCreatePanel() {
-//        inputNamaLengkapTbh.setText("");
-//        inputKuantitas.setText("");
-//        inputNoTelpTbh.setText("");
-//        inputUsernameTbh.setText("");
-//        inputPasswordTbh.setText("");
+        inputNama.setText("");
+        inputKuantitas.setText("");
+        inputHarga.setText("");
+        ResetTanggal();
+    }
+
+    private void ResetTanggal() {
+        tanggalKadaluarsaChooser.setDate(null);
+        tanggalKadaluarsaChooser1.setDate(null);
+        tanggalProduksiChooser.setDate(null);
+        tanggalProduksiChooser1.setDate(null);
     }
 
     //Method-method pada Update Panel
-    private void setTextToComponent(String nama, String alamat, String noTelp) {
-//        inputNamaLengkap.setText(nama);
-//        inputAlamat.setText(alamat);
-//        inputNoTelp.setText(noTelp);
+    private void setTextToComponent(Obat o) {
+        try {
+            inputHarga1.setText(String.valueOf(o.getHarga()));
+            inputKuantitas2.setText(String.valueOf(o.getKuantitas()));
+            inputNama1.setText(o.getNamaObat());
+            Date kadal = new SimpleDateFormat("yyyy-MM-dd").parse(o.getTanggalKadaluarsa());
+            Date prod = new SimpleDateFormat("yyyy-MM-dd").parse(o.getTanggalProduksi());
+            tanggalKadaluarsaChooser1.setDate(kadal);
+            tanggalProduksiChooser1.setDate(prod);
+        } catch (Exception e) {
+
+        }
     }
 
     private void addBtnBackActionListener(ActionListener event) {
@@ -291,9 +303,10 @@ public class ObatForm extends javax.swing.JPanel {
     }
 
     private void resetUpdatePanel() {
-//        inputNamaLengkap.setText("");
-//        inputAlamat.setText("");
-//        inputNoTelp.setText("");
+        inputNama.setText("");
+        inputKuantitas.setText("");
+        inputHarga.setText("");
+        ResetTanggal();
     }
 
     //Method-method pada Read Panel
@@ -386,7 +399,7 @@ public class ObatForm extends javax.swing.JPanel {
                         public void actionPerformed(ActionEvent arg0) {
                             //melempar event untuk dieksekusi ke panel/frame diatasnya yaitu SuperAdminView
                             //fungsinya untuk mengganti panel ReadDataPembeli ke panel UpdateDataPembeli
-                            //setTextToComponent(pengguna.getNama(), pengguna.getAlamat(), pengguna.getNoTelp());
+                            setTextToComponent(obat);
                             cardLayout.show(cardPanel, "update");
                         }
                     });
@@ -395,7 +408,7 @@ public class ObatForm extends javax.swing.JPanel {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {
                             //ketika btn delete di user card
-                            //pc.deleteDataPengguna(pengguna.getIdPengguna());
+                            oc.deleteDataObat(obat.getIdObat());
                             //uc.deleteDataUser(pengguna.getUser().getIdUser());
                             System.out.println("Berhasil delete");
                             showUserCard(noUserCard);
@@ -484,19 +497,6 @@ public class ObatForm extends javax.swing.JPanel {
         btnSaveTbh = new swing.component.ButtonRound();
         btnCancelTbh = new swing.component.ButtonRound();
         btnBackTbh = new swing.component.ButtonOutLine();
-        makeStaff = new javax.swing.JPanel();
-        jPanel9 = new javax.swing.JPanel();
-        btnBackMS = new swing.component.ButtonOutLine();
-        jPanel10 = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jPanel12 = new javax.swing.JPanel();
-        btnSaveMS = new swing.component.ButtonRound();
-        btnCancelMS = new swing.component.ButtonRound();
-        judulMS = new javax.swing.JLabel();
-        tanggalMasukDateChooser = new com.toedter.calendar.JDateChooser();
-        roleComboBox = new javax.swing.JComboBox<>();
-        jPanel13 = new javax.swing.JPanel();
 
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(684, 652));
@@ -557,6 +557,11 @@ public class ObatForm extends javax.swing.JPanel {
         jPanel1.setOpaque(false);
 
         btnTambah.setText("+");
+        btnTambah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -638,7 +643,7 @@ public class ObatForm extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
                 .addGap(43, 43, 43))
         );
 
@@ -651,6 +656,11 @@ public class ObatForm extends javax.swing.JPanel {
         btnBack.setForeground(cp.getColor(0)
         );
         btnBack.setText("Kembali");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -674,6 +684,11 @@ public class ObatForm extends javax.swing.JPanel {
         jPanel7.setOpaque(false);
 
         btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         btnCancel.setText("Cancel");
 
@@ -771,7 +786,7 @@ public class ObatForm extends javax.swing.JPanel {
                 .addComponent(labelNama1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(inputNama1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22)
+                .addGap(25, 25, 25)
                 .addComponent(labelHarga1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(inputHarga1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -883,6 +898,11 @@ public class ObatForm extends javax.swing.JPanel {
         jPanel11.setOpaque(false);
 
         btnSaveTbh.setText("Save");
+        btnSaveTbh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveTbhActionPerformed(evt);
+            }
+        });
 
         btnCancelTbh.setText("Cancel");
 
@@ -910,6 +930,11 @@ public class ObatForm extends javax.swing.JPanel {
         btnBackTbh.setForeground(cp.getColor(0)
         );
         btnBackTbh.setText("Kembali");
+        btnBackTbh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackTbhActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout containerCreateLayout = new javax.swing.GroupLayout(containerCreate);
         containerCreate.setLayout(containerCreateLayout);
@@ -982,165 +1007,10 @@ public class ObatForm extends javax.swing.JPanel {
         );
         createPengadaanObatLayout.setVerticalGroup(
             createPengadaanObatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPaneCreate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
+            .addComponent(scrollPaneCreate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
         );
 
         cardPanel.add(createPengadaanObat, "create");
-
-        makeStaff.setOpaque(false);
-
-        jPanel9.setOpaque(false);
-
-        btnBackMS.setForeground(cp.getColor(0)
-        );
-        btnBackMS.setText("Kembali");
-
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnBackMS, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnBackMS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
-
-        jPanel10.setOpaque(false);
-
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel10.setForeground(cp.getColor(0)
-        );
-        jLabel10.setText("Tanggal Masuk");
-
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel11.setForeground(cp.getColor(0)
-        );
-        jLabel11.setText("Role");
-
-        jPanel12.setOpaque(false);
-
-        btnSaveMS.setText("Save");
-
-        btnCancelMS.setText("Cancel");
-
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(btnSaveMS, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCancelMS, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSaveMS, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCancelMS, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(100, Short.MAX_VALUE))
-        );
-
-        judulMS.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        judulMS.setForeground(cp.getColor(0)
-        );
-        judulMS.setText("Jadikan <Nama> Sebagai Staff?");
-
-        tanggalMasukDateChooser.setBackground(new java.awt.Color(255, 255, 255));
-        tanggalMasukDateChooser.setForeground(new java.awt.Color(0, 0, 0));
-        tanggalMasukDateChooser.setDateFormatString("dd MMMM yyyy");
-        tanggalMasukDateChooser.setMaxSelectableDate(new java.util.Date(253370743293000L));
-        tanggalMasukDateChooser.setPreferredSize(new java.awt.Dimension(88, 42));
-
-        roleComboBox.setPreferredSize(new java.awt.Dimension(72, 42));
-
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap(494, Short.MAX_VALUE))
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(judulMS)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(roleComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tanggalMasukDateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))
-                        .addContainerGap(201, Short.MAX_VALUE))))
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(2, 2, 2)
-                .addComponent(judulMS)
-                .addGap(25, 25, 25)
-                .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tanggalMasukDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(roleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
-                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(195, 195, 195))
-        );
-
-        jPanel13.setOpaque(false);
-
-        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
-        jPanel13.setLayout(jPanel13Layout);
-        jPanel13Layout.setHorizontalGroup(
-            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 51, Short.MAX_VALUE)
-        );
-        jPanel13Layout.setVerticalGroup(
-            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout makeStaffLayout = new javax.swing.GroupLayout(makeStaff);
-        makeStaff.setLayout(makeStaffLayout);
-        makeStaffLayout.setHorizontalGroup(
-            makeStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(makeStaffLayout.createSequentialGroup()
-                .addGroup(makeStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, makeStaffLayout.createSequentialGroup()
-                        .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(17, 17, 17))
-        );
-        makeStaffLayout.setVerticalGroup(
-            makeStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(makeStaffLayout.createSequentialGroup()
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addGroup(makeStaffLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-
-        cardPanel.add(makeStaff, "makeStaff");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -1154,15 +1024,73 @@ public class ObatForm extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnTambahActionPerformed
+
+    public void inputKosongException() throws InputKosongException {
+        if (inputNama.getText().isBlank() || inputHarga.getText().isBlank() || inputKuantitas.getText().isBlank() || tanggalProduksiChooser.getDate() == null || tanggalKadaluarsaChooser.getDate() == null) {
+            throw new InputKosongException();
+        }
+    }
+
+    public void inputKosongUpdateException() throws InputKosongException {
+        if (inputNama1.getText().isBlank() || inputHarga1.getText().isBlank() || inputKuantitas2.getText().isBlank() || tanggalProduksiChooser1.getDate() == null || tanggalKadaluarsaChooser1.getDate() == null) {
+            throw new InputKosongException();
+        }
+    }
+
+    public void tglProduksiException(Date date1, Date date2) throws TglProduksiException {
+        if (date1.compareTo(date2) < 0) {
+            throw new TglProduksiException();
+        }
+    }
+
+    private void btnSaveTbhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveTbhActionPerformed
+//        try{
+//            inputKosongException();
+//            tglProduksiException(tanggalKadaluarsaChooser.getDate(), tanggalProduksiChooser.getDate());
+//            String namaObat = inputNama.getText();
+//            double hargaObat = Double.parseDouble(inputHarga.getText());
+//            int kuantitasObat = Integer.parseInt(inputKuantitas.getText());
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//            String TanggalProduksi= formatter.format(tanggalProduksiChooser.getDate());
+//            String TanggalKadaluarsa = formatter.format(tanggalKadaluarsaChooser.getDate());
+//            Obat Ob = new Obat(0,kuantitasObat, namaObat, TanggalKadaluarsa, TanggalProduksi, hargaObat);
+//            oc.insertDataObat(Ob);
+////            RekamMedis rm = new RekamMedis(diagnosaInput.getText(), Float.parseFloat(totalBiayaInput.getText()),tindakan, selectedTM, selectedPasien);
+////            rmc.insertDataRekamMedis(rm);
+//            setTableModel(oc.showDataObat(""));
+//        //setComponents();
+//        }catch(InputKosongException e){
+//            JOptionPane.showMessageDialog(this, e.message());
+//        }
+//        catch(NumberFormatException ec){
+//            JOptionPane.showMessageDialog(this, ec.getMessage());
+//        }
+//        catch(TglProduksiException ex){
+//            JOptionPane.showMessageDialog(this, ex.message());
+//        }
+    }//GEN-LAST:event_btnSaveTbhActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        resetCreatePanel();
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnBackTbhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackTbhActionPerformed
+        resetUpdatePanel();
+    }//GEN-LAST:event_btnBackTbhActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private swing.component.ButtonOutLine btnBack;
-    private swing.component.ButtonOutLine btnBackMS;
     private swing.component.ButtonOutLine btnBackTbh;
     private swing.component.ButtonRound btnCancel;
-    private swing.component.ButtonRound btnCancelMS;
     private swing.component.ButtonRound btnCancelTbh;
     private swing.component.ButtonRound btnSave;
-    private swing.component.ButtonRound btnSaveMS;
     private swing.component.ButtonRound btnSaveTbh;
     private swing.component.ButtonRectangle btnTambah;
     private javax.swing.JPanel cardPanel;
@@ -1176,13 +1104,8 @@ public class ObatForm extends javax.swing.JPanel {
     private swing.component.TextFieldInput inputKuantitas2;
     private swing.component.TextFieldInput inputNama;
     private swing.component.TextFieldInput inputNama1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1190,12 +1113,10 @@ public class ObatForm extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel judulCreate;
     private javax.swing.JLabel judulDataPilihan;
     private javax.swing.JLabel judulForm;
-    private javax.swing.JLabel judulMS;
     private javax.swing.JLabel judulUpdate;
     private javax.swing.JLabel labelHarga;
     private javax.swing.JLabel labelHarga1;
@@ -1207,14 +1128,11 @@ public class ObatForm extends javax.swing.JPanel {
     private javax.swing.JLabel labelTanggalKada1;
     private javax.swing.JLabel labelTanggalProd;
     private javax.swing.JLabel labelTanggalProd1;
-    private javax.swing.JPanel makeStaff;
     private javax.swing.JPanel panelCard;
     private javax.swing.JPanel readPengadaanObat;
-    private javax.swing.JComboBox<Role> roleComboBox;
     private javax.swing.JScrollPane scrollPaneCreate;
     private com.toedter.calendar.JDateChooser tanggalKadaluarsaChooser;
     private com.toedter.calendar.JDateChooser tanggalKadaluarsaChooser1;
-    private com.toedter.calendar.JDateChooser tanggalMasukDateChooser;
     private com.toedter.calendar.JDateChooser tanggalProduksiChooser;
     private com.toedter.calendar.JDateChooser tanggalProduksiChooser1;
     private javax.swing.JPanel updatePembeli;

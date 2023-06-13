@@ -11,15 +11,16 @@ import java.util.Date;
  * @author Gregory Wilson
  */
 public class Obat {
+
     private int idObat, kuantitas;
     private String namaObat, tanggalKadaluarsa, tanggalProduksi;
     private double harga;
 
-    public Obat(int idObat, int kuantitas, String namaObat, String tanggalKaldaluarsa, String tanggalProduksi, double harga) {
+    public Obat(int idObat, int kuantitas, String namaObat, String tanggalKadaluarsa, String tanggalProduksi, double harga) {
         this.idObat = idObat;
         this.kuantitas = kuantitas;
         this.namaObat = namaObat;
-        this.tanggalKadaluarsa = tanggalKaldaluarsa;
+        this.tanggalKadaluarsa = tanggalKadaluarsa;
         this.tanggalProduksi = tanggalProduksi;
         this.harga = harga;
     }
@@ -71,13 +72,17 @@ public class Obat {
     public void setHarga(double harga) {
         this.harga = harga;
     }
-    
-    public String showData(){        
-            return
-                    "Nama Obat : "+ this.namaObat + "\n" +
-                    "Expire Date : "+ this.tanggalKadaluarsa + "\n" +
-                    "Harga : "+ this.harga + "\n" +
-                    "Tanggal Produksi : "+ this.tanggalProduksi + "\n" +
-                    "Kuantitas : "+ this.kuantitas + "\n";        
+
+    public String showData() {
+        return "Nama Obat : " + this.namaObat + "\n"
+                + "Expire Date : " + this.tanggalKadaluarsa + "\n"
+                + "Harga : " + this.harga + "\n"
+                + "Tanggal Produksi : " + this.tanggalProduksi + "\n"
+                + "Kuantitas : " + this.kuantitas + "\n";
+    }
+
+    @Override
+    public String toString() {
+        return namaObat;
     }
 }

@@ -10,19 +10,24 @@ import dao.TransaksiDAO;
 import table.TransaksiTable;
 
 public class TransaksiControl {
+
     private TransaksiDAO pd = new TransaksiDAO();
-    
-    public void insertDataTransaksi(Transaksi t){
+
+    public void insertDataTransaksi(Transaksi t) {
         pd.insertTransaksi(t);
     }
-    
-    public TransaksiTable showDataTransaksi(String query){
+
+    public TransaksiTable showDataTransaksi(String query) {
         List<Transaksi> dataTransaksi = pd.showTransaksi(query);
         TransaksiTable tabel = new TransaksiTable(dataTransaksi);
-        
+
         return tabel;
     }
-    
+
+    public int cekNullTransaksi(int idPengguna) {
+        return pd.cekNull(idPengguna);
+    }
+
 //    public void updateDataTransaksi(Transaksi t){
 //        pd.updateTransaksi(t);
 //    }

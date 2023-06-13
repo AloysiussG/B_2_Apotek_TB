@@ -8,6 +8,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.UIManager;
+import model.Staff;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
@@ -30,14 +31,21 @@ public class ApotekerView extends javax.swing.JFrame {
     private Header header;
     private DashboardMainPanel mainPanel;
     private Animator animator;
+    private Staff staff;
 
     /** Creates new form SuperAdminView */
-    public ApotekerView() {
+    public ApotekerView(Staff s) {
         //inisialisasi variabel (disarankan berada diatas init components)
 
-        //inisialisasi komponen
+        //inisialisasi komponen 
         initComponents();
-        initApotekerView("Apoteker", "_ApotekerTheGod_");
+
+        if (s != null) {
+            this.staff = s;
+            initApotekerView("Apoteker", s.getNama());
+        } else {
+            initApotekerView("Apoteker", "ApotekerTheGod");
+        }
     }
 
     private void initApotekerView(String roleView, String usernameView) {
@@ -222,7 +230,7 @@ public class ApotekerView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ApotekerView().setVisible(true);
+                new ApotekerView(null).setVisible(true);
             }
         });
     }

@@ -6,6 +6,7 @@ package panel.pengguna.component;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import control.ObatControl;
+import control.TransaksiControl;
 import java.awt.CardLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -15,8 +16,10 @@ import java.awt.event.KeyListener;
 import panel.pengguna.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import model.Obat;
 import model.Pengguna;
@@ -33,6 +36,8 @@ import table.ObatTable;
  */
 public class MainForm extends javax.swing.JPanel {
 
+    private Pengguna penggunaLogin;
+
     private static final ColorPallete cp = new ColorPallete();
     private ItemEvent event;
 
@@ -47,12 +52,25 @@ public class MainForm extends javax.swing.JPanel {
 
     private Pengguna pengguna;
 
+    private TransaksiControl tc;
+
     public void setEvent(ItemEvent event) {
         this.event = event;
     }
 
     /** Creates new form MainForm */
-    public MainForm() {
+    public MainForm(Pengguna pLogin) {
+        tc = new TransaksiControl();
+
+        String namaPenggunaLogin;
+
+        if (pLogin != null) {
+            this.penggunaLogin = pLogin;
+            namaPenggunaLogin = pLogin.getNama();
+        } else {
+            namaPenggunaLogin = "PenggunaTheGod";
+        }
+
         this.oc = new ObatControl();
         initComponents();
         showItem("");
@@ -67,7 +85,7 @@ public class MainForm extends javax.swing.JPanel {
         lblLogo.setText("Tumbuh Bersama");
 
         lblProfile.setText("");
-        lblUsername.setText("Nama Pengguna");
+        lblUsername.setText(namaPenggunaLogin);
         lblUsername.setForeground(cp.getColor(0));
 
         lblProfile.setIcon(new FlatSVGIcon("img/icon/account.svg", 0.9f));
@@ -111,12 +129,26 @@ public class MainForm extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 Date dateToday = new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                String stringDateToday = formatter.format(dateToday);
 
                 Role r = new Role(6, 5000000.0, "Kasir");
                 User u = new User(-1, "Pembelian", "pembelian");
                 Staff s = new Staff(-1, "Self-Service", "2023-06-04", "777-7777", "Online", r, u);
 
                 System.out.println("Bayar dulu ");
+
+                Transaksi t = new Transaksi(jumlahBeli, stringDateToday, s, obatSelected, penggunaLogin);
+                tc.insertDataTransaksi(t);
+
+                obatSelected.setKuantitas(obatSelected.getKuantitas() - jumlahBeli);
+                oc.updateDataObat(obatSelected.getIdObat(), obatSelected);
+
+                JOptionPane.showMessageDialog(null, "Berhasil membeli obat!");
+
+                //pindah view
+                showItem("");
+                cardLayout.show(cardLayoutPanel, "view");
             }
         });
 

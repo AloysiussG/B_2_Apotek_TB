@@ -8,6 +8,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.UIManager;
+import model.Pengguna;
 import panel.pengguna.component.MainForm;
 
 /**
@@ -17,16 +18,24 @@ import panel.pengguna.component.MainForm;
 public class PenggunaView extends javax.swing.JFrame {
 
     private MainForm mainForm;
+    private Pengguna pengguna;
 
     /** Creates new form PenggunaView */
-    public PenggunaView() {
+    public PenggunaView(Pengguna p) {
         initComponents();
+
+        if (p != null) {
+            this.pengguna = p;
+        } else {
+            this.pengguna = null;
+        }
+
         initOtherComponents();
         setBackground(new Color(0, 0, 0, 0));
     }
 
     private void initOtherComponents() {
-        mainForm = new MainForm();
+        mainForm = new MainForm(pengguna);
 
         winButton.initEvent(this, background);
         mainPanel.setLayout(new BorderLayout());
@@ -129,7 +138,7 @@ public class PenggunaView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PenggunaView().setVisible(true);
+                new PenggunaView(null).setVisible(true);
             }
         });
     }

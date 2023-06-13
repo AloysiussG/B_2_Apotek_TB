@@ -9,26 +9,37 @@ package model;
  * @author Gregory Wilson
  */
 public class Transaksi {
+
     private int idTransaksi, idObat, idPengguna, jumlah, NIP;
     private String tanggalPembelian;
     private Staff staff;
     private Obat obat;
     private Pengguna pengguna;
 
-    public Transaksi(int idTransaksi, int idObat, int idPengguna, int jumlah, int NIP, String tanggalPembelian, Staff staff, Obat obat, Pengguna pengguna) {
+//
+//    public Transaksi(int idTransaksi, int idObat, int idPengguna, int jumlah, int NIP, String tanggalPembelian, Staff staff, Obat obat, Pengguna pengguna) {
+//        this.idTransaksi = idTransaksi;
+//        this.idObat = idObat;
+//        this.idPengguna = idPengguna;
+//        this.jumlah = jumlah;
+//        this.NIP = NIP;
+//        this.tanggalPembelian = tanggalPembelian;
+//        this.staff = staff;
+//        this.obat = obat;
+//        this.pengguna = pengguna;
+//    }
+//
+    public Transaksi(int idTransaksi, int jumlah, String tanggalPembelian, Staff staff, Obat obat, Pengguna pengguna) {
         this.idTransaksi = idTransaksi;
-        this.idObat = idObat;
-        this.idPengguna = idPengguna;
         this.jumlah = jumlah;
-        this.NIP = NIP;
         this.tanggalPembelian = tanggalPembelian;
         this.staff = staff;
         this.obat = obat;
         this.pengguna = pengguna;
     }
 
-    public Transaksi(int idTransaksi, int jumlah, String tanggalPembelian, Staff staff, Obat obat, Pengguna pengguna) {
-        this.idTransaksi = idTransaksi;
+    //perubahan
+    public Transaksi(int jumlah, String tanggalPembelian, Staff staff, Obat obat, Pengguna pengguna) {
         this.jumlah = jumlah;
         this.tanggalPembelian = tanggalPembelian;
         this.staff = staff;
@@ -107,8 +118,8 @@ public class Transaksi {
     public void setNIP(int NIP) {
         this.NIP = NIP;
     }
-    
-    public double totalPembelian(){
-        return obat.getHarga()*jumlah;
+
+    public double totalPembelian() {
+        return obat.getHarga() * jumlah;
     }
 }

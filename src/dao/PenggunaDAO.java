@@ -131,4 +131,103 @@ public class PenggunaDAO {
         }
         dbCon.closeConnection();
     }
+
+    public String returnName(int index) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT * FROM pengguna as p JOIN user as u on p.idUser = u.idUser WHERE u.idUser = " + index;
+
+        System.out.println("Traversing Pengguna...");
+
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            while (rs.next()) {
+                String name = rs.getString("nama");
+                return "" + name;
+            }
+
+            return "not found";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        dbCon.closeConnection();
+        return "";
+    }
+
+    public int findLastId() {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT * FROM pengguna";
+
+        System.out.println("Traversing Pengguna...");
+
+        try {
+            Statement statement = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs != null) {
+                rs.last();
+                System.out.println(Integer.parseInt(rs.getString("idPengguna")));
+                return Integer.parseInt(rs.getString("idPengguna")) + 1;
+            } else {
+                return -1;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        dbCon.closeConnection();
+        return -1;
+    }
+
+    public Pengguna findPengguna(int idUser, User user) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT * FROM pengguna as p JOIN user as u WHERE u.idUser = " + idUser + " AND p.idUser = " + idUser + "";
+
+        System.out.println("Finding Pengguna");
+
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs != null) {
+                while (rs.next()) {
+                    Pengguna p = new Pengguna(Integer.parseInt(rs.getString("idPengguna")), rs.getString("nama"), rs.getString("noTelp"), rs.getString("alamat"), user);
+                    return p;
+                }
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        dbCon.closeConnection();
+        return null;
+    }
+
+    public void setIncrement() {
+        con = dbCon.makeConnection();
+
+        String sql1 = "SET  @num := 0;";
+        String sql2 = "UPDATE `pengguna` SET idPengguna = @num := (@num+1);";
+        String sql3 = "ALTER TABLE `pengguna` AUTO_INCREMENT = 1;";
+
+        System.out.println("Altering Increment");
+
+        try {
+            Statement statement = con.createStatement();
+            statement.executeQuery(sql1);
+            statement.executeQuery(sql2);
+            statement.executeQuery(sql3);
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        dbCon.closeConnection();
+    }
 }

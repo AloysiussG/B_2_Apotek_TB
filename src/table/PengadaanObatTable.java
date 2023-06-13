@@ -17,14 +17,13 @@ public class PengadaanObatTable extends AbstractTableModel {
     public PengadaanObatTable(List<PengadaanObat> list) {
         this.list = list;
     }
-
     
     public int getRowCount(){
         return list.size();
     }
     
     public int getColumnCount(){
-        return 5;
+        return 6;
     }
     
     public Object getValueAt (int rowIndex, int columnIndex){
@@ -32,14 +31,16 @@ public class PengadaanObatTable extends AbstractTableModel {
             case 0:
                 return list.get(rowIndex).getIdPengadaan();
             case 1:
-                return list.get(rowIndex).getObat().getIdObat();
+                return list.get(rowIndex).getObat().getNamaObat();
             case 2:
-                return list.get(rowIndex).getKuantitas();
+                return list.get(rowIndex).getStaff().getNama();
             case 3:
-                return list.get(rowIndex).getSupplier();
+                return list.get(rowIndex).getKuantitas();
             case 4:
-                return list.get(rowIndex).getTanggalPengadaan();
+                return list.get(rowIndex).getSupplier();
             case 5:
+                return list.get(rowIndex).getTanggalPengadaan();
+            case 6:
                 return list.get(rowIndex);
             default :
                 return null;
@@ -47,16 +48,18 @@ public class PengadaanObatTable extends AbstractTableModel {
     }
     
     public String getColumnName (int column) {
-        switch(column){
+        switch(column) {
             case 0:
                 return "ID Pengadaan";
             case 1:
-                return "ID Obat";
+                return "Nama Obat";
             case 2:
-                return "Kuantitas";
+                return "Nama Staff";
             case 3:
-                return "Supplier";
+                return "Kuantitas";
             case 4:
+                return "Supplier";
+            case 5:
                 return "Tanggal Pengadaan";
             default:
                 return null;

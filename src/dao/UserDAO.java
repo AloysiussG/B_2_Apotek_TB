@@ -78,26 +78,147 @@ public class UserDAO {
         }
         dbCon.closeConnection();
     }
+//
+//    public int findIdByUsername(String username) {
+//        con = dbCon.makeConnection();
+//
+//        String sql = "SELECT * FROM user WHERE username = '" + username + "'";
+//        int id = -1;
+//        try {
+//            Statement statement = con.createStatement();
+//            ResultSet rs = statement.executeQuery(sql);
+//            if (rs != null) {
+//                while (rs.next()) {
+//                    id = rs.getInt("idUser");
+//                }
+//            }
+//            rs.close();
+//            statement.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        dbCon.closeConnection();
+//        return id;
+//    }
 
-    public int findIdByUsername(String username) {
+    public int countUser() {
         con = dbCon.makeConnection();
 
-        String sql = "SELECT * FROM user WHERE username = '" + username + "'";
-        int id = -1;
+        String sql = "SELECT * FROM `user`";
+
+        System.out.println("Counting User...");
+
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            int size = 0;
+            while (rs.next()) {
+                size++;
+            }
+
+            return size;
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return 0;
+    }
+
+    public boolean isUnique(String username) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT * FROM `user` WHERE username = '" + username + "'";
+
+        System.out.println("Traversing User...");
+
         try {
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery(sql);
             if (rs != null) {
                 while (rs.next()) {
-                    id = rs.getInt("idUser");
+                    return false;
                 }
             }
-            rs.close();
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return true;
+    }
+
+    public int checkLogin(String username, String password) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT * FROM `user` WHERE username = '" + username + "' AND password = '" + password + "'";
+
+        System.out.println("Counting User...");
+
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            System.out.println(password);
+            if (rs != null) {
+                while (rs.next()) {
+                    return Integer.parseInt(rs.getString("idUser"));
+                }
+            }
+
             statement.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
-        dbCon.closeConnection();
-        return id;
+
+        return -1;
     }
+
+    public void setIncrement() {
+        con = dbCon.makeConnection();
+
+        String sql1 = "SET  @num := 0;";
+        String sql2 = "UPDATE `user` SET idUser = @num := (@num+1);";
+        String sql3 = "ALTER TABLE `user` AUTO_INCREMENT = 1;";
+
+        System.out.println("Altering Increment");
+
+        try {
+            Statement statement = con.createStatement();
+            statement.executeQuery(sql1);
+            statement.executeQuery(sql2);
+            statement.executeQuery(sql3);
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        dbCon.closeConnection();
+    }
+
+    public int findId(String username) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT * FROM `user` WHERE username = '" + username + "'";
+
+        System.out.println("Finding user");
+
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+
+            if (rs != null) {
+                while (rs.next()) {
+                    return Integer.parseInt(rs.getString("idUser"));
+                }
+            }
+
+            return -1;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        dbCon.closeConnection();
+        return -1;
+    }
+
 }

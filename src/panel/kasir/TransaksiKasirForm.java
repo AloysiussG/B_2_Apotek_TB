@@ -5,6 +5,7 @@
 package panel.kasir;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import control.ObatControl;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +18,9 @@ import control.RoleControl;
 import control.StaffControl;
 import control.TransaksiControl;
 import control.UserControl;
+import exception.JumlahObatException;
+import exception.JumlahObatKosongException;
+import exception.TanggalKosongException;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -27,11 +31,14 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import model.Obat;
 import model.Pengguna;
 import model.Role;
 import model.Staff;
 import model.Transaksi;
+import model.User;
 import swing.ColorPallete;
 import swing.component.dashboard.TransaksiCard;
 import table.TransaksiTable;
@@ -41,6 +48,8 @@ import table.TransaksiTable;
  * @author AG SETO GALIH D
  */
 public class TransaksiKasirForm extends javax.swing.JPanel {
+
+    private Staff staffLogin;
 
     private Transaksi transaksi;
     private TransaksiControl tc;
@@ -61,8 +70,20 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
 
     private String searchInput = "";
 
+    private ObatControl obatControl = new ObatControl();
+    private TransaksiControl transaksiControl = new TransaksiControl();
+    private List<Obat> listObat;
+
+    private int selectedIndex;
+    private Obat selectedObat;
+
     //Konstruktor
-    public TransaksiKasirForm() {
+    public TransaksiKasirForm(Staff s) {
+
+        if (s != null) {
+            this.staffLogin = s;
+        }
+
         this.namaUserGroup = "Transaksi";
 
         this.tc = new TransaksiControl();
@@ -74,8 +95,9 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
 
         initComponents();
 
-        showUserCard(noUserCard);
+        setObatToDropdown();
 
+//        showUserCard(noUserCard);
         setTableModel(tc.showDataTransaksi(""));
 
         setJudulForm(namaUserGroup);
@@ -174,68 +196,117 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 //insert data transaksi ke database
-//                //insert user data ke database
-//                String username = inputUsernameTbh.getText();
-//                User createUser = new User(-1, username, inputPasswordTbh.getText());
-//                uc.insertDataUser(createUser);
-//                createUser.setIdUser(uc.findIdByUsername(username));
-//                //insert pengguna data ke database
-//                Pengguna createPengguna = new Pengguna(-1, inputNamaLengkapTbh.getText(),
-//                        inputNoTelpTbh.getText(), inputKuantitas.getText(), createUser);
-//                pc.insertPengguna(createPengguna);
-//                //update table model dan user card dan kembalikan ke panel read
-//                resetUpdatePanel();
-//                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
+                try {
+                    selectedIndex = namaObatComboBox.getSelectedIndex();
+                    selectedObat = listObat.get(selectedIndex);
+                    tanggalKosongException();
+                    jumlahObatException();
+
+                    //nanti dicomment
+                    //Role r = new Role(1, 20000.0, "Kasir");
+                    //User u = new User(2, "Samuel", "Sam");
+                    //Staff s = new Staff(5, "Jamuel Persuangan", "2023-06-04", "123123", "4", r, u);
+                    //sampe sini
+                    User u2 = new User(-1, "Pembelian", "pembelian");
+                    Pengguna p = new Pengguna(-1, "Pembeli Offline", "777-7777", "Apotek Terdekat", u2);
+
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    String inputTglTransaksi = formatter.format(tanggalTransaksiDateChooser.getDate());
+                    Transaksi t = new Transaksi(Integer.parseInt(inputKuantitas.getText()), inputTglTransaksi, staffLogin, selectedObat, p);
+                    transaksiControl.insertDataTransaksi(t);
+                    selectedObat.setKuantitas(selectedObat.getKuantitas() - Integer.parseInt(inputKuantitas.getText()));
+                    obatControl.updateDataObat(selectedObat.getIdObat(), selectedObat);
+
+                    JOptionPane.showMessageDialog(null, "Berhasil Tambah Data..");
+                    clearText();
+                    resetReadPanel();
+                    cardLayout.show(cardPanel, "read");
+                } catch (TanggalKosongException e) { //tanggal tidak boleh kosong
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (JumlahObatException e) { //jumlah obat melebihi stok
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (JumlahObatKosongException e) { //jumlah obat kosong
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Kuantitas Harus Angka");
+                }
             }
         });
         //action listener pada makestaff panel
         //
-        btnBackMS.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                resetMakeStaffPanel();
-                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
-            }
-        });
-        btnCancelMS.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                resetMakeStaffPanel();
-                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
-            }
-        });
-        btnSaveMS.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                //mengambil value dari jdatechooser dan combo box dropdown
-                //lalu melakukan insert staff dan mendelete pengguna/pembeli
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                if (tanggalMasukDateChooser.getDate() != null) {
-                    String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
-                    Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
-                    //nip -1 karena pada akhirnya saat insert juga auto increment
-                    Staff staffInput = new Staff(-1, pengguna.getNama(), inputTglMasuk, pengguna.getNoTelp(), pengguna.getAlamat(), rolePilihan, pengguna.getUser());
-                    sc.insertDataStaff(staffInput);
-                    pc.deleteDataPengguna(pengguna.getIdPengguna());
-                    //
-                    System.out.println(inputTglMasuk);
-                    System.out.println(rolePilihan.getIdRole());
-                    System.out.println("Berhasil make staff!");
-                } else {
-                    System.out.println("[EXCEPTION] Tanggal pilihan null!");
-                }
-                resetMakeStaffPanel();
-                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
-            }
-        });
+//        btnBackMS.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent arg0) {
+//                resetMakeStaffPanel();
+//                resetReadPanel();
+//                cardLayout.show(cardPanel, "read");
+//            }
+//        });
+//        btnCancelMS.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent arg0) {
+//                resetMakeStaffPanel();
+//                resetReadPanel();
+//                cardLayout.show(cardPanel, "read");
+//            }
+//        });
+//        btnSaveMS.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent arg0) {
+//                //mengambil value dari jdatechooser dan combo box dropdown
+//                //lalu melakukan insert staff dan mendelete pengguna/pembeli
+//                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//                if (tanggalMasukDateChooser.getDate() != null) {
+//                    String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
+//                    Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
+//                    //nip -1 karena pada akhirnya saat insert juga auto increment
+//                    Staff staffInput = new Staff(-1, pengguna.getNama(), inputTglMasuk, pengguna.getNoTelp(), pengguna.getAlamat(), rolePilihan, pengguna.getUser());
+//                    sc.insertDataStaff(staffInput);
+//                    pc.deleteDataPengguna(pengguna.getIdPengguna());
+//                    //
+//                    System.out.println(inputTglMasuk);
+//                    System.out.println(rolePilihan.getIdRole());
+//                    System.out.println("Berhasil make staff!");
+//                } else {
+//                    System.out.println("[EXCEPTION] Tanggal pilihan null!");
+//                }
+//                resetMakeStaffPanel();
+//                resetReadPanel();
+//                cardLayout.show(cardPanel, "read");
+//            }
+//        });
 
         //action listener untuk search
         //tanpa button
         addFieldSearchActionListener();
+    }
+
+    private void clearText() {
+        tanggalTransaksiDateChooser.setDate(null);
+        inputKuantitas.setText("");
+
+        namaObatComboBox.setSelectedItem(ABORT);
+    }
+
+    private void setObatToDropdown() {
+        listObat = obatControl.showListObat();
+        for (Obat obat : listObat) {
+            namaObatComboBox.addItem(obat);
+        }
+    }
+
+    private void tanggalKosongException() throws TanggalKosongException {
+        if (tanggalTransaksiDateChooser.getDate() == null) {
+            throw new TanggalKosongException();
+        }
+    }
+
+    private void jumlahObatException() throws JumlahObatException, JumlahObatKosongException {
+        if (inputKuantitas.getText().isEmpty()) {
+            throw new JumlahObatKosongException();
+        } else if (Integer.parseInt(inputKuantitas.getText()) > obatControl.findDataKuantitasObat(selectedObat.getNamaObat())) {
+            throw new JumlahObatException();
+        }
     }
 
     //Method-method pada Make Staff Panel
@@ -306,7 +377,7 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
     private void resetReadPanel() {
         searchInput = "";
         fieldSearch.setText(searchInput);
-        showUserCard(noUserCard);
+//        showUserCard(noUserCard);
         setTableModel(tc.showDataTransaksi(""));
     }
 
@@ -356,13 +427,12 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
         this.customTable.setModel((TransaksiTable) tableModel);
     }
 
-    private void showUserCard(Component panel) {
-        panelCard.removeAll();
-        panelCard.add(panel);
-//        panelCard.repaint();
-        panelCard.revalidate();
-    }
-
+//    private void showUserCard(Component panel) {
+//        panelCard.removeAll();
+//        panelCard.add(panel);
+////        panelCard.repaint();
+//        panelCard.revalidate();
+//    }
     //listener untuk table clicked pada panel ReadDataPembeli 
     //serta memiliki listener untuk komponen2 pada panel selanjutnya
     private void initTableListener() {
@@ -372,16 +442,16 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
             public void mousePressed(MouseEvent event) {
                 //get value dari table clicked
                 if (namaUserGroup.equalsIgnoreCase("Transaksi")) {
-                    int clickedRow = customTable.getSelectedRow();
-                    TableModel tableModel = customTable.getModel();
-                    //untuk reset pengguna
-                    transaksi = null;
-                    //assign pengguna sesuai row yang di klik pada tabel
-                    transaksi = (Transaksi) tableModel.getValueAt(clickedRow, 7);
-                    //show user card panel
-                    transaksiCard = new TransaksiCard(transaksi);
-                    showUserCard(transaksiCard);
-
+//                    int clickedRow = customTable.getSelectedRow();
+//                    TableModel tableModel = customTable.getModel();
+//                    //untuk reset pengguna
+//                    transaksi = null;
+//                    //assign pengguna sesuai row yang di klik pada tabel
+//                    transaksi = (Transaksi) tableModel.getValueAt(clickedRow, 7);
+//                    //show user card panel
+//                    transaksiCard = new TransaksiCard(transaksi);
+//                    showUserCard(transaksiCard);
+//
 //                    //user card button edit action listener
 //                    userCard.addBtnEditActionListener(new ActionListener() {
 //                        @Override
@@ -436,6 +506,7 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        panelCard = new javax.swing.JPanel();
         cardPanel = new javax.swing.JPanel();
         readTransaksi = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -444,7 +515,6 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         fieldSearch = new swing.component.TextFieldWithBackground();
         jPanel4 = new javax.swing.JPanel();
-        panelCard = new javax.swing.JPanel();
         judulDataPilihan = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         btnTambah = new swing.component.ButtonRectangle();
@@ -491,6 +561,10 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
         tanggalMasukDateChooser = new com.toedter.calendar.JDateChooser();
         roleComboBox = new javax.swing.JComboBox<>();
         jPanel13 = new javax.swing.JPanel();
+
+        panelCard.setOpaque(false);
+        panelCard.setPreferredSize(new java.awt.Dimension(407, 80));
+        panelCard.setLayout(new java.awt.BorderLayout());
 
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(684, 652));
@@ -540,10 +614,6 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
 
         jPanel4.setOpaque(false);
 
-        panelCard.setOpaque(false);
-        panelCard.setPreferredSize(new java.awt.Dimension(407, 80));
-        panelCard.setLayout(new java.awt.BorderLayout());
-
         judulDataPilihan.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         judulDataPilihan.setForeground(new java.awt.Color(0, 0, 0));
         judulDataPilihan.setText("Judul Pilihan");
@@ -577,8 +647,7 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(panelCard, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
+                        .addGap(0, 0, 0)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(judulDataPilihan))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -589,9 +658,7 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(judulDataPilihan)
                 .addGap(8, 8, 8)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelCard, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
@@ -1153,7 +1220,7 @@ public class TransaksiKasirForm extends javax.swing.JPanel {
     private javax.swing.JLabel labelNamaObat;
     private javax.swing.JLabel labelTanggal;
     private javax.swing.JPanel makeStaff;
-    private javax.swing.JComboBox<String> namaObatComboBox;
+    private javax.swing.JComboBox<Obat> namaObatComboBox;
     private javax.swing.JPanel panelCard;
     private javax.swing.JPanel readTransaksi;
     private javax.swing.JComboBox<Role> roleComboBox;

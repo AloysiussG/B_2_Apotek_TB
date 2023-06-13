@@ -25,24 +25,67 @@ public class TransaksiTable extends AbstractTableModel {
         return 7;
     }
     
+//    public Object getValueAt (int rowIndex, int columnIndex){
+//        switch (columnIndex){
+//            case 0:
+//                return list.get(rowIndex).getIdTransaksi();
+//            case 1:
+//                return list.get(rowIndex).getStaff().getNIP();
+//            case 2:
+//                return list.get(rowIndex).getObat().getIdObat();
+//            case 3:
+//                return list.get(rowIndex).getPengguna().getIdPengguna();
+//            case 4:
+//                return list.get(rowIndex).getTanggalPembelian();
+//            case 5:
+//                return list.get(rowIndex).getJumlah();
+//            case 6:
+//                return list.get(rowIndex).totalPembelian();
+//            case 7:
+//                return list.get(rowIndex);
+//            default :
+//                return null;
+//        }
+//    }
+//    
+//    public String getColumnName (int column) {
+//        switch(column){
+//            case 0:
+//                return "ID Transaksi";
+//            case 1:
+//                return "NIP";
+//            case 2:
+//                return "ID Obat";
+//            case 3:
+//                return "ID Pengguna";
+//            case 4:
+//                return "Tanggal Pembelian";
+//            case 5:
+//                return "Jumlah";
+//            case 6:
+//                return "Total Pembelian";
+//            default:
+//                return null;
+//        }
+//    }
+    
+    //perubahan
     public Object getValueAt (int rowIndex, int columnIndex){
         switch (columnIndex){
             case 0:
                 return list.get(rowIndex).getIdTransaksi();
             case 1:
-                return list.get(rowIndex).getStaff().getNIP();
+                return list.get(rowIndex).getStaff().getNama();
             case 2:
-                return list.get(rowIndex).getObat().getIdObat();
+                return list.get(rowIndex).getObat().getNamaObat();
             case 3:
-                return list.get(rowIndex).getPengguna().getIdPengguna();
+                return list.get(rowIndex).getPengguna().getNama();
             case 4:
                 return list.get(rowIndex).getTanggalPembelian();
             case 5:
                 return list.get(rowIndex).getJumlah();
             case 6:
                 return list.get(rowIndex).totalPembelian();
-            case 7:
-                return list.get(rowIndex);
             default :
                 return null;
         }
@@ -53,11 +96,11 @@ public class TransaksiTable extends AbstractTableModel {
             case 0:
                 return "ID Transaksi";
             case 1:
-                return "NIP";
+                return "Nama Staff";
             case 2:
-                return "ID Obat";
+                return "Nama Obat";
             case 3:
-                return "ID Pengguna";
+                return "Nama Pengguna";
             case 4:
                 return "Tanggal Pembelian";
             case 5:
@@ -68,4 +111,5 @@ public class TransaksiTable extends AbstractTableModel {
                 return null;
         }
     }
+    
 }

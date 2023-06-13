@@ -17,7 +17,9 @@ import table.PenggunaTable;
 import control.PenggunaControl;
 import control.RoleControl;
 import control.StaffControl;
+import control.TransaksiControl;
 import control.UserControl;
+import exception.CekTransaksiException;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -28,6 +30,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import model.Pengguna;
 import model.Role;
@@ -48,6 +51,7 @@ public class PembeliForm extends javax.swing.JPanel {
     private StaffControl sc;
     private UserControl uc;
     private RoleControl rc;
+    private TransaksiControl tc;
 
     private static ColorPallete cp = new ColorPallete();
     private UserCard userCard;
@@ -73,6 +77,7 @@ public class PembeliForm extends javax.swing.JPanel {
         this.uc = new UserControl();
         this.rc = new RoleControl();
         this.sc = new StaffControl();
+        this.tc = new TransaksiControl();
 
         initComponents();
 
@@ -212,24 +217,30 @@ public class PembeliForm extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent arg0) {
                 //mengambil value dari jdatechooser dan combo box dropdown
                 //lalu melakukan insert staff dan mendelete pengguna/pembeli
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                if (tanggalMasukDateChooser.getDate() != null) {
-                    String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
-                    Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
-                    //nip -1 karena pada akhirnya saat insert juga auto increment
-                    Staff staffInput = new Staff(-1, pengguna.getNama(), inputTglMasuk, pengguna.getNoTelp(), pengguna.getAlamat(), rolePilihan, pengguna.getUser());
-                    sc.insertDataStaff(staffInput);
-                    pc.deleteDataPengguna(pengguna.getIdPengguna());
-                    //
-                    System.out.println(inputTglMasuk);
-                    System.out.println(rolePilihan.getIdRole());
-                    System.out.println("Berhasil make staff!");
-                } else {
-                    System.out.println("[EXCEPTION] Tanggal pilihan null!");
+
+                try {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    if (tanggalMasukDateChooser.getDate() != null) {
+                        String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
+                        Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
+                        //nip -1 karena pada akhirnya saat insert juga auto increment
+                        Staff staffInput = new Staff(-1, pengguna.getNama(), inputTglMasuk, pengguna.getNoTelp(), pengguna.getAlamat(), rolePilihan, pengguna.getUser());
+                        cekTransaksiException(pengguna.getIdPengguna());
+                        sc.insertDataStaff(staffInput);
+                        pc.deleteDataPengguna(pengguna.getIdPengguna());
+                        //
+                        System.out.println(inputTglMasuk);
+                        System.out.println(rolePilihan.getIdRole());
+                        System.out.println("Berhasil make staff!");
+                    } else {
+                        System.out.println("[EXCEPTION] Tanggal pilihan null!");
+                    }
+                    resetMakeStaffPanel();
+                    resetReadPanel();
+                    cardLayout.show(cardPanel, "read");
+                } catch (CekTransaksiException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
                 }
-                resetMakeStaffPanel();
-                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
             }
         });
 
@@ -239,6 +250,12 @@ public class PembeliForm extends javax.swing.JPanel {
     }
 
     //Method-method pada Make Staff Panel
+    private void cekTransaksiException(int idPengguna) throws CekTransaksiException {
+        if (tc.cekNullTransaksi(idPengguna) == 1) {
+            throw new CekTransaksiException();
+        }
+    }
+
     private void resetMakeStaffPanel() {
         tanggalMasukDateChooser.setDate(null);
     }

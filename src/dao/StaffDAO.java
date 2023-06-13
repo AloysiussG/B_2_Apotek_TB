@@ -129,4 +129,84 @@ public class StaffDAO {
 
         dbCon.closeConnection();
     }
+
+    public int checkStaff(int userId) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT * FROM staff WHERE idUser = " + userId + "";
+        System.out.println("Finding Staff");
+
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs != null) {
+                while (rs.next()) {
+                    return Integer.parseInt(rs.getString("idUser"));
+                }
+            }
+
+            return -1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        dbCon.closeConnection();
+        return -1;
+    }
+
+    public String returnName(int userId) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT * FROM staff WHERE idUser = " + userId + "";
+        System.out.println("Finding Staff");
+
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs != null) {
+                while (rs.next()) {
+                    return rs.getString("nama");
+                }
+            }
+
+            return null;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        dbCon.closeConnection();
+        return null;
+    }
+
+    public Staff returnStaff(int userId) {
+        con = dbCon.makeConnection();
+
+        String sql = "SELECT * FROM staff as s JOIN user as u WHERE u.idUser = " + userId + " AND s.idUser = " + userId + "";
+        System.out.println("Finding Staff");
+
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+
+            if (rs != null) {
+                while (rs.next()) {
+                    User uTemp = new User(Integer.parseInt(rs.getString("u.idUser")), rs.getString("u.username"), null);
+                    Role rTemp = new Role(Integer.parseInt(rs.getString("s.idRole")), 0, null);
+                    Staff temp = new Staff(Integer.parseInt(rs.getString("s.nip")), rs.getString("s.nama"), rs.getString("tahunMasuk"), rs.getString("s.noTelp"), rs.getString("s.alamat"), rTemp, uTemp);
+                    System.out.println(uTemp.getIdUser());
+                    System.out.println(rTemp.getIdRole());
+                    System.out.println(temp.getRole().getIdRole());
+                    System.out.println(temp.getTahunMasuk());
+                    return temp;
+                }
+            }
+
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        dbCon.closeConnection();
+        return null;
+    }
 }

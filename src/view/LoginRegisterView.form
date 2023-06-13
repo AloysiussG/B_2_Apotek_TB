@@ -171,6 +171,9 @@
                       <Font name="Segoe UI" size="14" style="0"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loginBtnActionPerformed"/>
+                  </Events>
                 </Component>
                 <Container class="javax.swing.JPanel" name="textFieldLoginPanel">
                   <Properties>
@@ -438,6 +441,9 @@
                       <Font name="Segoe UI" size="14" style="0"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="registerBtnActionPerformed"/>
+                  </Events>
                 </Component>
                 <Container class="javax.swing.JPanel" name="textFieldRegisterPanel">
                   <Properties>

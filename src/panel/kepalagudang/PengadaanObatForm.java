@@ -22,12 +22,12 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import javax.swing.SwingUtilities;
+import model.Obat;
 import model.PengadaanObat;
 import model.Pengguna;
 import model.Role;
@@ -35,12 +35,18 @@ import model.Staff;
 import swing.ColorPallete;
 import swing.component.dashboard.PengadaanObatCard;
 import table.PengadaanObatTable;
+import Exception.InputKosongException;
+import control.ObatControl;
+import java.text.SimpleDateFormat;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author AG SETO GALIH D
  */
 public class PengadaanObatForm extends javax.swing.JPanel {
+
+    private Staff staffLogin;
 
     private PengadaanObat pengadaanObat;
     private PengadaanObatControl poc;
@@ -52,6 +58,7 @@ public class PengadaanObatForm extends javax.swing.JPanel {
     private StaffControl sc;
     private UserControl uc;
     private RoleControl rc;
+    private ObatControl oc;
 
     private static ColorPallete cp = new ColorPallete();
     private PengadaanObatCard pengadaanObatCard;
@@ -61,8 +68,18 @@ public class PengadaanObatForm extends javax.swing.JPanel {
 
     private String searchInput = "";
 
+    private List<Obat> listObat;
+    int selectedid = 0;
+
     //Konstruktor
-    public PengadaanObatForm() {
+    public PengadaanObatForm(Staff s) {
+
+        if (s != null) {
+            this.staffLogin = s;
+        } else {
+            System.out.println("[WARNING] tidak ada parameter staff / null!");
+        }
+
         this.namaUserGroup = "Pengadaan Obat";
 
         this.poc = new PengadaanObatControl();
@@ -71,6 +88,7 @@ public class PengadaanObatForm extends javax.swing.JPanel {
         this.uc = new UserControl();
         this.rc = new RoleControl();
         this.sc = new StaffControl();
+        this.oc = new ObatControl();
 
         initComponents();
 
@@ -111,6 +129,7 @@ public class PengadaanObatForm extends javax.swing.JPanel {
         addBtnTambahActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
+                setObatToDropdownCreate();
                 cardLayout.show(cardPanel, "create");
             }
         });
@@ -139,7 +158,27 @@ public class PengadaanObatForm extends javax.swing.JPanel {
 //                //update table model dan user card dan kembalikan ke panel read
 //                resetUpdatePanel();
 //                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
+                try {
+                    inputKosongExceptionUpdate();
+                    PengadaanObat pengadaanObatNew = pengadaanObat;
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    String inputTglPengadaanObat = formatter.format(tanggalTransaksiDateChooser1.getDate());
+                    pengadaanObatNew.setTanggalPengadaan(inputTglPengadaanObat);
+                    Obat obatPilihan = (Obat) namaObatComboBox1.getModel().getSelectedItem();
+                    pengadaanObatNew.setObat(obatPilihan);
+                    pengadaanObatNew.setKuantitas(Integer.parseInt(inputKuantitas1.getText()));
+                    pengadaanObatNew.setSupplier(inputSupplier1.getText());
+
+                    poc.updatePengadaanObat(pengadaanObatNew);
+
+                    resetUpdatePanel();
+                    resetReadPanel();
+                    cardLayout.show(cardPanel, "read");
+                } catch (InputKosongException e) {
+                    JOptionPane.showMessageDialog(null, "Data harus diisi terlebih dahulu!");
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Kuantitas Harus Angka");
+                }
             }
         });
         //button cancel action listener fungsinya sama seperti button back
@@ -186,7 +225,35 @@ public class PengadaanObatForm extends javax.swing.JPanel {
 //                //update table model dan user card dan kembalikan ke panel read
 //                resetUpdatePanel();
 //                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
+                try {
+                    inputKosongExceptionCreate();
+                    //dummy staff bertugas
+                    //nanti diganti + janlup di updatenya juga
+//                    Role r = new Role(6, 5000000.0, "Kasir");
+//                    User u = new User(2, "Sampo", "Sam");
+//                    Staff s = new Staff(124, "Jamuel Persuangan", "2023-06-05", "081327542234", "Apartement Panorama", r, u);
+
+//                    PengadaanObat pengadaanObatNew = pengadaanObat;
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    String inputTglPengadaanObat = formatter.format(tanggalTransaksiDateChooser.getDate());
+//                    pengadaanObatNew.setTanggalPengadaan(inputTglPengadaanObat);
+                    Obat obatPilihan = (Obat) namaObatComboBox.getModel().getSelectedItem();
+//                    pengadaanObatNew.setObat(obatPilihan);
+//                    pengadaanObatNew.setKuantitas(Integer.parseInt(inputKuantitas.getText()));
+//                    pengadaanObatNew.setSupplier(inputSupplier.getText());
+//                    poc.insertPengadaanObat(pengadaanObat);
+                    PengadaanObat PengadaanObatBaru = new PengadaanObat(-1, Integer.parseInt(inputKuantitas.getText()),
+                            obatPilihan.getIdObat(), inputSupplier.getText(),
+                            inputTglPengadaanObat, obatPilihan, staffLogin);//LoginRegisterView.sLogin);
+                    poc.insertPengadaanObat(PengadaanObatBaru);
+                    resetCreatePanel();
+                    resetReadPanel();
+                    cardLayout.show(cardPanel, "read");
+                } catch (InputKosongException e) {
+                    JOptionPane.showMessageDialog(null, "Data Harus Diisi Terlebih Dahulu!");
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Kuantitas Harus Angka");
+                }
             }
         });
         //action listener pada makestaff panel
@@ -251,6 +318,18 @@ public class PengadaanObatForm extends javax.swing.JPanel {
         }
     }
 
+    public void inputKosongExceptionCreate() throws InputKosongException {
+        if (tanggalTransaksiDateChooser.getDate() == null || namaObatComboBox.getSelectedIndex() == -1 || inputKuantitas.getText().isEmpty() || inputSupplier.getText().isEmpty()) {
+            throw new InputKosongException();
+        }
+    }
+
+    public void inputKosongExceptionUpdate() throws InputKosongException {
+        if (tanggalTransaksiDateChooser1.getDate() == null || namaObatComboBox1.getModel().getSelectedItem() == null || inputKuantitas1.getText().isEmpty() || inputSupplier1.getText().isEmpty()) {
+            throw new InputKosongException();
+        }
+    }
+
     private void initTanggalMasuk() {
         LocalDate dateToday = LocalDate.now();
         LocalDate dateThreeMonthsBeforeToday = dateToday.minusMonths(3);
@@ -271,13 +350,48 @@ public class PengadaanObatForm extends javax.swing.JPanel {
 //        inputNoTelpTbh.setText("");
 //        inputUsernameTbh.setText("");
 //        inputPasswordTbh.setText("");
+
+        tanggalTransaksiDateChooser.setDate(null);
+        namaObatComboBox.setSelectedIndex(0);
+        inputKuantitas.setText("");
+        inputSupplier.setText("");
+    }
+
+    private void setObatToDropdownCreate() {
+        namaObatComboBox.removeAllItems();
+        listObat = oc.showListObat();
+        for (int i = 0; i < listObat.size(); i++) {
+            namaObatComboBox.addItem(listObat.get(i));
+        }
+    }
+
+    private void insertAndSetObatToComboBox(PengadaanObat po) {
+        List<Obat> listObat = oc.showListObat();
+        namaObatComboBox1.removeAllItems();
+        for (Obat obat : listObat) {
+            namaObatComboBox1.addItem(obat);
+            if (obat.getNamaObat().equals(po.getObat().getNamaObat())) {
+                namaObatComboBox1.setSelectedItem(obat);
+            }
+        }
     }
 
     //Method-method pada Update Panel
-    private void setTextToComponent(String nama, String alamat, String noTelp) {
+    private void setTextToComponent(int kuantitas, String supplier) {
 //        inputNamaLengkap.setText(nama);
 //        inputAlamat.setText(alamat);
 //        inputNoTelp.setText(noTelp);
+
+        Date tanggalPengadaan;
+        try {
+            tanggalPengadaan = new SimpleDateFormat("yyyy-MM-dd").parse(pengadaanObat.getTanggalPengadaan());
+            tanggalTransaksiDateChooser1.setDate(tanggalPengadaan);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+
+        inputKuantitas1.setText(String.valueOf(kuantitas));
+        inputSupplier1.setText(supplier);
     }
 
     private void addBtnBackActionListener(ActionListener event) {
@@ -296,6 +410,10 @@ public class PengadaanObatForm extends javax.swing.JPanel {
 //        inputNamaLengkap.setText("");
 //        inputAlamat.setText("");
 //        inputNoTelp.setText("");
+        tanggalTransaksiDateChooser1.setDate(null);
+        namaObatComboBox1.setSelectedIndex(0);
+        inputKuantitas1.setText("");
+        inputSupplier1.setText("");
     }
 
     //Method-method pada Read Panel
@@ -377,7 +495,7 @@ public class PengadaanObatForm extends javax.swing.JPanel {
                     //untuk reset pengguna
                     pengadaanObat = null;
                     //assign pengguna sesuai row yang di klik pada tabel
-                    pengadaanObat = (PengadaanObat) tableModel.getValueAt(clickedRow, 5);
+                    pengadaanObat = (PengadaanObat) tableModel.getValueAt(clickedRow, 6);
                     //show user card panel
                     pengadaanObatCard = new PengadaanObatCard(pengadaanObat);
                     showUserCard(pengadaanObatCard);
@@ -389,6 +507,9 @@ public class PengadaanObatForm extends javax.swing.JPanel {
                             //melempar event untuk dieksekusi ke panel/frame diatasnya yaitu SuperAdminView
                             //fungsinya untuk mengganti panel ReadDataPembeli ke panel UpdateDataPembeli
                             //setTextToComponent(pengguna.getNama(), pengguna.getAlamat(), pengguna.getNoTelp());
+
+                            setTextToComponent(pengadaanObat.getKuantitas(), pengadaanObat.getSupplier());
+                            insertAndSetObatToComboBox(pengadaanObat);
                             cardLayout.show(cardPanel, "update");
                         }
                     });
@@ -399,6 +520,9 @@ public class PengadaanObatForm extends javax.swing.JPanel {
                             //ketika btn delete di user card
                             //pc.deleteDataPengguna(pengguna.getIdPengguna());
                             //uc.deleteDataUser(pengguna.getUser().getIdUser());
+
+                            poc.deletePengadaanObat(pengadaanObat.getIdPengadaan());
+
                             System.out.println("Berhasil delete");
                             showUserCard(noUserCard);
                             setTableModel(poc.showPengadaanObat(""));
@@ -1176,8 +1300,8 @@ public class PengadaanObatForm extends javax.swing.JPanel {
     private javax.swing.JLabel labelTanggal;
     private javax.swing.JLabel labelTanggal1;
     private javax.swing.JPanel makeStaff;
-    private javax.swing.JComboBox<String> namaObatComboBox;
-    private javax.swing.JComboBox<String> namaObatComboBox1;
+    private javax.swing.JComboBox<Obat> namaObatComboBox;
+    private javax.swing.JComboBox<Obat> namaObatComboBox1;
     private javax.swing.JPanel panelCard;
     private javax.swing.JPanel readPengadaanObat;
     private javax.swing.JComboBox<Role> roleComboBox;
