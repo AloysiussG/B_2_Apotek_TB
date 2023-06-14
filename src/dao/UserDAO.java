@@ -64,7 +64,10 @@ public class UserDAO {
     public void deleteUser(int id) {
         con = dbCon.makeConnection();
 
-        String sql = "DELETE FROM user WHERE idUser = '" + id + "'";
+        String sql = "DELETE FROM user WHERE idUser = '" + id + "'"
+                + "SET  @num := 0"
+                + "UPDATE `user` SET idUser = @num := (@num+1)"
+                + "ALTER TABLE `user` AUTO_INCREMENT = 1;";
 
         System.out.println("Deleting User...");
 
@@ -79,7 +82,7 @@ public class UserDAO {
         }
         dbCon.closeConnection();
     }
-    
+
 //    public void deleteUser(int id) {
 //        con = dbCon.makeConnection();
 //
@@ -101,7 +104,6 @@ public class UserDAO {
 //        }
 //        dbCon.closeConnection();
 //    }
-
     public int countUser() {
         con = dbCon.makeConnection();
 

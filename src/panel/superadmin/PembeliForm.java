@@ -217,6 +217,7 @@ public class PembeliForm extends javax.swing.JPanel {
                             inputNoTelpTbh.getText(), inputAlamatTbh.getText(), createUser);
                     pc.insertPengguna(createPengguna);
                     //update table model dan user card dan kembalikan ke panel read
+
                     resetCreatePanel();
                     resetReadPanel();
                     cardLayout.show(cardPanel, "read");
