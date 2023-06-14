@@ -37,6 +37,7 @@ import swing.component.dashboard.PengadaanObatCard;
 import table.PengadaanObatTable;
 import Exception.InputKosongException;
 import control.ObatControl;
+import exception.InputNegatifException;
 import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 
@@ -77,6 +78,7 @@ public class PengadaanObatForm extends javax.swing.JPanel {
         if (s != null) {
             this.staffLogin = s;
         } else {
+            JOptionPane.showMessageDialog(null, "[WARNING] tidak ada parameter staff / null! View ini harus diakses melalui view Login!");
             System.out.println("[WARNING] tidak ada parameter staff / null!");
         }
 
@@ -160,6 +162,8 @@ public class PengadaanObatForm extends javax.swing.JPanel {
 //                resetReadPanel();
                 try {
                     inputKosongExceptionUpdate();
+                    inputNegatifExceptionUpdate();
+
                     PengadaanObat pengadaanObatNew = pengadaanObat;
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                     String inputTglPengadaanObat = formatter.format(tanggalTransaksiDateChooser1.getDate());
@@ -178,6 +182,8 @@ public class PengadaanObatForm extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(null, "Data harus diisi terlebih dahulu!");
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null, "Kuantitas Harus Angka");
+                } catch (InputNegatifException e) {
+                    JOptionPane.showMessageDialog(null, "Kuantitas Tidak Boleh 0 Atau Kurang Dari 0");
                 }
             }
         });
@@ -227,6 +233,7 @@ public class PengadaanObatForm extends javax.swing.JPanel {
 //                resetReadPanel();
                 try {
                     inputKosongExceptionCreate();
+                    inputNegatifExceptionCreate();
                     //dummy staff bertugas
                     //nanti diganti + janlup di updatenya juga
 //                    Role r = new Role(6, 5000000.0, "Kasir");
@@ -253,6 +260,8 @@ public class PengadaanObatForm extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(null, "Data Harus Diisi Terlebih Dahulu!");
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null, "Kuantitas Harus Angka");
+                } catch (InputNegatifException e) {
+                    JOptionPane.showMessageDialog(null, "Kuantitas Tidak Boleh 0 Atau Kurang Dari 0");
                 }
             }
         });
@@ -303,6 +312,18 @@ public class PengadaanObatForm extends javax.swing.JPanel {
         //action listener untuk search
         //tanpa button
         addFieldSearchActionListener();
+    }
+
+    public void inputNegatifExceptionCreate() throws InputNegatifException {
+        if (Integer.parseInt(inputKuantitas.getText()) == 0 || Integer.parseInt(inputKuantitas.getText()) < 0) {
+            throw new InputNegatifException();
+        }
+    }
+
+    public void inputNegatifExceptionUpdate() throws InputNegatifException {
+        if (Integer.parseInt(inputKuantitas1.getText()) == 0 || Integer.parseInt(inputKuantitas1.getText()) < 0) {
+            throw new InputNegatifException();
+        }
     }
 
     //Method-method pada Make Staff Panel

@@ -20,12 +20,22 @@ public class TransaksiControl {
     public TransaksiTable showDataTransaksi(String query) {
         List<Transaksi> dataTransaksi = pd.showTransaksi(query);
         TransaksiTable tabel = new TransaksiTable(dataTransaksi);
-
         return tabel;
     }
 
+    //cek null pengguna
     public int cekNullTransaksi(int idPengguna) {
         return pd.cekNull(idPengguna);
+    }
+
+    //cek null staff
+    public int cekNullStaff(int nip) {
+        return pd.cekStaffNull(nip);
+    }
+
+    //cek null obat
+    public int cekNullObat(int idObat) {
+        return pd.cekObatNull(idObat);
     }
 
 //    public void updateDataTransaksi(Transaksi t){

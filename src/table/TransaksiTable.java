@@ -22,7 +22,7 @@ public class TransaksiTable extends AbstractTableModel {
     }
     
     public int getColumnCount(){
-        return 7;
+        return 8;
     }
     
 //    public Object getValueAt (int rowIndex, int columnIndex){
@@ -83,9 +83,12 @@ public class TransaksiTable extends AbstractTableModel {
             case 4:
                 return list.get(rowIndex).getTanggalPembelian();
             case 5:
-                return list.get(rowIndex).getJumlah();
+                return list.get(rowIndex).getObat().getHarga();
             case 6:
+                return list.get(rowIndex).getJumlah();
+            case 7:
                 return list.get(rowIndex).totalPembelian();
+                
             default :
                 return null;
         }
@@ -104,8 +107,10 @@ public class TransaksiTable extends AbstractTableModel {
             case 4:
                 return "Tanggal Pembelian";
             case 5:
-                return "Jumlah";
+                return "Harga Obat";
             case 6:
+                return "Jumlah";
+            case 7:
                 return "Total Pembelian";
             default:
                 return null;

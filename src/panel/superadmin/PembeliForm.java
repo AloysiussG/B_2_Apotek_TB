@@ -4,6 +4,7 @@
  */
 package panel.superadmin;
 
+import Exception.InputKosongException;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -20,6 +21,9 @@ import control.StaffControl;
 import control.TransaksiControl;
 import control.UserControl;
 import exception.CekTransaksiException;
+import exception.NoHpNumericException;
+import exception.NoTelpException;
+import exception.UniqueException;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -72,7 +76,7 @@ public class PembeliForm extends javax.swing.JPanel {
 
     //Konstruktor
     public PembeliForm() {
-        this.namaUserGroup = "Pembeli";
+        this.namaUserGroup = "Pengguna";
         this.pc = new PenggunaControl();
         this.uc = new UserControl();
         this.rc = new RoleControl();
@@ -136,16 +140,31 @@ public class PembeliForm extends javax.swing.JPanel {
         addBtnSaveActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                //update data ke database
-                Pengguna penggunaNew = pengguna;
-                penggunaNew.setNama(inputNamaLengkap.getText());
-                penggunaNew.setAlamat(inputAlamat.getText());
-                penggunaNew.setNoTelp(inputNoTelp.getText());
-                pc.updateDataPengguna(penggunaNew);
-                //update table model dan user card dan kembalikan ke panel read
-                resetUpdatePanel();
-                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
+
+                try {
+                    noTelpExceptionEdit();
+                    noNumericExceptionUpdate();
+                    //untuk input kosong
+                    exceptionUpdatePanel();
+                    //update data ke database
+                    Pengguna penggunaNew = pengguna;
+                    penggunaNew.setNama(inputNamaLengkap.getText());
+                    penggunaNew.setAlamat(inputAlamat.getText());
+                    penggunaNew.setNoTelp(inputNoTelp.getText());
+                    pc.updateDataPengguna(penggunaNew);
+                    //update table model dan user card dan kembalikan ke panel read
+                    resetUpdatePanel();
+                    resetReadPanel();
+                    JOptionPane.showMessageDialog(null, "Berhasil update pengguna");
+                    cardLayout.show(cardPanel, "read");
+                } catch (InputKosongException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (NoTelpException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (NoHpNumericException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                }
+
             }
         });
         //button cancel action listener fungsinya sama seperti button back
@@ -179,19 +198,38 @@ public class PembeliForm extends javax.swing.JPanel {
         btnSaveTbh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                //insert user data ke database
-                String username = inputUsernameTbh.getText();
-                User createUser = new User(-1, username, inputPasswordTbh.getText());
-                uc.insertDataUser(createUser);
-                createUser.setIdUser(uc.findIdByUsername(username));
-                //insert pengguna data ke database
-                Pengguna createPengguna = new Pengguna(-1, inputNamaLengkapTbh.getText(),
-                        inputNoTelpTbh.getText(), inputAlamatTbh.getText(), createUser);
-                pc.insertPengguna(createPengguna);
-                //update table model dan user card dan kembalikan ke panel read
-                resetUpdatePanel();
-                resetReadPanel();
-                cardLayout.show(cardPanel, "read");
+
+                try {
+                    noTelpExceptionCreate();
+                    //untuk nomor telepon harus angka dan harus sesuai ketentuan
+                    noNumericExceptionCreate();
+                    //untuk input kosong
+                    exceptionCreatePanel();
+                    //untuk username yg tidak unik
+                    uniqueException();
+                    //insert user data ke database
+                    String username = inputUsernameTbh.getText();
+                    User createUser = new User(-1, username, inputPasswordTbh.getText());
+                    uc.insertDataUser(createUser);
+                    createUser.setIdUser(uc.findIdByUsername(username));
+                    //insert pengguna data ke database
+                    Pengguna createPengguna = new Pengguna(-1, inputNamaLengkapTbh.getText(),
+                            inputNoTelpTbh.getText(), inputAlamatTbh.getText(), createUser);
+                    pc.insertPengguna(createPengguna);
+                    //update table model dan user card dan kembalikan ke panel read
+                    resetCreatePanel();
+                    resetReadPanel();
+                    cardLayout.show(cardPanel, "read");
+                } catch (InputKosongException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (UniqueException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (NoHpNumericException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                } catch (NoTelpException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
+                }
+
             }
         });
         //action listener pada makestaff panel
@@ -219,26 +257,27 @@ public class PembeliForm extends javax.swing.JPanel {
                 //lalu melakukan insert staff dan mendelete pengguna/pembeli
 
                 try {
+                    inputKosongExceptionTanggalStaff();
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    if (tanggalMasukDateChooser.getDate() != null) {
-                        String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
-                        Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
-                        //nip -1 karena pada akhirnya saat insert juga auto increment
-                        Staff staffInput = new Staff(-1, pengguna.getNama(), inputTglMasuk, pengguna.getNoTelp(), pengguna.getAlamat(), rolePilihan, pengguna.getUser());
-                        cekTransaksiException(pengguna.getIdPengguna());
-                        sc.insertDataStaff(staffInput);
-                        pc.deleteDataPengguna(pengguna.getIdPengguna());
-                        //
-                        System.out.println(inputTglMasuk);
-                        System.out.println(rolePilihan.getIdRole());
-                        System.out.println("Berhasil make staff!");
-                    } else {
-                        System.out.println("[EXCEPTION] Tanggal pilihan null!");
-                    }
+                    String inputTglMasuk = formatter.format(tanggalMasukDateChooser.getDate());
+                    Role rolePilihan = (Role) roleComboBox.getModel().getSelectedItem();
+                    //nip -1 karena pada akhirnya saat insert juga auto increment
+                    Staff staffInput = new Staff(-1, pengguna.getNama(), inputTglMasuk, pengguna.getNoTelp(), pengguna.getAlamat(), rolePilihan, pengguna.getUser());
+                    cekTransaksiException(pengguna.getIdPengguna());
+                    sc.insertDataStaff(staffInput);
+                    pc.deleteDataPengguna(pengguna.getIdPengguna());
+                    //
+                    System.out.println(inputTglMasuk);
+                    System.out.println(rolePilihan.getIdRole());
+                    System.out.println("Berhasil make staff!");
                     resetMakeStaffPanel();
                     resetReadPanel();
+                    JOptionPane.showMessageDialog(null, "Berhasil membuat staff");
                     cardLayout.show(cardPanel, "read");
+                } catch (InputKosongException e) {
+                    JOptionPane.showMessageDialog(null, e.message());
                 } catch (CekTransaksiException e) {
+                    //jika ditemukan di transaksi, tidak bisa didelete
                     JOptionPane.showMessageDialog(null, e.message());
                 }
             }
@@ -249,7 +288,47 @@ public class PembeliForm extends javax.swing.JPanel {
         addFieldSearchActionListener();
     }
 
+    private void noTelpExceptionEdit() throws NoTelpException {
+        if (inputNoTelp.getText().length() < 10 || inputNoTelp.getText().length() > 13) {
+            throw new NoTelpException();
+        }
+    }
+
+    public void noNumericExceptionCreate() throws NumberFormatException, NoHpNumericException {
+        try {
+            long temp = Long.parseLong(inputNoTelpTbh.getText());
+        } catch (NumberFormatException e) {
+            throw new NoHpNumericException();
+        }
+    }
+
+    public void noNumericExceptionUpdate() throws NumberFormatException, NoHpNumericException {
+        try {
+            long temp = Long.parseLong(inputNoTelp.getText());
+        } catch (NumberFormatException e) {
+            throw new NoHpNumericException();
+        }
+    }
+
+    private void noTelpExceptionCreate() throws NoTelpException {
+        if (inputNoTelpTbh.getText().length() < 10 || inputNoTelpTbh.getText().length() > 13) {
+            throw new NoTelpException();
+        }
+    }
+
+    public void uniqueException() throws UniqueException {
+        if (uc.uniqueUser(inputUsernameTbh.getText()) == true) {
+            throw new UniqueException();
+        }
+    }
+
     //Method-method pada Make Staff Panel
+    public void inputKosongExceptionTanggalStaff() throws InputKosongException {
+        if (tanggalMasukDateChooser.getDate() == null) {
+            throw new InputKosongException();
+        }
+    }
+
     private void cekTransaksiException(int idPengguna) throws CekTransaksiException {
         if (tc.cekNullTransaksi(idPengguna) == 1) {
             throw new CekTransaksiException();
@@ -290,7 +369,25 @@ public class PembeliForm extends javax.swing.JPanel {
         inputPasswordTbh.setText("");
     }
 
+    private void exceptionCreatePanel() throws InputKosongException {
+        if (inputNamaLengkapTbh.getText().isBlank()
+                || inputAlamatTbh.getText().isBlank()
+                || inputNoTelpTbh.getText().isBlank()
+                || inputUsernameTbh.getText().isBlank()
+                || inputPasswordTbh.getText().isBlank()) {
+            throw new InputKosongException();
+        }
+    }
+
     //Method-method pada Update Panel
+    private void exceptionUpdatePanel() throws InputKosongException {
+        if (inputNamaLengkap.getText().isBlank()
+                || inputAlamat.getText().isBlank()
+                || inputNoTelp.getText().isBlank()) {
+            throw new InputKosongException();
+        }
+    }
+
     private void setTextToComponent(String nama, String alamat, String noTelp) {
         inputNamaLengkap.setText(nama);
         inputAlamat.setText(alamat);
@@ -387,7 +484,7 @@ public class PembeliForm extends javax.swing.JPanel {
             public void mousePressed(MouseEvent event) {
 
                 //get value dari table clicked
-                if (namaUserGroup.equalsIgnoreCase("Pembeli")) {
+                if (namaUserGroup.equalsIgnoreCase("Pengguna")) {
                     int clickedRow = customTable.getSelectedRow();
                     TableModel tableModel = customTable.getModel();
                     //untuk reset pengguna
@@ -412,12 +509,18 @@ public class PembeliForm extends javax.swing.JPanel {
                     userCard.addBtnDeleteActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {
-                            //ketika btn delete di user card
-                            pc.deleteDataPengguna(pengguna.getIdPengguna());
-                            uc.deleteDataUser(pengguna.getUser().getIdUser());
-                            System.out.println("Berhasil delete");
-                            showUserCard(noUserCard);
-                            setTableModel(pc.showDataPengguna(""));
+                            try {
+                                cekTransaksiException(pengguna.getIdPengguna());
+                                //ketika btn delete di user card
+                                pc.deleteDataPengguna(pengguna.getIdPengguna());
+                                uc.deleteDataUser(pengguna.getUser().getIdUser());
+                                System.out.println("Berhasil delete");
+                                showUserCard(noUserCard);
+                                setTableModel(pc.showDataPengguna(""));
+                                JOptionPane.showMessageDialog(null, "Berhasil menghapus pengguna");
+                            } catch (CekTransaksiException e) {
+                                JOptionPane.showMessageDialog(null, "Tidak bisa menghapus pengguna, pengguna sudah pernah melakukan transaksi!");
+                            }
                         }
                     });
                     //user card button make staff action listener
@@ -644,7 +747,7 @@ public class PembeliForm extends javax.swing.JPanel {
             readPembeliLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, readPembeliLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(judulForm)
                 .addGap(10, 10, 10)
@@ -737,7 +840,7 @@ public class PembeliForm extends javax.swing.JPanel {
         judulUpdate.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         judulUpdate.setForeground(cp.getColor(0)
         );
-        judulUpdate.setText("Update Data Pembeli");
+        judulUpdate.setText("Update Data Pengguna");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -870,7 +973,7 @@ public class PembeliForm extends javax.swing.JPanel {
         judulCreate.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         judulCreate.setForeground(cp.getColor(0)
         );
-        judulCreate.setText("Tambah Data Pembeli");
+        judulCreate.setText("Tambah Data Pengguna");
 
         jPanel11.setOpaque(false);
 

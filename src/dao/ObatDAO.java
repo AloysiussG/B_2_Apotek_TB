@@ -65,8 +65,11 @@ public class ObatDAO {
         con = dbCon.makeConnection();
         String sql = null;
 
-        sql = "INSERT INTO `obat` (`namaObat`, `tanggalKadaluarsa`, `harga`, `tanggalProduksi`, `kuantitas`) VALUES ("
+//        sql = "INSERT INTO `obat` (`namaObat`, `tanggalKadaluarsa`, `harga`, `tanggalProduksi`, `kuantitas`) VALUES ("
+//                + obat.getNamaObat() + "','" + obat.getTanggalKadaluarsa() + "'," + obat.getHarga() + ",'" + obat.getTanggalProduksi() + "'," + obat.getKuantitas() + ")";
+        sql = "INSERT INTO `obat` (`namaObat`, `tanggalKadaluarsa`, `harga`, `tanggalProduksi`, `kuantitas`) VALUES ('"
                 + obat.getNamaObat() + "','" + obat.getTanggalKadaluarsa() + "'," + obat.getHarga() + ",'" + obat.getTanggalProduksi() + "'," + obat.getKuantitas() + ")";
+
         System.out.println("Adding Obat");
 
         try {
