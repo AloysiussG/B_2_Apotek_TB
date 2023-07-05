@@ -7,8 +7,12 @@ package view;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.UIManager;
 import model.Pengguna;
 import panel.pengguna.component.MainForm;
@@ -25,6 +29,7 @@ public class PenggunaView extends javax.swing.JFrame {
     /** Creates new form PenggunaView */
     public PenggunaView(Pengguna p) {
         initComponents();
+        setWindowTitleAndIcon();
 
         if (p != null) {
             this.pengguna = p;
@@ -37,15 +42,30 @@ public class PenggunaView extends javax.swing.JFrame {
 
     }
 
+    private void setWindowTitleAndIcon() {
+        Image icon = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/img/logo/logo-app.png"));
+        this.setIconImage(icon);
+    }
+
     private void initOtherComponents() {
         mainForm = new MainForm(pengguna);
 
         mainForm.addBtnLogoutActionListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                LoginRegisterView lrv = new LoginRegisterView();
-                dispose();
-                lrv.setVisible(true);
+                //menu logout
+                //asynchronous process
+                Thread newThread = new Thread(() -> {
+                    try {
+                        Thread.sleep(250);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    LoginRegisterView lview = new LoginRegisterView();
+                    dispose();
+                    lview.setVisible(true);
+                });
+                newThread.start();
             }
         });
 

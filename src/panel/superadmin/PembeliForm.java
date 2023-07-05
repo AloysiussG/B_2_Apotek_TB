@@ -4,7 +4,7 @@
  */
 package panel.superadmin;
 
-import Exception.InputKosongException;
+import exception.InputKosongException;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -35,6 +35,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import model.Pengguna;
 import model.Role;
@@ -46,7 +47,7 @@ import swing.ColorPallete;
  *
  * @author AG SETO GALIH D
  */
-public class PembeliForm extends javax.swing.JPanel {
+public class PembeliForm extends JPanel {
 
     //untuk menyimpan info Pengguna yang sedang dipilih
     private Pengguna pengguna;
@@ -57,25 +58,21 @@ public class PembeliForm extends javax.swing.JPanel {
     private RoleControl rc;
     private TransaksiControl tc;
 
-    private static ColorPallete cp = new ColorPallete();
+    private static ColorPallete cp;
     private UserCard userCard;
-    private NoUserCard noUserCard = new NoUserCard();
+    private NoUserCard noUserCard;
     private String namaUserGroup;
     private CardLayout cardLayout;
 
     private String searchInput = "";
 
-    //Getter Setter penggunaControl
-    public void updatePenggunaControl(PenggunaControl pControl) {
-        this.pc = pControl;
-    }
-
-    public PenggunaControl getPenggunaControl() {
-        return this.pc;
-    }
-
     //Konstruktor
     public PembeliForm() {
+        setVisible(true);
+
+        cp = new ColorPallete();
+        noUserCard = new NoUserCard();
+
         this.namaUserGroup = "Pengguna";
         this.pc = new PenggunaControl();
         this.uc = new UserControl();
@@ -84,7 +81,6 @@ public class PembeliForm extends javax.swing.JPanel {
         this.tc = new TransaksiControl();
 
         initComponents();
-
         showUserCard(noUserCard);
 
         setTableModel(pc.showDataPengguna(""));

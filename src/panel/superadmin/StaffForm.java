@@ -4,7 +4,7 @@
  */
 package panel.superadmin;
 
-import Exception.InputKosongException;
+import exception.InputKosongException;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Component;
 import java.awt.event.ActionEvent;

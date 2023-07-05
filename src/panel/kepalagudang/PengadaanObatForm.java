@@ -35,7 +35,7 @@ import model.Staff;
 import swing.ColorPallete;
 import swing.component.dashboard.PengadaanObatCard;
 import table.PengadaanObatTable;
-import Exception.InputKosongException;
+import exception.InputKosongException;
 import control.ObatControl;
 import exception.InputNegatifException;
 import java.text.SimpleDateFormat;

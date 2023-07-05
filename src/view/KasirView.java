@@ -5,6 +5,8 @@
 package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.UIManager;
@@ -39,12 +41,19 @@ public class KasirView extends javax.swing.JFrame {
 
         //inisialisasi komponen
         initComponents();
+        setWindowTitleAndIcon();
+
         if (s != null) {
             this.staff = s;
             initKasirView("Kasir", s.getNama());
         } else {
             initKasirView("Kasir", "KasirTheGod");
         }
+    }
+
+    private void setWindowTitleAndIcon() {
+        Image icon = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/img/logo/logo-app.png"));
+        this.setIconImage(icon);
     }
 
     private void initKasirView(String roleView, String usernameView) {

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
@@ -18,6 +14,8 @@ import javax.swing.JOptionPane;
 import model.Pengguna;
 import model.User;
 import control.*;
+import java.awt.Image;
+import java.awt.Toolkit;
 import model.Staff;
 
 /**
@@ -30,21 +28,22 @@ public class LoginRegisterView extends javax.swing.JFrame {
     private CardLayout cardLayout;
     private static ColorPallete cp = new ColorPallete();
     private static final String emptyString = "";
-    
+
     private UserControl uc;
     private PenggunaControl pc;
     private StaffControl sc;
-    
+
     public static Staff sLogin, tempStaff;
     public static Pengguna pLogin, tempPengguna;
 
     public LoginRegisterView() {
-        
+
         uc = new UserControl();
         pc = new PenggunaControl();
         sc = new StaffControl();
-        
+
         initComponents();
+        setWindowTitleAndIcon();
 
         illustrationLogin.setIcon(new FlatSVGIcon("img/illustration/Pharmacist.svg", 0.6f));
         illustrationRegister.setIcon(new FlatSVGIcon("img/illustration/Pharmacist.svg", 0.6f));
@@ -478,6 +477,11 @@ public class LoginRegisterView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void setWindowTitleAndIcon() {
+        Image icon = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/img/logo/logo-app.png"));
+        this.setIconImage(icon);
+    }
+    
     private void clearLoginComponents() {
         inputUsernameLogin.setText(emptyString);
         inputPasswordLogin.setText(emptyString);
@@ -492,66 +496,66 @@ public class LoginRegisterView extends javax.swing.JFrame {
         inputPasswordRegister.setText(emptyString);
         showPassRegister.setSelected(false);
     }
-    
-    public void usernameLoginKosongException() throws UsernameKosongException{
-        if(inputUsernameLogin.getText().isEmpty()){
+
+    public void usernameLoginKosongException() throws UsernameKosongException {
+        if (inputUsernameLogin.getText().isEmpty()) {
             throw new UsernameKosongException();
         }
     }
-    
-    public void passwordLoginKosongException() throws PasswordKosongException{
-        if(inputPasswordLogin.getPassword().length == 0){
+
+    public void passwordLoginKosongException() throws PasswordKosongException {
+        if (inputPasswordLogin.getPassword().length == 0) {
             throw new PasswordKosongException();
         }
     }
-    
-    public void usernameRegisterKosongException() throws UsernameKosongException{
-        if(inputUsernameRegister.getText().isEmpty()){
+
+    public void usernameRegisterKosongException() throws UsernameKosongException {
+        if (inputUsernameRegister.getText().isEmpty()) {
             throw new UsernameKosongException();
         }
     }
-    
-    public void passwordRegisterKosongException() throws PasswordKosongException{
-        if(inputPasswordRegister.getPassword().length == 0){
+
+    public void passwordRegisterKosongException() throws PasswordKosongException {
+        if (inputPasswordRegister.getPassword().length == 0) {
             throw new PasswordKosongException();
         }
     }
-    
-    public void uniqueException() throws UniqueException{
-        if(uc.uniqueUser(inputUsernameRegister.getText()) == true){
+
+    public void uniqueException() throws UniqueException {
+        if (uc.uniqueUser(inputUsernameRegister.getText()) == true) {
             throw new UniqueException();
         }
-       
+
     }
-    
-    public void namaKosongException() throws NamaKosongException{
-        if(inputNamaRegister.getText().isEmpty()){
+
+    public void namaKosongException() throws NamaKosongException {
+        if (inputNamaRegister.getText().isEmpty()) {
             throw new NamaKosongException();
         }
     }
-    
-    public void noHpKosongException() throws NoHpKosongException{
-        if(inputNoTelpRegister.getText().isEmpty()){
+
+    public void noHpKosongException() throws NoHpKosongException {
+        if (inputNoTelpRegister.getText().isEmpty()) {
             throw new NoHpKosongException();
         }
     }
-    
-    public void alamatKosongException() throws AlamatKosongException{
-        if(inputAlamatRegister.getText().isEmpty()){
+
+    public void alamatKosongException() throws AlamatKosongException {
+        if (inputAlamatRegister.getText().isEmpty()) {
             throw new AlamatKosongException();
         }
     }
-    
-    public void noHpNumericException() throws NumberFormatException, NoHpNumericException{
-        try{
+
+    public void noHpNumericException() throws NumberFormatException, NoHpNumericException {
+        try {
             long temp = Long.parseLong(inputNoTelpRegister.getText());
-        }catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new NoHpNumericException();
         }
     }
-    
-    public void noTelplengthException() throws noTelpLengthException{
-        if(inputNoTelpRegister.getText().length() < 10 || inputNoTelpRegister.getText().length() > 13){
+
+    public void noTelplengthException() throws noTelpLengthException {
+        if (inputNoTelpRegister.getText().length() < 10 || inputNoTelpRegister.getText().length() > 13) {
             throw new noTelpLengthException();
         }
     }
@@ -579,19 +583,19 @@ public class LoginRegisterView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCloseRegisterActionPerformed
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
-        
+
         //Async process agar animasi tidak lag saat ditekan sembari menunggu memproses query
         Thread newThread = new Thread(() -> {
             try{
                 usernameLoginKosongException();
                 passwordLoginKosongException();
-
+ 
                 String temp = String.valueOf(inputPasswordLogin.getPassword());
                 String temp2 = inputUsernameLogin.getText();
                 int index = uc.checkLoginUser(temp2, temp);
                 int indexStaff = sc.findStaff(index);
                 System.out.println(index);
-                if(inputUsernameLogin.getText().equals("master") && temp.equals("master")){
+                if(inputUsernameLogin.getText().equals("master") && temp.equals("master")) {
                     JOptionPane.showMessageDialog(null, "Login as Master!");
                     SuperAdminView sav = new SuperAdminView();
                     this.dispose();
@@ -645,6 +649,7 @@ public class LoginRegisterView extends javax.swing.JFrame {
             }catch(PasswordKosongException e){
                 JOptionPane.showMessageDialog(null, e.message());
             }catch(Exception e){
+                JOptionPane.showMessageDialog(null, e.getMessage());
                 System.out.println(e);
             }
         });
@@ -655,7 +660,7 @@ public class LoginRegisterView extends javax.swing.JFrame {
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
         //Async process agar animasi tidak lag saat ditekan sembari menunggu memproses query
         Thread newThread = new Thread(() -> {
-            try{
+            try {
 
                 usernameRegisterKosongException();
                 uniqueException();
@@ -676,28 +681,28 @@ public class LoginRegisterView extends javax.swing.JFrame {
                 clearRegisterComponents();
                 cardLayout.show(cardLayoutPanel, "layoutLogin");
 
-            }catch(UsernameKosongException e){
+            } catch (UsernameKosongException e) {
                 JOptionPane.showMessageDialog(null, e.message());
-            }catch(UniqueException e){
+            } catch (UniqueException e) {
                 JOptionPane.showMessageDialog(null, e.message());
-            }catch(NamaKosongException e){
+            } catch (NamaKosongException e) {
                 JOptionPane.showMessageDialog(null, e.message());
-            }catch(NoHpKosongException e){
+            } catch (NoHpKosongException e) {
                 JOptionPane.showMessageDialog(null, e.message());
-            }catch(NoHpNumericException e){
+            } catch (NoHpNumericException e) {
                 JOptionPane.showMessageDialog(null, e.message());
-            }catch(noTelpLengthException e){
+            } catch (noTelpLengthException e) {
                 JOptionPane.showMessageDialog(null, e.message());
-            }catch(AlamatKosongException e){
+            } catch (AlamatKosongException e) {
                 JOptionPane.showMessageDialog(null, e.message());
-            }catch(PasswordKosongException e){
+            } catch (PasswordKosongException e) {
                 JOptionPane.showMessageDialog(null, e.message());
-            }catch(Exception e){
+            } catch (Exception e) {
                 System.out.println(e);
             }
         });
         //Async
-        newThread.start();   
+        newThread.start();
     }//GEN-LAST:event_registerBtnActionPerformed
 
     /**

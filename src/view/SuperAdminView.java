@@ -5,8 +5,11 @@
 package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
@@ -24,7 +27,7 @@ import swing.events.EventMenuSelected;
  *
  * @author AG SETO GALIH D
  */
-public class SuperAdminView extends javax.swing.JFrame {
+public class SuperAdminView extends JFrame {
 
     private MigLayout layout;
     private Menu menu;
@@ -39,6 +42,12 @@ public class SuperAdminView extends javax.swing.JFrame {
         //inisialisasi komponen
         initComponents();
         initSuperAdminView();
+        setWindowTitleAndIcon();
+    }
+
+    private void setWindowTitleAndIcon() {
+        Image icon = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/img/logo/logo-app.png"));
+        this.setIconImage(icon);
     }
 
     private void initSuperAdminView() {

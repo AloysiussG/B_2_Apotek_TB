@@ -1,7 +1,7 @@
 package panel.apoteker;
 
-import Exception.InputKosongException;
-import Exception.TglProduksiException;
+import exception.InputKosongException;
+import exception.TglProduksiException;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import control.ObatControl;
 import java.awt.Component;
