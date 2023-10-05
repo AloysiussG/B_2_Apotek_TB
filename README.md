@@ -9,4 +9,4 @@ Project ini dikembangkan oleh mahasiswa Kelompok 2 PBO B dari Program Studi Info
 - Aloysius Gonzaga Seto Galih Damarjati / 210711180
 - Samuel Juang / 210711201
 
-© 2023 Kelompok 2 PBO B
+© 2023 Kelompok 2 PBO B 
